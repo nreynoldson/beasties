@@ -23,7 +23,7 @@ export default App = () => {
         <Navbar variant="light" bg="primary">
           <Nav>
             <Nav.Brand>
-              <Nav.Link to="/">Home</Nav.Link>
+              <Nav.Link to="/">Beasties</Nav.Link>
             </Nav.Brand>
             <Nav.Item>
               <Nav.Link to="/about">How It Works</Nav.Link>
