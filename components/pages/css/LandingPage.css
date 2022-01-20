@@ -1,11 +1,3 @@
-flexColumn {
-  flex-direction: column;
-}
-
-flexRow {
-  flex-direction: row;
-}
-
 pinkLink {
   color: deeppink;
   text-decoration: none;

@@ -1,3 +1,4 @@
+import './css/Common.css';
 import './css/LandingPage.css';
 
 const LandingPage = (props) => {
