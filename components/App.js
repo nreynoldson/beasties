@@ -11,6 +11,7 @@ import LandingPage from './pages/LandingPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import ContactPage from './pages/ContactPage';
 import BrowsePetsPage from './pages/BrowsePetsPage';
+import BrowseSheltersPage from './pages/BrowseSheltersPage';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -29,7 +30,10 @@ export default App = () => {
               <Nav.Link to="/about">How It Works</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link to="/browse-pets">How It Works</Nav.Link>
+              <Nav.Link to="/browse-pets">Pets</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link to="/browse-shelters">Shelters</Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link to="/contact">Contact Us</Nav.Link>
@@ -43,6 +47,9 @@ export default App = () => {
           </Route>
           <Route path="/browse-pets">
             <BrowsePetsPage />
+          </Route>
+          <Route path="/browse-shelters">
+            <BrowseSheltersPage />
           </Route>
           <Route path="/contact">
             <ContactPage />

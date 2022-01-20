@@ -1,6 +1,6 @@
 import './css/Common.css';
 
-const BrowsePetsPage = (props) => {
+const BrowseSheltersPage = (props) => {
 
   return (
     <div className="flexColumn">
@@ -8,4 +8,4 @@ const BrowsePetsPage = (props) => {
   );
 }
 
-export default BrowsePetsPage;
+export default BrowseSheltersPage;
