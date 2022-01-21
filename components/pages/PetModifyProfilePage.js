@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import Nav from 'react-bootstrap/Nav';
+
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
 
 import './css/Common.css';
 import './css/PetModifyProfilePage.css';
@@ -139,6 +141,24 @@ const BrowsePetsPage = (props) => {
 
   const [inputs, setInputs] = useState(getOriginalInputs);
 
+  useEffect(() => {
+
+    // make api request and setInputs to pet value here
+  }, [petId]);
+
+  const handleValueChange = useCallback((evt) => {
+
+    const field = evt.currentTarget.name;
+    const value = evt.currentTarget.value;
+
+    setInputs((prevInputs) => ({ ...prevInputs, [field]: value }));
+  }, []);
+
+  const handleSubmit = useCallback(() => {
+
+
+  }, []);
+
   const breedSelect = useMemo(() => {
   
     if (inputs.type === 'other') {
@@ -148,9 +168,9 @@ const BrowsePetsPage = (props) => {
     const breedNamesMap = (inputs.type === 'dog') ? dogBreedsMap : catBreedsMap;
     const options = breedNamesMap.map(([ breed, displayName ]) => {
 
-      return <option value={breed} selected={inputs.breed === breed}>{displayName}</option>
+      return <option value={breed} selected={inputs.breed === breed}>{displayName}</option>;
     });
-    
+
     return (
       <FloatingLabel controlId="floatingSelect" label="Breed">
         <Form.Select onChange={handleValueChange} name="breed">
@@ -161,9 +181,13 @@ const BrowsePetsPage = (props) => {
   }, [inputs, handleValueChange]);
 
   const componentOutput = useMemo(() => {
-  
-    return (
+
+  return (
       <div className="root">
+        <FloatingLabel controlId="floatingInput" label="Name">
+          <Form.Control type="text" onChange={handleValueChange} name="name" />
+        </FloatingLabel>
+
         <FloatingLabel controlId="floatingSelect" label="Type">
           <Form.Select onChange={handleValueChange} name="type">
             <option value="dog" selected={inputs.type === 'dog'}>Dog</option>
@@ -171,10 +195,44 @@ const BrowsePetsPage = (props) => {
             <option value="other" selected={inputs.type === 'other'}>Other</option>
           </Form.Select>
         </FloatingLabel>
+
         {breedSelect}
+
+        <Form.Check
+          type="checkbox"
+          name="goodWithOtherAnimals"
+          label="Good with other animals"
+          checked={inputs.goodWithOtherAnimals}
+          onChange={handleValueChange}
+        />
+        <Form.Check
+          type="checkbox"
+          name="goodWithChildren"
+          label="Good with children"
+          checked={inputs.goodWithChildren}
+          onChange={handleValueChange}
+        />
+        <Form.Check
+          type="checkbox"
+          name="mustBeLeashed"
+          label="Animal must be leashed at all times"
+          checked={inputs.mustBeLeashed}
+          onChange={handleValueChange}
+        />
+
+        <FloatingLabel controlId="floatingSelect" label="Availability">
+          <Form.Select onChange={handleValueChange} name="type">
+            <option value="available" selected={inputs.availability === 'available'}>Available</option>
+            <option value="notAvailable" selected={inputs.type === 'notAvailable'}>Not Available</option>
+            <option value="pending" selected={inputs.type === 'pending'}>Pending</option>
+            <option value="adopted" selected={inputs.type === 'adopted'}>Adopted</option>
+          </Form.Select>
+        </FloatingLabel>
+
+        <Button variant="primary" onClick={handleSubmit}>Submit</Button>
       </div>
     );
-  }, [breedSelect, handleValueChange, inputs]);
+  }, [breedSelect, handleSubmit, handleValueChange, inputs]);
 
   return componentOutput;
 }
