@@ -231,11 +231,22 @@ const PetModifyProfilePage = (props) => {
         <h1 className="display-4 mt-2">{(isNewPet) ? 'Add' : 'Edit'} Pet</h1>
         <div className="fields p-5 d-flex flex-column justify-content-between align-items-right">
           <FloatingLabel controlId="floatingInput" label="Name">
-            <Form.Control type="text" onChange={handleValueChange} name="name" />
+            <Form.Control
+              type="text"
+              onChange={handleValueChange}
+              name="name"
+              placeholder="Name"
+              size="lg"
+              />
           </FloatingLabel>
 
           <FloatingLabel controlId="floatingSelect" label="Type">
-            <Form.Select onChange={handleValueChange} name="type" defaultValue={inputs.type}>
+            <Form.Select
+              onChange={handleValueChange}
+              name="type"
+              defaultValue={inputs.type}
+              size="lg"
+            >
               <option value="dog">Dog</option>
               <option value="cat">Cat</option>
               <option value="other">Other</option>
@@ -276,6 +287,7 @@ const PetModifyProfilePage = (props) => {
               onChange={handleValueChange}
               name="availability"
               defaultValue={inputs.availability}
+              size="lg"
             >
               <option value="available">Available</option>
               <option value="notAvailable">Not Available</option>
@@ -285,7 +297,7 @@ const PetModifyProfilePage = (props) => {
           </FloatingLabel>
         </div>
         
-        <Button className="btn" variant="primary" onClick={handleSubmit}>Submit</Button>
+        <Button size="lg" variant="primary" onClick={handleSubmit}>Submit</Button>
       </Fragment>
     );
   }, [breedSelect, handleSubmit, handleValueChange, inputs, isNewPet]);
