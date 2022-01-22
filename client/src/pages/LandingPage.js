@@ -1,3 +1,5 @@
+import Button from 'react-bootstrap/Button';
+
 import './css/Common.css';
 import './css/LandingPage.css';
 
