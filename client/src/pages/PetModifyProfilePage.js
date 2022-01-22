@@ -126,7 +126,7 @@ const PetModifyProfilePage = (props) => {
 
   const params = useParams();
   const petId = parseInt(params.petId);
-  const isNewPet = Boolean(petId);
+  const isNewPet = !petId;
 
   const getOriginalInputs = useMemo(() => {
   

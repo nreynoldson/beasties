@@ -4,7 +4,13 @@ const ContactPage = (props) => {
 
   return (
     <div className="flexColumn">
-      <h1 className="display-3 mb-5">Contact Us</h1>
+      <h1 className="display-3 mb-4">Contact Us</h1>
+      <img
+        alt="Beasties Logo"
+        src="/images/paw_heart.png"
+        className="d-inline-block align-top mb-4"
+        height="50"
+      />
       <h4>
         <address>
           1234 Commerce St

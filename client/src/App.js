@@ -14,28 +14,28 @@ import LandingPage from './pages/LandingPage';
 import NotFound from './pages/NotFound';
 import PetModifyProfilePage from './pages/PetModifyProfilePage';
 
-import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+
 import './App.css';
 
 export default function App() {
   return (
 
     <div className="App">
-      <Navbar className="me-auto" variant="dark" bg="primary">
+      <Navbar className="me-auto" variant="dark">
         <Nav>
           <Navbar.Brand>
             <Link className="nav-link" to="/">
-              <h1 className="d-flex align-items-center">
+              <div className="d-flex align-items-center">
                 <img
                   alt="Beasties Logo"
                   src="/images/paw_heart.png"
-                  className="d-inline-block align-top mr-3 mt-2"
-                  width="40"
-                  height="40"
+                  className="d-inline-block align-top mr-3"
+                  height="50"
                 />
                 Beasties
-              </h1>
+              </div>
             </Link>
           </Navbar.Brand>
         </Nav>
@@ -59,8 +59,8 @@ export default function App() {
         <Route path="/browse-pets" element={<BrowsePetsPage />}></Route>
         <Route path="/browse-shelters" element={<BrowseSheltersPage />}></Route>
         <Route path="/contact" element={<ContactPage />}></Route>
-        <Route path="/pets/new" element={<PetModifyProfilePage />}></Route>
-        <Route path="/pets/:petId/edit" element={<PetModifyProfilePage />}></Route>
+        <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
+        <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
         <Route exact path="/" element={<LandingPage />}></Route>
         <Route path = "*" element={<NotFound />}></Route>
       </Routes>
