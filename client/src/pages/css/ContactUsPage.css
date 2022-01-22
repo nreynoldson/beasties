@@ -1,0 +1,11 @@
+.pinkLink {
+  color: deeppink;
+  text-decoration: none;
+  font-size: 1.4rem;
+}
+
+.pinkLink:hover {
+  color: deeppink;
+  text-decoration: none;
+  font-size: 1.4rem;
+}
