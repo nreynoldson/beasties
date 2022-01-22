@@ -12,6 +12,7 @@ import ContactPage from './pages/ContactPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import LandingPage from './pages/LandingPage';
 import NotFound from './pages/NotFound';
+import PetModifyProfilePage from './pages/PetModifyProfilePage';
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -58,6 +59,7 @@ export default function App() {
         <Route path="/browse-pets" element={<BrowsePetsPage />}></Route>
         <Route path="/browse-shelters" element={<BrowseSheltersPage />}></Route>
         <Route path="/contact" element={<ContactPage />}></Route>
+        <Route path="/pets/:petId/edit" element={<PetModifyProfilePage />}></Route>
         <Route exact path="/" element={<LandingPage />}></Route>
         <Route path = "*" element={<NotFound />}></Route>
       </Routes>

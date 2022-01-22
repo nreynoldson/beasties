@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useParams } from 'react-router';
 
+import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
@@ -120,11 +122,10 @@ const catBreedsMap = [
   ['other', 'Other']
 ];
 
-const BrowsePetsPage = (props) => {
+const PetModifyProfilePage = (props) => {
 
-  const {
-    petId
-  } = props;
+  const params = useParams();
+  const petId = parseInt(params.petId);
 
   const getOriginalInputs = useMemo(() => {
   
@@ -148,8 +149,10 @@ const BrowsePetsPage = (props) => {
 
   const handleValueChange = useCallback((evt) => {
 
-    const field = evt.currentTarget.name;
-    const value = evt.currentTarget.value;
+    const target = evt.currentTarget;
+
+    const field = target.name;
+    const value = (target.type === 'checkbox') ? target.checked : target.value;
 
     setInputs((prevInputs) => ({ ...prevInputs, [field]: value }));
   }, []);
@@ -168,12 +171,12 @@ const BrowsePetsPage = (props) => {
     const breedNamesMap = (inputs.type === 'dog') ? dogBreedsMap : catBreedsMap;
     const options = breedNamesMap.map(([ breed, displayName ]) => {
 
-      return <option value={breed} selected={inputs.breed === breed}>{displayName}</option>;
+      return <option key={breed} value={breed}>{displayName}</option>;
     });
 
     return (
       <FloatingLabel controlId="floatingSelect" label="Breed">
-        <Form.Select onChange={handleValueChange} name="breed">
+        <Form.Select onChange={handleValueChange} name="breed" defaultValue={inputs.breed}>
           {options}
         </Form.Select>
       </FloatingLabel>
@@ -189,10 +192,10 @@ const BrowsePetsPage = (props) => {
         </FloatingLabel>
 
         <FloatingLabel controlId="floatingSelect" label="Type">
-          <Form.Select onChange={handleValueChange} name="type">
-            <option value="dog" selected={inputs.type === 'dog'}>Dog</option>
-            <option value="cat" selected={inputs.type === 'cat'}>Cat</option>
-            <option value="other" selected={inputs.type === 'other'}>Other</option>
+          <Form.Select onChange={handleValueChange} name="type" defaultValue={inputs.type}>
+            <option value="dog">Dog</option>
+            <option value="cat">Cat</option>
+            <option value="other">Other</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -221,11 +224,11 @@ const BrowsePetsPage = (props) => {
         />
 
         <FloatingLabel controlId="floatingSelect" label="Availability">
-          <Form.Select onChange={handleValueChange} name="type">
-            <option value="available" selected={inputs.availability === 'available'}>Available</option>
-            <option value="notAvailable" selected={inputs.type === 'notAvailable'}>Not Available</option>
-            <option value="pending" selected={inputs.type === 'pending'}>Pending</option>
-            <option value="adopted" selected={inputs.type === 'adopted'}>Adopted</option>
+          <Form.Select onChange={handleValueChange} name="availability" defaultValue={inputs.availability}>
+            <option value="available">Available</option>
+            <option value="notAvailable">Not Available</option>
+            <option value="pending">Pending</option>
+            <option value="adopted">Adopted</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -237,4 +240,4 @@ const BrowsePetsPage = (props) => {
   return componentOutput;
 }
 
-export default BrowsePetsPage;
+export default PetModifyProfilePage;
