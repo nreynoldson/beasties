@@ -59,6 +59,7 @@ export default function App() {
         <Route path="/browse-pets" element={<BrowsePetsPage />}></Route>
         <Route path="/browse-shelters" element={<BrowseSheltersPage />}></Route>
         <Route path="/contact" element={<ContactPage />}></Route>
+        <Route path="/pets/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pets/:petId/edit" element={<PetModifyProfilePage />}></Route>
         <Route exact path="/" element={<LandingPage />}></Route>
         <Route path = "*" element={<NotFound />}></Route>

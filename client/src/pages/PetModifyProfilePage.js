@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
 import Button from 'react-bootstrap/Button';
@@ -126,6 +126,7 @@ const PetModifyProfilePage = (props) => {
 
   const params = useParams();
   const petId = parseInt(params.petId);
+  const isNewPet = Boolean(petId);
 
   const getOriginalInputs = useMemo(() => {
   
@@ -141,11 +142,42 @@ const PetModifyProfilePage = (props) => {
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
+  const [isLoading, setIsLoading] = useState(!isNewPet);
+
+  const afterGetPetInfo = useCallback((response) => {
+  
+    if (response.err) {
+      // Handle error
+      return;
+    }
+
+    else {
+      // Set inputs to pet values
+      // setInputs();
+      setIsLoading(false);
+    }
+    
+  }, []);
+
+  const afterSubmit = useCallback((response) => {
+  
+    if (response.err) {
+      // Handle error
+      return;
+    }
+
+    else {
+      // Navigate to pet profile page
+    }
+    
+  }, []);
 
   useEffect(() => {
 
-    // make api request and setInputs to pet value here
-  }, [petId]);
+    if (!isNewPet) {
+      // make api request and pass result to afterGetPetInfo
+    }
+  }, [isNewPet, petId]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -159,8 +191,13 @@ const PetModifyProfilePage = (props) => {
 
   const handleSubmit = useCallback(() => {
 
-
-  }, []);
+    if (isNewPet) {
+      // Use create route
+    }
+    else {
+      // Use edit route
+    }
+  }, [isNewPet, petId]);
 
   const breedSelect = useMemo(() => {
   
@@ -176,7 +213,11 @@ const PetModifyProfilePage = (props) => {
 
     return (
       <FloatingLabel controlId="floatingSelect" label="Breed">
-        <Form.Select onChange={handleValueChange} name="breed" defaultValue={inputs.breed}>
+        <Form.Select
+          onChange={handleValueChange}
+          name="breed"
+          defaultValue={inputs.breed}
+        >
           {options}
         </Form.Select>
       </FloatingLabel>
@@ -186,56 +227,68 @@ const PetModifyProfilePage = (props) => {
   const componentOutput = useMemo(() => {
 
   return (
-      <div className="root">
-        <FloatingLabel controlId="floatingInput" label="Name">
-          <Form.Control type="text" onChange={handleValueChange} name="name" />
-        </FloatingLabel>
+      <Fragment>
+        <h1 className="display-4 mt-2">{(isNewPet) ? 'Add' : 'Edit'} Pet</h1>
+        <div className="fields p-5 d-flex flex-column justify-content-between align-items-right">
+          <FloatingLabel controlId="floatingInput" label="Name">
+            <Form.Control type="text" onChange={handleValueChange} name="name" />
+          </FloatingLabel>
 
-        <FloatingLabel controlId="floatingSelect" label="Type">
-          <Form.Select onChange={handleValueChange} name="type" defaultValue={inputs.type}>
-            <option value="dog">Dog</option>
-            <option value="cat">Cat</option>
-            <option value="other">Other</option>
-          </Form.Select>
-        </FloatingLabel>
+          <FloatingLabel controlId="floatingSelect" label="Type">
+            <Form.Select onChange={handleValueChange} name="type" defaultValue={inputs.type}>
+              <option value="dog">Dog</option>
+              <option value="cat">Cat</option>
+              <option value="other">Other</option>
+            </Form.Select>
+          </FloatingLabel>
 
-        {breedSelect}
+          {breedSelect}
 
-        <Form.Check
-          type="checkbox"
-          name="goodWithOtherAnimals"
-          label="Good with other animals"
-          checked={inputs.goodWithOtherAnimals}
-          onChange={handleValueChange}
-        />
-        <Form.Check
-          type="checkbox"
-          name="goodWithChildren"
-          label="Good with children"
-          checked={inputs.goodWithChildren}
-          onChange={handleValueChange}
-        />
-        <Form.Check
-          type="checkbox"
-          name="mustBeLeashed"
-          label="Animal must be leashed at all times"
-          checked={inputs.mustBeLeashed}
-          onChange={handleValueChange}
-        />
+          <Form.Group className="text-left">
+            <Form.Check
+              type="checkbox"
+              id="goodWithOtherAnimals"
+              name="goodWithOtherAnimals"
+              label="Good with other animals"
+              checked={inputs.goodWithOtherAnimals}
+              onChange={handleValueChange}
+            />
+            <Form.Check
+              type="checkbox"
+              id="goodWithChildren"
+              name="goodWithChildren"
+              label="Good with children"
+              checked={inputs.goodWithChildren}
+              onChange={handleValueChange}
+            />
+            <Form.Check
+              type="checkbox"
+              id="mustBeLeashed"
+              name="mustBeLeashed"
+              label="Animal must be leashed at all times"
+              checked={inputs.mustBeLeashed}
+              onChange={handleValueChange}
+            />
+          </Form.Group>
 
-        <FloatingLabel controlId="floatingSelect" label="Availability">
-          <Form.Select onChange={handleValueChange} name="availability" defaultValue={inputs.availability}>
-            <option value="available">Available</option>
-            <option value="notAvailable">Not Available</option>
-            <option value="pending">Pending</option>
-            <option value="adopted">Adopted</option>
-          </Form.Select>
-        </FloatingLabel>
-
-        <Button variant="primary" onClick={handleSubmit}>Submit</Button>
-      </div>
+          <FloatingLabel controlId="floatingSelect" label="Availability">
+            <Form.Select
+              onChange={handleValueChange}
+              name="availability"
+              defaultValue={inputs.availability}
+            >
+              <option value="available">Available</option>
+              <option value="notAvailable">Not Available</option>
+              <option value="pending">Pending</option>
+              <option value="adopted">Adopted</option>
+            </Form.Select>
+          </FloatingLabel>
+        </div>
+        
+        <Button className="btn" variant="primary" onClick={handleSubmit}>Submit</Button>
+      </Fragment>
     );
-  }, [breedSelect, handleSubmit, handleValueChange, inputs]);
+  }, [breedSelect, handleSubmit, handleValueChange, inputs, isNewPet]);
 
   return componentOutput;
 }
