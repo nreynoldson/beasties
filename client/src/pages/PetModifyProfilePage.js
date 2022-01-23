@@ -18,12 +18,13 @@ const PetModifyProfilePage = (props) => {
   const isNewPet = !petId;
 
   const getOriginalInputs = useMemo(() => {
-  
+
     return {
       name: '',
       type: 'other',
       breed: 'other',
       age: 5,
+      gender: 'n/a',
       goodWithOtherAnimals: false,
       goodWithChildren: false,
       mustBeLeashed: false,
@@ -35,7 +36,7 @@ const PetModifyProfilePage = (props) => {
   const [isLoading, setIsLoading] = useState(!isNewPet);
 
   const afterGetPetInfo = useCallback((response) => {
-  
+
     if (response.err) {
       // Handle error
       return;
@@ -46,11 +47,10 @@ const PetModifyProfilePage = (props) => {
       // setInputs();
       setIsLoading(false);
     }
-    
   }, []);
 
   const afterSubmit = useCallback((response) => {
-  
+
     if (response.err) {
       // Handle error
       return;
@@ -59,7 +59,6 @@ const PetModifyProfilePage = (props) => {
     else {
       // Navigate to pet profile page
     }
-    
   }, []);
 
   useEffect(() => {
@@ -90,7 +89,7 @@ const PetModifyProfilePage = (props) => {
   }, [isNewPet, petId]);
 
   const breedSelect = useMemo(() => {
-  
+
     if (inputs.type === 'other') {
       return null;
     }
@@ -116,7 +115,7 @@ const PetModifyProfilePage = (props) => {
 
   const componentOutput = useMemo(() => {
 
-  return (
+    return (
       <Fragment>
         <h1 className="display-4 mt-2">{(isNewPet) ? 'Add' : 'Edit'} Pet</h1>
         <div className="fields p-5 d-flex flex-column justify-content-between align-items-right">
@@ -140,6 +139,19 @@ const PetModifyProfilePage = (props) => {
               placeholder="Age"
               size="lg"
               />
+          </FloatingLabel>
+
+          <FloatingLabel controlId="floatingSelect" label="Gender">
+            <Form.Select
+              onChange={handleValueChange}
+              name="gender"
+              defaultValue={inputs.gender}
+              size="lg"
+            >
+              <option value="n/a">N/A</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </Form.Select>
           </FloatingLabel>
 
           <FloatingLabel controlId="floatingSelect" label="Type">
@@ -198,7 +210,7 @@ const PetModifyProfilePage = (props) => {
             </Form.Select>
           </FloatingLabel>
         </div>
-        
+
         <Button size="lg" variant="primary" onClick={handleSubmit}>Submit</Button>
       </Fragment>
     );
