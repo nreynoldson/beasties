@@ -10,3 +10,8 @@
   min-width: 400px;
   overflow-y: auto;
 }
+
+.sortOrderSelect {
+  width: 200px;
+  align-self: end;
+}

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 
 import PetConsts from '../../consts/Pets';
 
@@ -9,6 +10,7 @@ import './css/PetSearchResult.css';
 const PetSearchResult = (props) => {
 
   const {
+    id,
     name,
     age,
     type,
@@ -29,15 +31,17 @@ const PetSearchResult = (props) => {
     }
 
     return (
-      <div className="d-flex flex-column petSearchResult">
+      <Link className="d-flex flex-column petSearchResult" to={`/pets/${id}/`}>
         <Image rounded src={imageUrl || '/images/no_image.svg'} height="250" />
         <div className="flex-column align-items-center justify-content-between">
           <h3 className="petName">{name}</h3>
-          <span>{PetConsts.ageToDisplayNameMap[age]} <b className="mr-1 ml-1">•</b> {breedDisplay}</span>
+          <span>
+            {PetConsts.ageToDisplayNameMap[age]} <b className="mr-1 ml-1">•</b> {breedDisplay}
+          </span>
         </div>
-      </div>
+      </Link>
     );
-  }, [age, breed, imageUrl, name, type]);
+  }, [age, breed, id, imageUrl, name, type]);
 
   return componentOutput;
 }

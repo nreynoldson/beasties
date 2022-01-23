@@ -144,10 +144,10 @@ const PetModifyProfilePage = (props) => {
               defaultValue={inputs.age}
               size="lg"
             >
-              <option value="baby">Baby</option>
-              <option value="young">Young</option>
-              <option value="adult">Adult</option>
-              <option value="senior">Senior</option>
+              <option value="baby">{PetConsts.ageToDisplayNameMap.baby}</option>
+              <option value="young">{PetConsts.ageToDisplayNameMap.young}</option>
+              <option value="adult">{PetConsts.ageToDisplayNameMap.adult}</option>
+              <option value="senior">{PetConsts.ageToDisplayNameMap.senior}</option>
             </Form.Select>
           </FloatingLabel>
 
@@ -158,9 +158,9 @@ const PetModifyProfilePage = (props) => {
               defaultValue={inputs.gender}
               size="lg"
             >
-              <option value="n/a">N/A</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+              <option value="n/a">{PetConsts.genderToDisplayNameMap['n/a']}</option>
+              <option value="male">{PetConsts.genderToDisplayNameMap.male}</option>
+              <option value="female">{PetConsts.genderToDisplayNameMap.female}</option>
             </Form.Select>
           </FloatingLabel>
 
@@ -171,9 +171,9 @@ const PetModifyProfilePage = (props) => {
               defaultValue={inputs.type}
               size="lg"
             >
-              <option value="dog">Dog</option>
-              <option value="cat">Cat</option>
-              <option value="other">Other</option>
+              <option value="dog">{PetConsts.typeToDisplayNameMap.dog}</option>
+              <option value="cat">{PetConsts.typeToDisplayNameMap.cat}</option>
+              <option value="other">{PetConsts.typeToDisplayNameMap.other}</option>
             </Form.Select>
           </FloatingLabel>
 
@@ -213,10 +213,10 @@ const PetModifyProfilePage = (props) => {
               defaultValue={inputs.availability}
               size="lg"
             >
-              <option value="available">Available</option>
-              <option value="notAvailable">Not Available</option>
-              <option value="pending">Pending</option>
-              <option value="adopted">Adopted</option>
+              <option value="available">{PetConsts.availabilityToDisplayNameMap.available}</option>
+              <option value="notAvailable">{PetConsts.availabilityToDisplayNameMap.notAvailable}</option>
+              <option value="pending">{PetConsts.availabilityToDisplayNameMap.pending}</option>
+              <option value="adopted">{PetConsts.availabilityToDisplayNameMap.adopted}</option>
             </Form.Select>
           </FloatingLabel>
         </div>

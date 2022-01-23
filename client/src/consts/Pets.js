@@ -7,6 +7,13 @@ const PetConsts = {
     senior: 'Senior'
   },
 
+  availabilityToDisplayNameMap: {
+    available: 'Available',
+    notAvailable: 'Not Available',
+    pending: 'Pending',
+    adopted: 'Adopted'
+  },
+
   catBreedsToDisplayNameMap: {
     ragdoll: 'Ragdoll',
     exoticShorthair: 'Exotic Shorthair',
@@ -28,7 +35,7 @@ const PetConsts = {
     bengal: 'Bengal',
     burmese: 'Burmese',
     ocicat: 'Ocicat',
-    other: 'Other'
+    other: 'Other Breed'
   },
 
   dogBreedsToDisplayNameMap: {
@@ -118,7 +125,13 @@ const PetConsts = {
     chowChow: 'Chow Chow',
     anatolianShepherdDog: 'Anatolian Shepherd Dog',
     basenji: 'Basenji',
-    other: 'Other'
+    other: 'Other Breed'
+  },
+
+  genderToDisplayNameMap: {
+    'n/a': 'N/A',
+    male: 'Male',
+    female: 'Female'
   },
 
   typeToDisplayNameMap: {

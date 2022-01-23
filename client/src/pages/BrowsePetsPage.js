@@ -23,7 +23,8 @@ const BrowsePetsPage = (props) => {
       goodWithOtherAnimals: false,
       goodWithChildren: false,
       mustBeLeashed: false,
-      availability: 'available'
+      availability: 'available',
+      sortOrder: 'newest'
     };
   }, []);
 
@@ -59,72 +60,85 @@ const BrowsePetsPage = (props) => {
 
   }, []);
 
+  const handleSearch = useCallback(() => {
+
+    // TODO: make this actually search when the back end api is ready
+    setPetData({ results: [
+      {
+        id: 1,
+        name: 'Fido',
+        age: 'young',
+        gender: 'male',
+        type: 'dog',
+        breed: 'englishSpringerSpaniel',
+        availability: 'available',
+        imageUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z'
+      },
+      {
+        id: 2,
+        name: 'Rex',
+        age: 'young',
+        gender: 'male',
+        type: 'dog',
+        breed: 'akita',
+        availability: 'available',
+        imageUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z'
+      },
+      {
+        id: 3,
+        name: 'Milly',
+        age: 'senior',
+        gender: 'female',
+        type: 'dog',
+        breed: 'cavalierKingCharlesSpaniel',
+        availability: 'available',
+        imageUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z'
+      },
+      {
+        id: 4,
+        name: 'Sam',
+        age: 'adult',
+        gender: 'male',
+        type: 'cat',
+        breed: 'norwegianForestCat',
+        availability: 'available',
+        imageUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z'
+      },
+      {
+        id: 5,
+        name: 'Lizzy',
+        age: 'young',
+        gender: 'female',
+        type: 'other',
+        breed: null,
+        availability: 'pending',
+        imageUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z'
+      },
+      {
+        id: 6,
+        name: 'Benny',
+        age: 'baby',
+        gender: 'male',
+        type: 'cat',
+        breed: 'other',
+        availability: 'available',
+        imageUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z'
+      }
+    ] });
+  }, []);
+
   useEffect(() => {
 
-    // Perform initial search
-      setPetData({ results: [
-        {
-          id: 1,
-          name: 'Fido',
-          age: 'young',
-          gender: 'male',
-          type: 'dog',
-          breed: 'englishSpringerSpaniel',
-          availability: 'available',
-          imageUrl: null
-        },
-        {
-          id: 2,
-          name: 'Rex',
-          age: 'young',
-          gender: 'male',
-          type: 'dog',
-          breed: 'akita',
-          availability: 'available',
-          imageUrl: null
-        },
-        {
-          id: 3,
-          name: 'Milly',
-          age: 'senior',
-          gender: 'female',
-          type: 'dog',
-          breed: 'cavalierKingCharlesSpaniel',
-          availability: 'available',
-          imageUrl: null
-        },
-        {
-          id: 4,
-          name: 'Sam',
-          age: 'adult',
-          gender: 'male',
-          type: 'cat',
-          breed: 'norwegianForestCat',
-          availability: 'available',
-          imageUrl: null
-        },
-        {
-          id: 5,
-          name: 'Lizzy',
-          age: 'young',
-          gender: 'female',
-          type: 'other',
-          breed: null,
-          availability: 'pending',
-          imageUrl: null
-        },
-        {
-          id: 6,
-          name: 'Benny',
-          age: 'baby',
-          gender: 'male',
-          type: 'cat',
-          breed: 'other',
-          availability: 'available',
-          imageUrl: null
-        }
-      ] });
-  }, []);
+    // Run a search whenever the component loads or inputs.sortOrder changes
+    handleSearch();
+
+  }, [handleSearch, inputs.sortOrder]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -139,10 +153,6 @@ const BrowsePetsPage = (props) => {
     }
 
     setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
-  }, []);
-
-  const handleSearchClick = useCallback(() => {
-
   }, []);
 
   const breedSelect = useMemo(() => {
@@ -192,10 +202,10 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="baby">Baby</option>
-            <option value="young">Young</option>
-            <option value="adult">Adult</option>
-            <option value="senior">Senior</option>
+            <option value="baby">{PetConsts.ageToDisplayNameMap.baby}</option>
+            <option value="young">{PetConsts.ageToDisplayNameMap.young}</option>
+            <option value="adult">{PetConsts.ageToDisplayNameMap.adult}</option>
+            <option value="senior">{PetConsts.ageToDisplayNameMap.senior}</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -207,9 +217,9 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="n/a">N/A</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="n/a">{PetConsts.genderToDisplayNameMap['n/a']}</option>
+            <option value="male">{PetConsts.genderToDisplayNameMap.male}</option>
+            <option value="female">{PetConsts.genderToDisplayNameMap.female}</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -221,9 +231,9 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="dog">Dog</option>
-            <option value="cat">Cat</option>
-            <option value="other">Other</option>
+            <option value="dog">{PetConsts.typeToDisplayNameMap.dog}</option>
+            <option value="cat">{PetConsts.typeToDisplayNameMap.cat}</option>
+            <option value="other">{PetConsts.typeToDisplayNameMap.other}</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -264,17 +274,17 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="available">Available</option>
-            <option value="notAvailable">Not Available</option>
-            <option value="pending">Pending</option>
-            <option value="adopted">Adopted</option>
+            <option value="available">{PetConsts.availabilityToDisplayNameMap.available}</option>
+            <option value="notAvailable">{PetConsts.availabilityToDisplayNameMap.notAvailable}</option>
+            <option value="pending">{PetConsts.availabilityToDisplayNameMap.pending}</option>
+            <option value="adopted">{PetConsts.availabilityToDisplayNameMap.adopted}</option>
           </Form.Select>
         </FloatingLabel>
 
-        <Button size="md" variant="primary" onClick={handleSearchClick}>Search</Button>
+        <Button size="md" variant="primary" onClick={handleSearch}>Search</Button>
       </div>
     );
-  }, [breedSelect, handleSearchClick, handleValueChange, inputs]);
+  }, [breedSelect, handleSearch, handleValueChange, inputs]);
 
   const searchResults = useMemo(() => {
 
@@ -287,6 +297,7 @@ const BrowsePetsPage = (props) => {
       return (
         <div key={pet.id}>
           <PetSearchResult
+            id={pet.id}
             name={pet.name}
             age={pet.age}
             breed={pet.breed}
@@ -298,11 +309,25 @@ const BrowsePetsPage = (props) => {
     });
 
     return (
-      <div className="d-flex flex-wrap">
-        {resultComponents}
+      <div className="d-flex flex-column">
+        <Form.Select
+          className="sortOrderSelect mr-3"
+          onChange={handleValueChange}
+          name="sortOrder"
+          defaultValue={inputs.sortOrder}
+          size="sm"
+        >
+          <option value="dateCreated">Newest First</option>
+          <option value="name">Name First</option>
+          <option value="type">Type First</option>
+          <option value="age">Age First</option>
+        </Form.Select>
+        <div className="d-flex flex-wrap">
+          {resultComponents}
+        </div>
       </div>
     );
-  }, [petData]);
+  }, [handleValueChange, inputs, petData]);
 
   const componentOutput = useMemo(() => {
 
