@@ -3,7 +3,10 @@
 }
 
 .searchControls {
-  border: 2px solid black;
+  border: 3px solid black;
   border-radius: 10px;
   margin: 0 2rem;
+  max-height: 750px;
+  min-width: 400px;
+  overflow-y: auto;
 }

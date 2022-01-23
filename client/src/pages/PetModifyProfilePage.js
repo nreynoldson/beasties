@@ -91,7 +91,7 @@ const PetModifyProfilePage = (props) => {
     else {
       // Use edit route
     }
-  }, [isNewPet, petId]);
+  }, [isNewPet]);
 
   const breedSelect = useMemo(() => {
 
@@ -99,7 +99,9 @@ const PetModifyProfilePage = (props) => {
       return null;
     }
 
-    const breedNamesMap = (inputs.type === 'dog') ? PetConsts.dogBreedsMap : PetConsts.catBreedsMap;
+    const breedNamesMap = (inputs.type === 'dog') ?
+      PetConsts.dogBreedsToDisplayNameMap :
+      PetConsts.catBreedsToDisplayNameMap;
     const options = Object.entries(breedNamesMap).map(([ breed, displayName ]) => {
 
       return <option key={breed} value={breed}>{displayName}</option>;
