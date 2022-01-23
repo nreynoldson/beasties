@@ -22,7 +22,7 @@ const BrowsePetsPage = (props) => {
     return {
       type: 'any',
       breed: 'any',
-      age: null,
+      age: 'any',
       gender: 'any',
       goodWithOtherAnimals: false,
       goodWithChildren: false,
@@ -76,7 +76,12 @@ const BrowsePetsPage = (props) => {
     const field = target.name;
     const value = (target.type === 'checkbox') ? target.checked : target.value;
 
-    setInputs((prevInputs) => ({ ...prevInputs, [field]: value }));
+    const extraInputs = {};
+    if (field === 'type') {
+      extraInputs.breed = 'any';
+    }
+
+    setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
 
   const handleSearchClick = useCallback(() => {
@@ -95,12 +100,14 @@ const BrowsePetsPage = (props) => {
       return <option key={breed} value={breed}>{displayName}</option>;
     });
 
+    options.unshift(<option key="any" value="any">Any</option>)
+
     return (
       <FloatingLabel controlId="floatingSelect" label="Breed">
         <Form.Select
           onChange={handleValueChange}
           name="breed"
-          defaultValue={inputs.breed}
+          defaultValue="any"
         >
           {options}
         </Form.Select>
@@ -113,15 +120,19 @@ const BrowsePetsPage = (props) => {
     return (
       <div className="fields p-5 d-flex flex-column justify-content-between align-items-right searchControls">
 
-          <FloatingLabel controlId="floatingInput" label="Age">
-            <Form.Control
-              type="number"
+          <FloatingLabel controlId="floatingSelect" label="Age">
+            <Form.Select
               onChange={handleValueChange}
               name="age"
-              value={inputs.age}
-              placeholder="Age"
-              size="lg"
-              />
+              defaultValue={inputs.age}
+              size="sm"
+            >
+              <option value="any">Any</option>
+              <option value="baby">Baby</option>
+              <option value="young">Young</option>
+              <option value="adult">Adult</option>
+              <option value="senior">Senior</option>
+            </Form.Select>
           </FloatingLabel>
 
           <FloatingLabel controlId="floatingSelect" label="Gender">
@@ -129,7 +140,7 @@ const BrowsePetsPage = (props) => {
               onChange={handleValueChange}
               name="gender"
               defaultValue={inputs.gender}
-              size="lg"
+              size="sm"
             >
               <option value="any">Any</option>
               <option value="n/a">N/A</option>
@@ -143,7 +154,7 @@ const BrowsePetsPage = (props) => {
               onChange={handleValueChange}
               name="type"
               defaultValue={inputs.type}
-              size="lg"
+              size="sm"
             >
               <option value="any">Any</option>
               <option value="dog">Dog</option>
@@ -186,7 +197,7 @@ const BrowsePetsPage = (props) => {
               onChange={handleValueChange}
               name="availability"
               defaultValue={inputs.availability}
-              size="lg"
+              size="sm"
             >
               <option value="any">Any</option>
               <option value="available">Available</option>
@@ -196,10 +207,10 @@ const BrowsePetsPage = (props) => {
             </Form.Select>
           </FloatingLabel>
 
-          <Button size="md" variant="primary" onClick={handleSearchClick}>Submit</Button>
+          <Button size="md" variant="primary" onClick={handleSearchClick}>Search</Button>
         </div>
     );
-  }, []);
+  }, [handleSearchClick, handleValueChange, inputs]);
 
   const searchResults = useMemo(() => {
 

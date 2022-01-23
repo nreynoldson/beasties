@@ -23,7 +23,7 @@ const PetModifyProfilePage = (props) => {
       name: '',
       type: 'other',
       breed: 'other',
-      age: 5,
+      age: 'baby',
       gender: 'n/a',
       goodWithOtherAnimals: false,
       goodWithChildren: false,
@@ -75,7 +75,12 @@ const PetModifyProfilePage = (props) => {
     const field = target.name;
     const value = (target.type === 'checkbox') ? target.checked : target.value;
 
-    setInputs((prevInputs) => ({ ...prevInputs, [field]: value }));
+    const extraInputs = {};
+    if (field === 'type') {
+      extraInputs.breed = 'other';
+    }
+
+    setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
 
   const handleSubmit = useCallback(() => {
@@ -130,15 +135,18 @@ const PetModifyProfilePage = (props) => {
               />
           </FloatingLabel>
 
-          <FloatingLabel controlId="floatingInput" label="Age">
-            <Form.Control
-              type="number"
+          <FloatingLabel controlId="floatingSelect" label="Age">
+            <Form.Select
               onChange={handleValueChange}
               name="age"
-              value={inputs.age}
-              placeholder="Age"
+              defaultValue={inputs.age}
               size="lg"
-              />
+            >
+              <option value="baby">Baby</option>
+              <option value="young">Young</option>
+              <option value="adult">Adult</option>
+              <option value="senior">Senior</option>
+            </Form.Select>
           </FloatingLabel>
 
           <FloatingLabel controlId="floatingSelect" label="Gender">
