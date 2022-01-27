@@ -38,6 +38,12 @@ const PetConsts = {
     other: 'Other Breed'
   },
 
+  dispositionToDisplayNameMap: {
+    goodWithOtherAnimals: 'Good with other animals',
+    goodWithChildren: 'Good with children',
+    mustBeLeashed: 'Animal must be leashed at all times'
+  },
+
   dogBreedsToDisplayNameMap: {
     labrador: 'Labrador Retriever',
     frenchBulldog: 'French Bulldog',

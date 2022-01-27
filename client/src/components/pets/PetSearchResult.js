@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-import PetConsts from '../../consts/Pets';
+import AnimalConsts from '../../consts/Animal';
 
 import Image from 'react-bootstrap/Image';
 
@@ -21,11 +21,11 @@ const PetSearchResult = (props) => {
   const componentOutput = useMemo(() => {
 
     
-    let breedDisplay = PetConsts.typeToDisplayNameMap[type];
+    let breedDisplay = AnimalConsts.typeToDisplayNameMap[type];
     if (type === 'dog' || type === 'cat') {
       const breedToDisplayNameMap = (type === 'dog') ?
-        PetConsts.dogBreedsToDisplayNameMap :
-        PetConsts.catBreedsToDisplayNameMap;
+        AnimalConsts.dogBreedsToDisplayNameMap :
+        AnimalConsts.catBreedsToDisplayNameMap;
 
       breedDisplay = `${breedDisplay} (${breedToDisplayNameMap[breed]})`;
     }
@@ -36,7 +36,7 @@ const PetSearchResult = (props) => {
         <div className="flex-column align-items-center justify-content-between">
           <h3 className="petName">{name}</h3>
           <span>
-            {PetConsts.ageToDisplayNameMap[age]} <b className="mr-1 ml-1">•</b> {breedDisplay}
+            {AnimalConsts.ageToDisplayNameMap[age]} <b className="mr-1 ml-1">•</b> {breedDisplay}
           </span>
         </div>
       </Link>

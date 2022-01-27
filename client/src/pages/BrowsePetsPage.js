@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import PetConsts from '../consts/Pets';
+import AnimalConsts from '../consts/Animal';
 import PetSearchResult from '../components/pets/PetSearchResult';
 
 import Button from 'react-bootstrap/Button';
@@ -162,8 +162,8 @@ const BrowsePetsPage = (props) => {
     }
 
     const breedNamesMap = (inputs.type === 'dog') ?
-      PetConsts.dogBreedsToDisplayNameMap :
-      PetConsts.catBreedsToDisplayNameMap;
+      AnimalConsts.dogBreedsToDisplayNameMap :
+      AnimalConsts.catBreedsToDisplayNameMap;
     const options = Object.entries(breedNamesMap).map(([ breed, displayName ]) => {
 
       return <option key={breed} value={breed}>{displayName}</option>;
@@ -202,10 +202,10 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="baby">{PetConsts.ageToDisplayNameMap.baby}</option>
-            <option value="young">{PetConsts.ageToDisplayNameMap.young}</option>
-            <option value="adult">{PetConsts.ageToDisplayNameMap.adult}</option>
-            <option value="senior">{PetConsts.ageToDisplayNameMap.senior}</option>
+            <option value="baby">{AnimalConsts.ageToDisplayNameMap.baby}</option>
+            <option value="young">{AnimalConsts.ageToDisplayNameMap.young}</option>
+            <option value="adult">{AnimalConsts.ageToDisplayNameMap.adult}</option>
+            <option value="senior">{AnimalConsts.ageToDisplayNameMap.senior}</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -217,9 +217,9 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="n/a">{PetConsts.genderToDisplayNameMap['n/a']}</option>
-            <option value="male">{PetConsts.genderToDisplayNameMap.male}</option>
-            <option value="female">{PetConsts.genderToDisplayNameMap.female}</option>
+            <option value="n/a">{AnimalConsts.genderToDisplayNameMap['n/a']}</option>
+            <option value="male">{AnimalConsts.genderToDisplayNameMap.male}</option>
+            <option value="female">{AnimalConsts.genderToDisplayNameMap.female}</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -231,9 +231,9 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="dog">{PetConsts.typeToDisplayNameMap.dog}</option>
-            <option value="cat">{PetConsts.typeToDisplayNameMap.cat}</option>
-            <option value="other">{PetConsts.typeToDisplayNameMap.other}</option>
+            <option value="dog">{AnimalConsts.typeToDisplayNameMap.dog}</option>
+            <option value="cat">{AnimalConsts.typeToDisplayNameMap.cat}</option>
+            <option value="other">{AnimalConsts.typeToDisplayNameMap.other}</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -274,10 +274,10 @@ const BrowsePetsPage = (props) => {
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="available">{PetConsts.availabilityToDisplayNameMap.available}</option>
-            <option value="notAvailable">{PetConsts.availabilityToDisplayNameMap.notAvailable}</option>
-            <option value="pending">{PetConsts.availabilityToDisplayNameMap.pending}</option>
-            <option value="adopted">{PetConsts.availabilityToDisplayNameMap.adopted}</option>
+            <option value="available">{AnimalConsts.availabilityToDisplayNameMap.available}</option>
+            <option value="notAvailable">{AnimalConsts.availabilityToDisplayNameMap.notAvailable}</option>
+            <option value="pending">{AnimalConsts.availabilityToDisplayNameMap.pending}</option>
+            <option value="adopted">{AnimalConsts.availabilityToDisplayNameMap.adopted}</option>
           </Form.Select>
         </FloatingLabel>
 
