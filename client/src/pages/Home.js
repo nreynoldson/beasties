@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import { AccountContext } from '../components/Account';
+import { getUser } from '../components/Account';
 
 export default class Home extends Component {
-    static contextType = AccountContext;
 
-    componentDidMount(){
-        console.log('in componenet did mount')
+    async componentDidMount(){
+        var user = await getUser();
+        console.log(user);
+
+        if(!user){
+            console.log('logged out')
+        }
 
     }
     render() {
-
-        const {authed, getSession,isAuthenticated} = this.context
         return (
             <div className="home">
                 <h1>Project Home</h1>

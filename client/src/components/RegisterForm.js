@@ -3,20 +3,22 @@ import {Form, Button} from 'react-bootstrap';
 import UserPool from "../UserPool";
 import {CognitoUserAttribute} from "amazon-cognito-identity-js";
 
-export default class AdopteeRegister extends Component {
+export default class RegisterForm extends Component {
     constructor(props){
         super(props);
         this.state = {
-            name: "",
             username: "",
             email: "",
             password: "",
             confirmPassword: "",
-            errors: {}
+            formErrors: "",
+            test: 0
         }
+
         this.inputChange = this.inputChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
+
 
     inputChange(e){
         var name = e.target.name;
@@ -24,37 +26,9 @@ export default class AdopteeRegister extends Component {
         this.setState({[name]: value});
     }
 
-    onSubmit(e){
-       // verifyInputs();
-       this.validateForm();
-       console.log(this.hasError())
-        if(this.hasError())
-            return;
-
-        var attributeList = [
-            new CognitoUserAttribute({Name: 'name', Value: this.state.name}), 
-            new CognitoUserAttribute({Name: 'email', Value: this.state.email})
-        ];
-
-        UserPool.signUp(this.state.username, this.state.password, attributeList, null, (err, data) =>{
-            if(err){
-                var errors = {};
-                if(err.name === "InvalidPasswordException")
-                    errors.password = err.message;
-                else if(err.name === "UsernameExistsException")
-                    errors.username = err.message;
-                else 
-                    errors.aws = err.message;
-                console.log(err);
-                this.setState({errors: errors});
-            }
-            else{
-                console.log(data);
-            }
-        });
-    }
-
-    validateForm(){
+   async validateForm(){
+        console.log('in validate form')
+        
         var errors = {};
         for (const property in this.state) {
             if(this.state[property] === ""){
@@ -78,20 +52,56 @@ export default class AdopteeRegister extends Component {
             errors.username = "Username must be less than 20 characters"
         }
 
-        this.setState({errors: errors});
+        this.setState({formErrors: errors});
         console.log(errors);
     }
 
     hasError(key = null) {
+        console.log('in has error')
         if(key)
-            return this.state.errors.hasOwnProperty(key);
-        
+            return this.state.formErrors.hasOwnProperty(key);
             console.log('no key')
-        return !Object.keys(this.state.errors).length === 0;
+            console.log(this.state.formErrors)
+            console.log(Object.keys(this.state.formErrors).length);
+        return Object.keys(this.state.formErrors).length > 0;
     }
 
-    render() {
-        return (
+    async onSubmit(e){
+        console.log('in onsubmit')
+        await this.validateForm();
+        console.log(this.hasError())
+         if(this.hasError())
+             return;
+ 
+         var attributeList = [
+             new CognitoUserAttribute({Name: 'email', Value: this.state.email})
+         ];
+ 
+        UserPool.signUp(this.state.username, this.state.password, attributeList, null, (err, data) =>{
+             if(err){
+                 var errors = {};
+                 if(err.name === "InvalidPasswordException")
+                     errors.password = err.message;
+                 else if(err.name === "UsernameExistsException")
+                     errors.username = err.message;
+                 else 
+                     errors.aws = err.message;
+                 console.log(err);
+                 this.setState({formErrors: errors});
+             }
+             else{
+                 console.log(data);
+                 this.props.saveCredentials(this.state.username, this.state.password, data.user);
+             }
+         });
+ 
+     }
+
+    render(){ 
+        console.log('in render')
+        console.log(this.state)
+        console.log(this.state.formErrors)
+        return(
             <Form>
                 <Form.Group className="mb-3">
                     <Form.Label>Username</Form.Label>
@@ -102,20 +112,7 @@ export default class AdopteeRegister extends Component {
                         onChange= {this.inputChange}
                         isInvalid= {this.hasError("username")} />
                     <Form.Control.Feedback type='invalid'>
-                        {this.state.errors.username}
-                    </Form.Control.Feedback>
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control 
-                        type="text" 
-                        name="name" 
-                        value={this.state.name} 
-                        onChange= {this.inputChange}
-                        isInvalid= {this.hasError("name")} />
-                    <Form.Control.Feedback type='invalid'>
-                        {this.state.errors.name}
+                        {this.state.formErrors.username}
                     </Form.Control.Feedback>
                 </Form.Group>
 
@@ -128,7 +125,7 @@ export default class AdopteeRegister extends Component {
                         onChange= {this.inputChange}
                         isInvalid= {this.hasError("email")} />
                     <Form.Control.Feedback type='invalid'>
-                        {this.state.errors.email}
+                        {this.state.formErrors.email}
                     </Form.Control.Feedback>
                 </Form.Group>
             
@@ -141,7 +138,7 @@ export default class AdopteeRegister extends Component {
                         onChange= {this.inputChange}
                         isInvalid= {this.hasError("password")} />
                     <Form.Control.Feedback type='invalid'>
-                        {this.state.errors.password}
+                        {this.state.formErrors.password}
                     </Form.Control.Feedback>
                 </Form.Group>
 
@@ -154,7 +151,7 @@ export default class AdopteeRegister extends Component {
                         onChange= {this.inputChange}
                         isInvalid= {this.hasError("confirmPassword")} />
                     <Form.Control.Feedback type='invalid'>
-                        {this.state.errors.confirmPassword}
+                        {this.state.formErrors.confirmPassword}
                     </Form.Control.Feedback>
                 </Form.Group>
 
