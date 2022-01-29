@@ -72,8 +72,12 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'englishSpringerSpaniel',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: true,
+        goodWithOtherAnimals: true,
+        mustBeLeashed: true,
+        images: []
       },
       {
         id: 2,
@@ -83,8 +87,12 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'akita',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       },
       {
         id: 3,
@@ -94,8 +102,28 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'cavalierKingCharlesSpaniel',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: true,
+        images: [
+          {
+            id: 1,
+            url: '/images/no_image.svg',
+            displayName: 'fido.jpg'
+          },
+          {
+            id: 2,
+            url: '/images/no_image.svg',
+            displayName: 'fido.jpg'
+          },
+          {
+            id: 3,
+            url: '/images/no_image.svg',
+            displayName: 'fido.jpg'
+          }
+        ]
       },
       {
         id: 4,
@@ -105,8 +133,12 @@ const BrowsePetsPage = (props) => {
         type: 'cat',
         breed: 'norwegianForestCat',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       },
       {
         id: 5,
@@ -116,8 +148,12 @@ const BrowsePetsPage = (props) => {
         type: 'other',
         breed: null,
         availability: 'pending',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       },
       {
         id: 6,
@@ -127,8 +163,12 @@ const BrowsePetsPage = (props) => {
         type: 'cat',
         breed: 'other',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       }
     ] });
   }, []);
@@ -302,7 +342,13 @@ const BrowsePetsPage = (props) => {
             age={pet.age}
             breed={pet.breed}
             type={pet.type}
-            imageUrl={pet.imageUrl}
+            avatarUrl={pet.avatarUrl}
+            images={pet.images}
+            availability={pet.availability}
+            gender={pet.gender}
+            goodWithChildren={pet.goodWithChildren}
+            goodWithOtherAnimals={pet.goodWithOtherAnimals}
+            mustBeLeashed={pet.mustBeLeashed}
           />
         </div>
       );

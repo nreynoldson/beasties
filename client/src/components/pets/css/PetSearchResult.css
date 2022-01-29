@@ -1,3 +1,11 @@
+.petProfileQuickView {
+  min-width: 450px;
+}
+
+.petProfileQuickViewTable {
+  font-size: 0.75rem;
+}
+
 .petSearchResult {
   background-color: whitesmoke;
   border: 2px solid black;

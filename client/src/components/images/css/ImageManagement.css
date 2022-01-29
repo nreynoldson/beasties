@@ -45,10 +45,12 @@
   margin: 1rem
 }
 
-.imageWrapper > .deleteButton, .imageWrapper > .deleteButtonBackground {
+.imageWrapper > .deleteButton,
+.imageWrapper > .deleteButtonBackground {
   opacity: 0;
 }
 
-.imageWrapper:hover > .deleteButton, .imageWrapper:hover > .deleteButtonBackground {
+.imageWrapper:hover > .deleteButton,
+.imageWrapper:hover > .deleteButtonBackground {
   opacity: 1;
 }
