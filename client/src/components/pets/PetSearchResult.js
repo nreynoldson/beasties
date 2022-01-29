@@ -31,7 +31,7 @@ const PetSearchResult = (props) => {
     }
 
     return (
-      <Link className="d-flex flex-column petSearchResult" to={`/pets/${id}/`}>
+      <Link className="d-flex flex-column petSearchResult" to={`/pet/${id}/`}>
         <Image rounded src={imageUrl || '/images/no_image.svg'} height="250" />
         <div className="flex-column align-items-center justify-content-between">
           <h3 className="petName">{name}</h3>

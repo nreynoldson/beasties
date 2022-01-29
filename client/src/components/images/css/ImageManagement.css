@@ -1,0 +1,28 @@
+.avatar {
+  outline: 2px dashed gray;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.deleteButton {
+  cursor: pointer;
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  transition: opacity 0.4s;
+}
+
+.imageWrapper {
+  position: relative;
+  margin: 1rem
+}
+
+.imageWrapper > .deleteButton {
+  opacity: 0;
+}
+
+.imageWrapper:hover > .deleteButton {
+  opacity: 1;
+}

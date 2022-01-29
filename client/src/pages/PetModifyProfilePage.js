@@ -2,6 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
 import AnimalConsts from '../consts/Animal';
+import ImageManagement from '../components/images/ImageManagement';
 
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
@@ -220,6 +221,12 @@ const PetModifyProfilePage = (props) => {
             </Form.Select>
           </FloatingLabel>
         </div>
+
+        <ImageManagement
+          allowEdit={true}
+          avatarImageId={2}
+          type="pet"
+        />
 
         <Button size="lg" variant="primary" onClick={handleSubmit}>Submit</Button>
       </Fragment>
