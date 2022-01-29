@@ -29,6 +29,15 @@
   right: -10px;
   top: -10px;
   transition: opacity 0.4s;
+  z-index: 2;
+}
+
+.deleteButtonBackground {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  transition: opacity 0.4s;
+  z-index: 0;
 }
 
 .imageWrapper {
@@ -36,10 +45,10 @@
   margin: 1rem
 }
 
-.imageWrapper > .deleteButton {
+.imageWrapper > .deleteButton, .imageWrapper > .deleteButtonBackground {
   opacity: 0;
 }
 
-.imageWrapper:hover > .deleteButton {
+.imageWrapper:hover > .deleteButton, .imageWrapper:hover > .deleteButtonBackground {
   opacity: 1;
 }

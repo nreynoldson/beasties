@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { CircleFill } from 'react-bootstrap-icons';
 import { XCircleFill } from 'react-bootstrap-icons';
 
 import Image from 'react-bootstrap/Image';
@@ -86,8 +87,24 @@ const ImageManagement = (props) => {
 
     const { id } = evt.currentTarget.dataset;
 
-    // TODO: Set avatar image
+    // TODO: Api call to set avatar image
   }, [allowEdit]);
+
+  const handleUploadFile = useCallback((evt) => {
+
+    // TODO: Upload image, refresh results, and clear upload input
+  }, []);
+
+  const handleFileInputChange = useCallback((evt) => {
+
+    if (!evt.currentTarget.value) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(evt.currentTarget.files[0]);
+    reader.onloadend = handleUploadFile
+  }, [handleUploadFile]);
 
   const imageList = useMemo(() => {
 
@@ -109,15 +126,18 @@ const ImageManagement = (props) => {
         }
 
         deleteButton = (
-          <XCircleFill
-            className="deleteButton"
-            color="darkRed"
-            size={25}
-            data-id={id}
-            data-display-name={displayName}
-            data-url={url}
-            onClick={handleDeleteImageClick}
-          />
+          <Fragment>
+            <XCircleFill
+              className="deleteButton"
+              color="darkRed"
+              size={25}
+              data-id={id}
+              data-display-name={displayName}
+              data-url={url}
+              onClick={handleDeleteImageClick}
+            />
+            <CircleFill className="deleteButtonBackground" color="white" size={25} />
+          </Fragment>
         );
 
         imageOnClick = handleImageClick;
@@ -131,7 +151,7 @@ const ImageManagement = (props) => {
             title={title}
             height="250"
             data-id={id}
-            imageOnClick={imageOnClick}
+            onClick={imageOnClick}
           />
           {deleteButton}
         </div>
@@ -148,10 +168,16 @@ const ImageManagement = (props) => {
     return (
       <div className="w-100 d-flex justify-content-center align-items-center">
         <h5 className="mr-3">Upload Image</h5>
-        <input className="mt-3 mb-3" name="imageUpload" type="file" />
+        <input
+          className="mt-3 mb-3"
+          name="imageUpload"
+          type="file"
+          accept="image/*"
+          onChange={handleFileInputChange}
+        />
       </div>
     );
-  }, [allowEdit]);
+  }, [allowEdit, handleFileInputChange]);
 
   const componentOutput = useMemo(() => {
 
