@@ -1,5 +1,7 @@
 .petProfileQuickView {
+  border-width: 1px;
   min-width: 450px;
+  box-shadow: 6px 6px 10px gray;
 }
 
 .petProfileQuickViewTable {

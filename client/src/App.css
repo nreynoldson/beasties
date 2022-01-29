@@ -54,6 +54,10 @@
   color: white;
 }
 
+.nav-link {
+  margin-right: 0.75rem;
+}
+
 .navLinks {
   font-size: 1.5rem;
 }

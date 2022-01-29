@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
   Link,
   Route,
@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import AdminLandingPage from './pages/AdminLandingPage';
 import BrowsePetsPage from './pages/BrowsePetsPage';
 import BrowseSheltersPage from './pages/BrowseSheltersPage';
 import ContactPage from './pages/ContactPage';
@@ -20,6 +21,25 @@ import Navbar from 'react-bootstrap/Navbar';
 import './App.css';
 
 export default function App() {
+
+  const isAdmin = true;
+
+  let adminPageLink = null;
+  let userSearchLink = null;
+  if (isAdmin) {
+    adminPageLink = (
+      <Nav.Item>
+        <Link className="nav-link" to="/admin">Admin</Link>
+      </Nav.Item>
+    );
+
+    userSearchLink = (
+      <Nav.Item>
+        <Link className="nav-link" to="/browse-users">Users</Link>
+      </Nav.Item>
+    );
+  }
+
   return (
 
     <div className="App">
@@ -43,6 +63,8 @@ export default function App() {
           <Nav.Item>
             <Link className="nav-link" to="/about">How It Works</Link>
           </Nav.Item>
+          {adminPageLink}
+          {userSearchLink}
           <Nav.Item>
             <Link className="nav-link" to="/browse-pets">Pets</Link>
           </Nav.Item>
@@ -56,6 +78,7 @@ export default function App() {
       </Navbar>
       <Routes>
         <Route path="/about" element={<HowItWorksPage />}></Route>
+        <Route path="/admin" element={<AdminLandingPage />}></Route>
         <Route path="/browse-pets" element={<BrowsePetsPage />}></Route>
         <Route path="/browse-shelters" element={<BrowseSheltersPage />}></Route>
         <Route path="/contact" element={<ContactPage />}></Route>
