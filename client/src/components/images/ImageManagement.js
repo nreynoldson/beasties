@@ -76,7 +76,7 @@ const ImageManagement = (props) => {
     const { id, displayName, url } = evt.currentTarget.dataset;
 
     setImageToDelete({ id, displayName, url });
-  }, []);
+  }, [allowEdit]);
 
   const handleImageClick = useCallback((evt) => {
 
@@ -87,7 +87,7 @@ const ImageManagement = (props) => {
     const { id } = evt.currentTarget.dataset;
 
     // TODO: Set avatar image
-  }, []);
+  }, [allowEdit]);
 
   const imageList = useMemo(() => {
 
@@ -124,10 +124,11 @@ const ImageManagement = (props) => {
       }
 
       return (
-        <div key={id} title={title} className={imageClass}>
+        <div key={id} className={imageClass}>
           <Image
             rounded
             src={url}
+            title={title}
             height="250"
             data-id={id}
             imageOnClick={imageOnClick}
@@ -136,17 +137,31 @@ const ImageManagement = (props) => {
         </div>
       );
     });
-  }, [allowEdit, avatarImageId, handleDeleteImageClick, images]);
+  }, [allowEdit, avatarImageId, handleDeleteImageClick, handleImageClick, images]);
 
+  const imageUploader = useMemo(() => {
+
+    if (!allowEdit) {
+      return null;
+    }
+
+    return (
+      <div className="w-100 d-flex justify-content-center align-items-center">
+        <h5 className="mr-3">Upload Image</h5>
+        <input className="mt-3 mb-3" name="imageUpload" type="file" />
+      </div>
+    );
+  }, [allowEdit]);
 
   const componentOutput = useMemo(() => {
 
     return (
       <div className="d-flex flex-wrap justify-content-center mb-4">
+        {imageUploader}
         {imageList}
       </div>
     );
-  }, [imageList]);
+  }, [imageList, imageUploader]);
 
   return componentOutput;
 }
