@@ -3,7 +3,9 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { CircleFill } from 'react-bootstrap-icons';
 import { XCircleFill } from 'react-bootstrap-icons';
 
+import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
+import Modal from 'react-bootstrap/Modal'
 
 import './css/ImageManagement.css';
 
@@ -17,10 +19,10 @@ const ImageManagement = (props) => {
     type
   } = props;
 
-  const getOriginalImagesToDelete = useMemo(() => ({ displayName: null, id: null, url: null }), []);
+  const originalImagesToDelete = useMemo(() => ({ displayName: null, id: null, url: null }), []);
 
   const [images, setImages] = useState([]);
-  const [imageToDelete, setImageToDelete] = useState(getOriginalImagesToDelete);
+  const [imageToDelete, setImageToDelete] = useState(originalImagesToDelete);
 
   const afterGetImages = useCallback((response) => {
 
@@ -106,6 +108,47 @@ const ImageManagement = (props) => {
     reader.onloadend = handleUploadFile
   }, [handleUploadFile]);
 
+  const handleCancelDeleteImage =
+    useCallback(() => setImageToDelete(originalImagesToDelete), [originalImagesToDelete]);
+
+  const handleConfirmDeleteImage = useCallback(() => {
+
+    // TODO: make api request to delete image and refresh images
+    handleCancelDeleteImage();
+  }, [handleCancelDeleteImage]);
+
+  const confirmDeleteModal = useMemo(() => {
+
+    if (!allowEdit) {
+      return null;
+    }
+
+    return (
+      <Modal show={Boolean(imageToDelete?.id)} onHide={handleCancelDeleteImage}>
+        <Modal.Header closeButton>
+          <Modal.Title>Really delete image?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="d-flex flex-column align-items-center">
+          <Image
+            rounded
+            src={imageToDelete.url}
+            title={imageToDelete.displayName}
+            height="150"
+          />
+          <h5 className="mt-3">Really delete this image?</h5>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCancelDeleteImage}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleConfirmDeleteImage}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }, [allowEdit, handleCancelDeleteImage, handleConfirmDeleteImage, imageToDelete]);
+
   const imageList = useMemo(() => {
 
     return images.map(({ id, displayName, url }) => {
@@ -185,9 +228,10 @@ const ImageManagement = (props) => {
       <div className="d-flex flex-wrap justify-content-center mb-4">
         {imageUploader}
         {imageList}
+        {confirmDeleteModal}
       </div>
     );
-  }, [imageList, imageUploader]);
+  }, [confirmDeleteModal, imageList, imageUploader]);
 
   return componentOutput;
 }
