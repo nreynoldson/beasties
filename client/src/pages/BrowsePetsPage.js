@@ -24,7 +24,7 @@ const BrowsePetsPage = (props) => {
       goodWithChildren: false,
       mustBeLeashed: false,
       availability: 'available',
-      sortOrder: 'newest'
+      sortOrder: 'dateCreated'
     };
   }, []);
 

@@ -11,7 +11,7 @@ const ShelterSearchResult = (props) => {
     avatarUrl,
     id,
     name,
-    numAnimals
+    availableAnimals
   } = props;
 
   const componentOutput = useMemo(() => {
@@ -21,11 +21,11 @@ const ShelterSearchResult = (props) => {
         <Image rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
         <div className="flex-column align-items-center justify-content-between">
           <h3 className="shelterName">{name}</h3>
-          <span>{numAnimals} Pets</span>
+          <span>{availableAnimals} pets available</span>
         </div>
       </Link>
     );
-  }, [avatarUrl, id, name]);
+  }, [availableAnimals, avatarUrl, id, name]);
 
   return componentOutput;
 }

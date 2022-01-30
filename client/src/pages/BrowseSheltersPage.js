@@ -15,7 +15,9 @@ const BrowseSheltersPage = (props) => {
   const getOriginalInputs = useMemo(() => {
 
     return {
-      name: ''
+      name: '',
+      availableAnimals: 'any',
+      sortOrder: 'availableAnimals'
     };
   }, []);
 
@@ -60,28 +62,28 @@ const BrowseSheltersPage = (props) => {
         name: 'Bob\'s Pets',
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
-        numAnimals: 5
+        availableAnimals: 5
       },
       {
         id: 2,
         name: 'Critters',
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
-        numAnimals: 23
+        availableAnimals: 23
       },
       {
         id: 3,
         name: 'Paw Pals',
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
-        numAnimals: 130
+        availableAnimals: 130
       },
       {
         id: 4,
         name: 'Doug\'s Dogs',
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
-        numAnimals: 250
+        availableAnimals: 250
       }
     ] });
   }, []);
@@ -128,6 +130,21 @@ const BrowseSheltersPage = (props) => {
           />
         </FloatingLabel>
 
+        <FloatingLabel controlId="floatingSelect" label="Minimum number of available pets">
+          <Form.Select
+            onChange={handleValueChange}
+            name="availableAnimals"
+            defaultValue={inputs.availableAnimals}
+            size="sm"
+          >
+            <option value="any">Any</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+            <option value="100+">100+</option>
+          </Form.Select>
+        </FloatingLabel>
+
         <Button size="md" variant="primary" onClick={handleSearch}>Search</Button>
       </div>
     );
@@ -147,7 +164,7 @@ const BrowseSheltersPage = (props) => {
             avatarUrl={shelter.avatarUrl}
             id={shelter.id}
             name={shelter.name}
-            numAnimals={shelter.numAnimals}
+            availableAnimals={shelter.availableAnimals}
           />
         </div>
       );
@@ -162,6 +179,7 @@ const BrowseSheltersPage = (props) => {
           defaultValue={inputs.sortOrder}
           size="sm"
         >
+          <option value="availableAnimals">Available Pets</option>
           <option value="dateCreated">Newest First</option>
           <option value="name">Name First</option>
         </Form.Select>
