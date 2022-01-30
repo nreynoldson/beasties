@@ -30,9 +30,9 @@ const BrowsePetsPage = (props) => {
 
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(false);
-  const [petData, setPetData] = useState({ results: [] });
+  const [searchData, setSearchData] = useState({ results: [] });
 
-  const afterGetPetInfo = useCallback((response) => {
+  const afterGetSearchResults = useCallback((response) => {
 
     if (response.err) {
       // Handle error
@@ -47,23 +47,10 @@ const BrowsePetsPage = (props) => {
 
   }, []);
 
-  const afterSearch = useCallback((response) => {
-
-    if (response.err) {
-      // Handle error
-      return;
-    }
-
-    else {
-      // Navigate to pet profile page
-    }
-
-  }, []);
-
   const handleSearch = useCallback(() => {
 
     // TODO: make this actually search when the back end api is ready
-    setPetData({ results: [
+    setSearchData({ results: [
       {
         id: 1,
         name: 'Fido',
@@ -328,11 +315,11 @@ const BrowsePetsPage = (props) => {
 
   const searchResults = useMemo(() => {
 
-    if (!petData?.results?.length) {
+    if (!searchData?.results?.length) {
       return 'No matching results found'
     }
 
-    const resultComponents = petData.results.map((pet) => {
+    const resultComponents = searchData.results.map((pet) => {
 
       return (
         <div key={pet.id}>
@@ -355,7 +342,7 @@ const BrowsePetsPage = (props) => {
     });
 
     return (
-      <div className="d-flex flex-column">
+      <div className="d-flex flex-column w-100">
         <Form.Select
           className="sortOrderSelect mr-3"
           onChange={handleValueChange}
@@ -373,7 +360,7 @@ const BrowsePetsPage = (props) => {
         </div>
       </div>
     );
-  }, [handleValueChange, inputs, petData]);
+  }, [handleValueChange, inputs, searchData]);
 
   const componentOutput = useMemo(() => {
 
