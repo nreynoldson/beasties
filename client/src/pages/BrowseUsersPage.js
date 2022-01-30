@@ -1,23 +1,24 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import ShelterSearchResult from '../components/shelters/ShelterSearchResult';
+import UserSearchResult from '../components/users/UserSearchResult';
 
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
 import './css/Common.css';
-import './css/BrowseSheltersPage.css';
+import './css/BrowseUsersPage.css';
 
 
-const BrowseSheltersPage = (props) => {
+const BrowseUsersPage = (props) => {
 
   const getOriginalInputs = useMemo(() => {
 
     return {
       name: '',
-      availableAnimals: 'any',
-      sortOrder: 'availableAnimals'
+      email: '',
+      isShelterOwner: 'any',
+      sortOrder: 'name'
     };
   }, []);
 
@@ -46,31 +47,39 @@ const BrowseSheltersPage = (props) => {
     setSearchData({ results: [
       {
         id: 1,
-        name: 'Bob\'s Pets',
+        name: 'Bob Petman',
         avatarUrl: null,
+        email: 'test@test.com',
         dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 250
+        isShelterOwner: true,
+        shelterName: 'Bob\'s Pets'
       },
       {
         id: 2,
-        name: 'Critters',
+        name: 'Casey Smith',
         avatarUrl: null,
+        email: 'test@test.com',
         dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 130
+        isShelterOwner: true,
+        shelterName: 'Bob\'s Pets'
       },
       {
         id: 3,
-        name: 'Paw Pals',
+        name: 'Jackie Smith',
         avatarUrl: null,
+        email: 'test@test.com',
         dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 23
+        isShelterOwner: false,
+        shelterName: null
       },
       {
         id: 4,
-        name: 'Doug\'s Dogs',
+        name: 'Doug Dogman',
         avatarUrl: null,
+        email: 'test@test.com',
         dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 5
+        isShelterOwner: true,
+        shelterName: 'Doug\'s Dogs'
       }
     ] });
   }, []);
@@ -117,18 +126,25 @@ const BrowseSheltersPage = (props) => {
           />
         </FloatingLabel>
 
-        <FloatingLabel controlId="floatingSelect" label="Minimum number of available pets">
+        <FloatingLabel controlId="floatingInput" label="Email">
+          <Form.Control
+            type="text"
+            value={inputs.email}
+            onChange={handleValueChange}
+            name="email"
+          />
+        </FloatingLabel>
+
+        <FloatingLabel controlId="floatingSelect" label="Is a shelter owner">
           <Form.Select
             onChange={handleValueChange}
-            name="availableAnimals"
-            defaultValue={inputs.availableAnimals}
+            name="isShelterOwner"
+            defaultValue={inputs.isShelterOwner}
             size="sm"
           >
             <option value="any">Any</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="75">75</option>
-            <option value="100+">100+</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
           </Form.Select>
         </FloatingLabel>
 
@@ -143,15 +159,18 @@ const BrowseSheltersPage = (props) => {
       return 'No matching results found'
     }
 
-    const resultComponents = searchData.results.map((shelter) => {
+    const resultComponents = searchData.results.map((user) => {
 
       return (
-        <div key={shelter.id}>
-          <ShelterSearchResult
-            avatarUrl={shelter.avatarUrl}
-            id={shelter.id}
-            name={shelter.name}
-            availableAnimals={shelter.availableAnimals}
+        <div key={user.id}>
+          <UserSearchResult
+            avatarUrl={user.avatarUrl}
+            id={user.id}
+            isShelterOwner={user.isShelterOwner}
+            shelterName={user.shelterName}
+            email={user.email}
+            name={user.name}
+            availableAnimals={user.availableAnimals}
           />
         </div>
       );
@@ -166,9 +185,10 @@ const BrowseSheltersPage = (props) => {
           defaultValue={inputs.sortOrder}
           size="sm"
         >
-          <option value="availableAnimals">Available Pets</option>
+          <option value="name">Name</option>
+          <option value="email">Email</option>
+          <option value="isShelterOwner">Is a shelter owner</option>
           <option value="dateCreated">Newest First</option>
-          <option value="name">Name First</option>
         </Form.Select>
         <div className="d-flex flex-wrap">
           {resultComponents}
@@ -181,7 +201,7 @@ const BrowseSheltersPage = (props) => {
 
     return (
       <div>
-        <h1 className="display-4 mt-2">Browse Shelters</h1>
+        <h1 className="display-4 mt-2">Browse Users</h1>
         <div className="d-flex">
           {searchControls}
           {searchResults}
@@ -193,4 +213,4 @@ const BrowseSheltersPage = (props) => {
   return componentOutput;
 }
 
-export default BrowseSheltersPage;
+export default BrowseUsersPage;

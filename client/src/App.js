@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AdminLandingPage from './pages/AdminLandingPage';
 import BrowsePetsPage from './pages/BrowsePetsPage';
 import BrowseSheltersPage from './pages/BrowseSheltersPage';
+import BrowseUsersPage from './pages/BrowseUsersPage';
 import ContactPage from './pages/ContactPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import LandingPage from './pages/LandingPage';
@@ -81,6 +82,7 @@ export default function App() {
         <Route path="/admin" element={<AdminLandingPage />}></Route>
         <Route path="/browse-pets" element={<BrowsePetsPage />}></Route>
         <Route path="/browse-shelters" element={<BrowseSheltersPage />}></Route>
+        <Route path="/browse-users" element={<BrowseUsersPage />}></Route>
         <Route path="/contact" element={<ContactPage />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
