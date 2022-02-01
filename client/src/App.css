@@ -56,6 +56,12 @@
 
 .nav-link {
   margin-right: 0.75rem;
+  border-radius: 10px;
+}
+
+.nav-link.active {
+  background-color: rgb(50, 115, 168);
+  box-shadow: 2px 2px 2px rgb(33, 84, 126);
 }
 
 .navLinks {

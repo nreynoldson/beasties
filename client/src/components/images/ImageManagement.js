@@ -6,6 +6,8 @@ import { XCircleFill } from 'react-bootstrap-icons';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
 import './css/ImageManagement.css';
 
@@ -170,15 +172,17 @@ const ImageManagement = (props) => {
 
         deleteButton = (
           <Fragment>
-            <XCircleFill
-              className="deleteButton"
-              color="darkRed"
-              size={25}
-              data-id={id}
-              data-display-name={displayName}
-              data-url={url}
-              onClick={handleDeleteImageClick}
-            />
+            <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
+              <XCircleFill
+                className="deleteButton"
+                color="darkRed"
+                size={25}
+                data-id={id}
+                data-display-name={displayName}
+                data-url={url}
+                onClick={handleDeleteImageClick}
+              />
+            </OverlayTrigger>
             <CircleFill className="deleteButtonBackground" color="white" size={25} />
           </Fragment>
         );

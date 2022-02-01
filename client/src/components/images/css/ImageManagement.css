@@ -23,6 +23,21 @@
   cursor: pointer;
 }
 
+.clickable:hover::after {
+  content: "Click to set avatar";
+  color: black;
+  background-color: white;
+  opacity: 0.75;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  position: absolute;
+  padding: 0 4px;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateY(100%);
+  z-index: 0;
+}
+
 .deleteButton {
   cursor: pointer;
   position: absolute;

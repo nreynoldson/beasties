@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Link,
+  NavLink,
   Route,
   Routes
 } from 'react-router-dom';
@@ -30,13 +30,13 @@ export default function App() {
   if (isAdmin) {
     adminPageLink = (
       <Nav.Item>
-        <Link className="nav-link" to="/admin">Admin</Link>
+        <NavLink className="nav-link" to="/admin">Admin</NavLink>
       </Nav.Item>
     );
 
     userSearchLink = (
       <Nav.Item>
-        <Link className="nav-link" to="/browse-users">Users</Link>
+        <NavLink className="nav-link" to="/browse-users">Users</NavLink>
       </Nav.Item>
     );
   }
@@ -47,7 +47,7 @@ export default function App() {
       <Navbar className="me-auto" variant="dark">
         <Nav>
           <Navbar.Brand>
-            <Link className="nav-link" to="/">
+            <NavLink className="nav-link" to="/">
               <div className="d-flex align-items-center">
                 <img
                   alt="Beasties Logo"
@@ -57,23 +57,25 @@ export default function App() {
                 />
                 Beasties
               </div>
-            </Link>
+            </NavLink>
           </Navbar.Brand>
         </Nav>
         <Nav className="ml-auto navLinks">
           <Nav.Item>
-            <Link className="nav-link" to="/about">How It Works</Link>
+            <NavLink className="nav-link" to="/about" >
+              How It Works
+            </NavLink>
           </Nav.Item>
           {adminPageLink}
           {userSearchLink}
           <Nav.Item>
-            <Link className="nav-link" to="/browse-pets">Pets</Link>
+            <NavLink className="nav-link" to="/browse-pets">Pets</NavLink>
           </Nav.Item>
           <Nav.Item>
-            <Link className="nav-link" to="/browse-shelters">Shelters</Link>
+            <NavLink className="nav-link" to="/browse-shelters">Shelters</NavLink>
           </Nav.Item>
           <Nav.Item>
-            <Link className="nav-link" to="/contact">Contact Us</Link>
+            <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
           </Nav.Item>
         </Nav>
       </Navbar>
