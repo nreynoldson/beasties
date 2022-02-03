@@ -36,8 +36,8 @@ class RegistrationForm extends Component {
 
     render(){
         return(
-            <div>
-                <h2>Finish setting up your account</h2>
+            <div className="register">
+                <h2>Almost there! Finish setting up your account:</h2>
                     <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>Name</Form.Label>
@@ -70,7 +70,7 @@ class RegistrationForm extends Component {
                         <Form.Check 
                             type="switch"
                             id="custom-switch"
-                            label="Shelter Account"
+                            label="I am a shelter owner/worker"
                             onChange = {(e) => {this.setState({isShelter: e.target.checked})}}
                         />
 
@@ -84,15 +84,7 @@ class RegistrationForm extends Component {
                                     onChange= {this.inputChange}
                                 />
                             </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Shelter Location</Form.Label>
-                                <Form.Control 
-                                    type="text" 
-                                    name="shelterLocation" 
-                                    value={this.state.shelterLocation} 
-                                    onChange= {this.inputChange}
-                                />
-                            </Form.Group> </> : ""}
+                             </> : ""}
                             <Button variant="primary" type="button" onClick={this.onSubmit}>
                                 Submit
                             </Button>

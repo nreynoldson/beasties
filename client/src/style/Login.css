@@ -1,0 +1,31 @@
+
+body {
+    background-color: #F7F7F7 !important;
+}
+
+.App{
+    padding:50px 50px
+}
+
+.login, .register{
+    max-width: 400px;
+    margin: auto;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 20%);
+    padding: 40px;
+}
+
+.login h2, .register h2{
+    font-size: 1.5em;
+}
+
+.password.link{
+    font-size: 0.8em;
+    display: block;
+}
+
+.login button, .register button{
+    width: 100%;
+    margin: 5px 0px;
+}

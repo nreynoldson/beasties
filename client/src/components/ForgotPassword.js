@@ -87,7 +87,7 @@ export default class ForgotPassword extends Component {
                 onSuccess: async () => {
                     console.log('Password confirmed!');
                     await authenticate(this.state.email, this.state.password)
-                    this.props.props.hasAuthenticated(true);
+                    this.props.authProps.hasAuthenticated(true);
                 },
                 onFailure(err) {
                     console.log(err);

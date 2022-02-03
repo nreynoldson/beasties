@@ -5,8 +5,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
 import ForgotPassword from './components/ForgotPassword'
+import NotificationCenter from './pages/NotificationCenter'
 import {getUser} from './components/Account.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
+//import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 class App extends Component {
   constructor(props){
@@ -34,9 +36,6 @@ class App extends Component {
     this.setState({authenticated: authenticated});
   }
 
-  handleLogout(){
-
-  }
 
   render(){
     const authProps = {
@@ -48,9 +47,10 @@ class App extends Component {
           <Routes>
             <Route exact path="/" element={<Home/>}></Route>
            
-            <Route exact path="/login" element={<Login />}></Route>
-            <Route exact path="/register" element={<Register props={authProps}/>}></Route>
-            <Route exact path="/reset-password" element={<ForgotPassword props={authProps}/>}></Route>
+            <Route exact path="/login" element={<Login authProps={authProps}/>}></Route>
+            <Route exact path="/register" element={<Register authProps={authProps}/>}></Route>
+            <Route exact path="/reset-password" element={<ForgotPassword authProps={authProps}/>}></Route>
+            <Route exact path="/notifications" element={<NotificationCenter authProps={authProps}/>}></Route>
             <Route path = "*" element={<NotFound />}></Route>
           
           </Routes>

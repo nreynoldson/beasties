@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import UserPool from "../UserPool";
 import {CognitoUserAttribute} from "amazon-cognito-identity-js";
+import {TailSpin} from 'react-loader-spinner'
 
 export default class RegisterForm extends Component {
     constructor(props){
@@ -11,14 +12,12 @@ export default class RegisterForm extends Component {
             email: "",
             password: "",
             confirmPassword: "",
-            formErrors: "",
-            test: 0
+            formErrors: ""
         }
 
         this.inputChange = this.inputChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
-
 
     inputChange(e){
         var name = e.target.name;
@@ -26,12 +25,10 @@ export default class RegisterForm extends Component {
         this.setState({[name]: value});
     }
 
-   async validateForm(){
-        console.log('in validate form')
-        
+   async validateForm(){        
         var errors = {};
         for (const property in this.state) {
-            if(this.state[property] === ""){
+            if(this.state[property] === "" && property !== 'formErrors'){
                 errors[property] = "Field cannot be blank"
             }
         }
@@ -40,12 +37,12 @@ export default class RegisterForm extends Component {
             const expression = /\S+@\S+/;
             var validEmail = expression.test(String(this.state.email).toLowerCase());
             if(!validEmail){
-                errors.email = "Invalid email"
+                errors.email = "Invalid email."
             }
         }
 
         if(this.state.password !== this.state.confirmPassword && !errors.hasOwnProperty('password') ){
-            errors.password = errors.confirmPassword = "Passwords do not match"
+            errors.password = errors.confirmPassword = "Passwords do not match."
         }
         
         if(this.state.username.length >= 20){
@@ -53,23 +50,17 @@ export default class RegisterForm extends Component {
         }
 
         this.setState({formErrors: errors});
-        console.log(errors);
     }
 
     hasError(key = null) {
-        console.log('in has error')
         if(key)
             return this.state.formErrors.hasOwnProperty(key);
-            console.log('no key')
-            console.log(this.state.formErrors)
-            console.log(Object.keys(this.state.formErrors).length);
+
         return Object.keys(this.state.formErrors).length > 0;
     }
 
     async onSubmit(e){
-        console.log('in onsubmit')
         await this.validateForm();
-        console.log(this.hasError())
          if(this.hasError())
              return;
  
@@ -78,31 +69,29 @@ export default class RegisterForm extends Component {
          ];
  
         UserPool.signUp(this.state.username, this.state.password, attributeList, null, (err, data) =>{
-             if(err){
-                 var errors = {};
-                 if(err.name === "InvalidPasswordException")
-                     errors.password = err.message;
-                 else if(err.name === "UsernameExistsException")
-                     errors.username = err.message;
+            if(err){
+                var errors = {};
+                if(err.name === "InvalidPasswordException")
+                    errors.password = err.message;
+                else if(err.name === "UsernameExistsException")
+                    errors.username = err.message;
+                else if(err.name === "UserLambdaValidationException")
+                     errors.email = "Email already registered to an existing account.";
                  else 
                      errors.aws = err.message;
-                 console.log(err);
+                
                  this.setState({formErrors: errors});
-             }
-             else{
-                 console.log(data);
-                 this.props.saveCredentials(this.state.username, this.state.password, data.user);
-             }
-         });
- 
-     }
+            }
+            else{
+                this.props.saveCredentials(this.state.username, this.state.password, data.user);
+            }
+        });
+    }
 
     render(){ 
-        console.log('in render')
-        console.log(this.state)
-        console.log(this.state.formErrors)
         return(
-            <Form>
+            <Form className = "register">
+                {this.hasError('aws') ? <span>{this.state.formErrors.aws}</span> : ""}
                 <Form.Group className="mb-3">
                     <Form.Label>Username</Form.Label>
                     <Form.Control 
@@ -158,6 +147,7 @@ export default class RegisterForm extends Component {
                 <Button variant="primary" type="button" onClick={this.onSubmit}>
                     Submit
                 </Button>
+                {this.state.loading ? <TailSpin color="#00BFFF" height={80} width={80} /> : ""}
             </Form>
         );
     }

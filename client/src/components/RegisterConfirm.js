@@ -7,6 +7,7 @@ export default class RegisterConfirm extends Component {
         super(props);
         this.state = {
             confirmationCode: "",
+            error: ""
         }
         this.handleConfirmation = this.handleConfirmation.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -19,44 +20,50 @@ export default class RegisterConfirm extends Component {
     }
 
     async handleConfirmation(e){
-        console.log('in handle confirmation')
         e.preventDefault();
 
         try{
             var cognitoUser = this.props.user.cognitoUser;
             var username = this.props.user.username;
             var password = this.props.user.password;
-            await cognitoUser.confirmRegistration(this.state.confirmationCode, true, async function(err, result) {
+            await cognitoUser.confirmRegistration(this.state.confirmationCode, true, async (err, result) =>
+            {
                 if (err) {
-                    alert(err.message || JSON.stringify(err));
+                    this.setState({error: err.message});
                     return;
+                } else {
+                    try{
+                        await authenticate(username, password);
+                        this.props.updateStatus("finish");
+                    }
+                    catch(err){
+                        if(this.state.error === "")
+                            this.setState({error: err.message});
+                    }
                 }
-                console.log('call result: ' + result);
-                try{
-                    await authenticate(username, password)
-                }
-                catch(err){
-                    console.log(err.message)
-                }
-            
             });
-            console.log('success!')
-            this.props.updateStatus("finish");
-
         }
         catch(err){
-            alert(err.message);
-
+            if(this.state.error === "")
+                this.setState({error: err.message});
         }
     }
 
     render(){
         return(
-            <Form>
+            <Form className="register">
                 <Form.Group controlId="confirmationCode">
                     <Form.Label>Confirmation Code</Form.Label>
-                    <Form.Control autoFocus type="tel"  name="confirmationCode" value={this.state.confirmationCode} onChange={this.handleChange} />
+                    <Form.Control autoFocus type="tel"  
+                        name="confirmationCode" 
+                        value={this.state.confirmationCode} 
+                        onChange={this.handleChange}
+                        isInvalid ={this.state.error !== ''} />
+                    <Form.Control.Feedback type='invalid'>
+                        {this.state.error}
+                    </Form.Control.Feedback>
                 </Form.Group>
+            
                 <Button variant="primary" type="button" onClick={this.handleConfirmation}>
                     Submit
                 </Button>

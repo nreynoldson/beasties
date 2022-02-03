@@ -9,7 +9,7 @@ export default class Login extends Component {
         this.state = {
             email: "",
             password: "",
-            error: ""
+            formErrors: {}
         }
         this.inputChange = this.inputChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -21,35 +21,71 @@ export default class Login extends Component {
         this.setState({[name]: value});
     }
 
+    async validateForm(){        
+        var errors = {};
+        if(this.state.email === '')
+            errors.email = "Username or email cannot be blank."
+        if(this.state.password === '')
+            errors.password = "Password cannot be blank."
+
+        this.setState({formErrors: errors});
+    }
+
+    hasError(key = null) {
+        if(key)
+            return this.state.formErrors.hasOwnProperty(key);
+
+        return Object.keys(this.state.formErrors).length > 0;
+    }
+
     async onSubmit (e) {
-        console.log('in on submit')
-        this.setState({loading: true})
+        await this.validateForm();
+        if(this.hasError())
+            return;
+
         try{
             await authenticate(this.state.email, this.state.password)
-            this.props.hasAuthenticated(true);
+            this.props.authProps.hasAuthenticated(true);
         }
         catch(err){
-            alert(err.message);
-            this.setState({loading: false})
+           var errors = {};
+           errors.aws = err.message;
+           this.setState({formErrors: errors});
         }
     }
     render() {
         return (
-    
-            <Form>
-                <Form.Group className="mb-3" controlId="formGroupEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" name="email" onChange = {this.inputChange} />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formGroupPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="text" name="password" onChange = {this.inputChange} />
-                </Form.Group>
-                <Link to="/forgot-password">Forgot your password?</Link>
-                <Button variant="primary" type="button" onClick = {this.onSubmit}>
-                    Login
-                </Button>
-            </Form>
+            <div className="login-container">
+                <Form className='login'>
+                    <Form.Group className="mb-3" controlId="formGroupEmail">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control 
+                            type="email" 
+                            name="email" 
+                            onChange = {this.inputChange} 
+                            isInvalid = {this.hasError('email')} />
+                        <Form.Control.Feedback type='invalid'>
+                            {this.state.formErrors.email}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formGroupPassword">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control 
+                            type="text" 
+                            name="password" 
+                            onChange = {this.inputChange}
+                            isInvalid ={this.hasError('password')} />
+                        <Form.Control.Feedback type='invalid'>
+                            {this.state.formErrors.password}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <span>{this.state.formErrors.aws ? this.state.formErrors.aws : ""}</span>
+                    <Link className="password link" to="/forgot-password">Forgot your password?</Link>
+                    <Button variant="primary" type="button" onClick = {this.onSubmit}>
+                        Login
+                    </Button>
+                </Form>
+            </div>
         );
     }
 }
