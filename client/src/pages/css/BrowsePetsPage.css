@@ -1,0 +1,17 @@
+.fields > * {
+  margin: 1rem 0;
+}
+
+.searchControls {
+  border: 3px solid black;
+  border-radius: 10px;
+  margin: 0 2rem;
+  max-height: 750px;
+  min-width: 400px;
+  overflow-y: auto;
+}
+
+.sortOrderSelect {
+  width: 200px;
+  align-self: end;
+}
