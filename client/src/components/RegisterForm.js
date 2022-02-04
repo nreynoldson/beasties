@@ -144,7 +144,7 @@ export default class RegisterForm extends Component {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Button variant="primary" type="button" onClick={this.onSubmit}>
+                <Button variant="primary" className="pink-btn" type="button" onClick={this.onSubmit}>
                     Submit
                 </Button>
                 {this.state.loading ? <TailSpin color="#00BFFF" height={80} width={80} /> : ""}

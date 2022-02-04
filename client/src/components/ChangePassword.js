@@ -95,7 +95,7 @@ export default class ChangePassword extends Component {
                         {this.state.formErrors.confirmPassword}
                     </Form.Control.Feedback>
                 </Form.Group>
-                <Button variant="primary" type="button" onClick = {this.onSubmit}>
+                <Button variant="primary" className="pink-btn" type="button" onClick = {this.onSubmit}>
                     Submit
                 </Button>
             </Form>

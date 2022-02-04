@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { Col, Row, Container} from 'react-bootstrap';
 import { getUser } from '../components/Account';
 import Notification from '../components/Notification';
-import '../style/Notification.css'
+import './css/Notification.css'
 
 const testData = [
     {
         avatar: 'https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg',
-        user: 'BobbyT',
+        user: 'happyuser01',
         name: 'Bruce',
         shelter: 'Pet Rescue',
         status: 'pending',
@@ -15,7 +15,7 @@ const testData = [
     },
     {
         avatar: 'https://jaxhumane.org/wp-content/uploads/2021/09/Biggie-Smalls-2019-scaled-e1633539814147.jpg',
-        user: 'BobbyT',
+        user: 'bobbyt86',
         name: 'Clyde',
         shelter: 'Happy Paws',
         status: 'fulfilled',
@@ -23,7 +23,7 @@ const testData = [
     },
     {
         avatar: 'https://jaxhumane.org/wp-content/uploads/2021/09/Biggie-Smalls-2019-scaled-e1633539814147.jpg',
-        user: 'BobbyT',
+        user: 'johnr09',
         name: 'Delilah',
         shelter: 'Happy Paws',
         status: 'accepted',
@@ -35,7 +35,7 @@ export default class NotificationCenter extends Component {
     constructor(props){
         super(props);
         this.state = {
-            isShelter: false,
+            isShelter: true,
             requests: []
         }
     }
@@ -53,7 +53,7 @@ export default class NotificationCenter extends Component {
         this.state.requests.forEach((req) => {
     
             requests.push(
-                <Notification req = {req}/>
+                <Notification  isShelter = {this.state.isShelter} req = {req}/>
           )});
         return (
             <Container>

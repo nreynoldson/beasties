@@ -2,14 +2,14 @@ import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import {Button} from 'react-bootstrap';
 
-export default function LoginButton(){
+export default function RegisterButton(){
     const navigate = useNavigate();
 
     const handleClick = () => {
-       navigate('/login');
+       navigate('/register');
     }
 
     return(
-        <Button className="pink-btn nav-btn" onClick={handleClick}>Login</Button>
+        <Button className="pink-btn nav-btn" onClick={handleClick}>Sign Up</Button>
     );
 }

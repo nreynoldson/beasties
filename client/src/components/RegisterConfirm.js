@@ -64,7 +64,7 @@ export default class RegisterConfirm extends Component {
                     </Form.Control.Feedback>
                 </Form.Group>
             
-                <Button variant="primary" type="button" onClick={this.handleConfirmation}>
+                <Button variant="primary" className="pink-btn" type="button" onClick={this.handleConfirmation}>
                     Submit
                 </Button>
             </Form>

@@ -3,7 +3,7 @@ import RegisterForm from '../components/RegisterForm';
 import FinishRegistration from '../components/FinishRegistration';
 import RegisterConfirm from '../components/RegisterConfirm';
 import LogoutButton from '../components/LogoutButton';
-import '../style/Login.css'
+import './css/Login.css'
 
 
 export default class Register extends Component {
@@ -31,14 +31,14 @@ export default class Register extends Component {
     }
 
     render() {
-       /* if(this.props.authProps.authenticated && this.state.status !== 'finish'){
+        if(this.props.authProps.authenticated && this.state.status !== 'finish'){
             return(<LogoutButton hasAuthenticated ={this.props.authProps.hasAuthenticated}></LogoutButton>);
         } else if(this.state.status === 'signup') {
             return (<RegisterForm saveCredentials = {this.saveCredentials}></RegisterForm>);
         } else if(this.state.status === 'confirm') {
             return(<RegisterConfirm user={this.state.user} updateStatus={this.updateStatus}></RegisterConfirm>);
-        } else {*/
+        } else {
             return(<FinishRegistration updateStatus={this.updateStatus}></FinishRegistration>);
-        //}
+        }
     }
 }

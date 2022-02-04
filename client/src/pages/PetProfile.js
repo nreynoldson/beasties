@@ -3,7 +3,7 @@ import {Form, Button} from 'react-bootstrap';
 import {authenticate} from "../components/Account";
 import {Link} from 'react-router-dom';
 
-export default class Login extends Component {
+export default class PetProfile extends Component {
     constructor(props){
         super(props);
         this.state = {

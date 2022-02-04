@@ -1,7 +1,7 @@
 .pet-image {
    background-color: black;
-   height: 50px;
-   width: 50px;
+   height: 100px;
+   width: 100px;
    margin: auto
 }
 
@@ -21,9 +21,11 @@
 }
 
 .container{
+    margin: 50px auto;
     border-radius: 20px;
     padding: 20px;
     background-color: #E5E5E5;
+    max-width: 700px;
 }
 
 .request-title{
@@ -35,4 +37,26 @@
 
 .col .adopt-btn{
     font-size: 0.8em;
+}
+
+.card{
+    flex-direction: row;
+    width: 100%;
+    margin: 10px 0
+}
+.card .card-img-left{
+    max-height: 150px;
+    width: 150px;
+}
+
+.card span{
+    padding: 5px
+}
+
+.card .adopt-btn{
+    margin: 0 10px;
+}
+
+.card-text.status{
+    text-transform: uppercase;
 }

@@ -21,12 +21,12 @@ class Logout extends Component {
                 user.signOut();
             }
         this.props.hasAuthenticated(false);
-        this.props.navigate('/login');
+        this.props.navigate(-1);
     }
 
     render(){
         return(
-            <Button onClick={this.handleLogout}>Logout</Button>
+            <Button className="pink-btn nav-btn" onClick={this.handleLogout}>Logout</Button>
         );
     }
 }

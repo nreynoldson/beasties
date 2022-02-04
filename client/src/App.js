@@ -1,11 +1,5 @@
 
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './components/ForgotPassword'
-import NotificationCenter from './pages/NotificationCenter'
-import {getUser} from './components/Account.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import React, {Component} from 'react';
 import {
   Link,
   Route,
@@ -22,16 +16,21 @@ import NotFound from './pages/NotFound';
 import PetModifyProfilePage from './pages/PetModifyProfilePage';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import ForgotPassword from './components/ForgotPassword'
+import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
+import LoginButton from './components/LoginButton'
+import LogoutButton from './components/LogoutButton'
+import RegisterButton from './components/RegisterButton'
+import PetProfile from './pages/PetProfile'
 import {getUser} from './components/Account.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import './App.css';
 
-class App extends Component {
+import './App.css';
+import { NavItem } from 'react-bootstrap';
+
+export default class App extends Component {
   constructor(props){
     super(props);
     this.state ={
@@ -56,14 +55,13 @@ class App extends Component {
   hasAuthenticated(authenticated) {
     this.setState({authenticated: authenticated});
   }
-
-
   render(){
     const authProps = {
       authenticated: this.state.authenticated,
       hasAuthenticated: this.hasAuthenticated
     }
-    return(
+    
+  return (
     <div className="App">
       <Navbar className="me-auto" variant="dark">
         <Nav>
@@ -94,6 +92,10 @@ class App extends Component {
           <Nav.Item>
             <Link className="nav-link" to="/contact">Contact Us</Link>
           </Nav.Item>
+     
+        </Nav>
+        <Nav className="user-box">
+        {this.state.authenticated ? (<><Nav.Item><Link className="nav-link" to="/notifications"><img className="notification-icon"src="/images/notifications.svg"></img></Link></Nav.Item><Nav.Item><LogoutButton hasAuthenticated ={this.hasAuthenticated}/></Nav.Item></>) : (<><Nav.Item><RegisterButton/></Nav.Item><Nav.Item><LoginButton/></Nav.Item></>)}
         </Nav>
       </Navbar>
       <Routes>
@@ -103,15 +105,15 @@ class App extends Component {
         <Route path="/contact" element={<ContactPage />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
+        <Route exact path="/pet/profile" element={<PetProfile />}></Route>
+        <Route exact path="/" element={<LandingPage />}></Route>
         <Route exact path="/login" element={<Login authProps={authProps}/>}></Route>
         <Route exact path="/register" element={<Register authProps={authProps}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword authProps={authProps}/>}></Route>
         <Route exact path="/notifications" element={<NotificationCenter authProps={authProps}/>}></Route>
-        <Route exact path="/" element={<LandingPage />}></Route>
         <Route path = "*" element={<NotFound />}></Route>
       </Routes>
     </div>
-    );
-  };
-}
-
+  
+  );}
+};

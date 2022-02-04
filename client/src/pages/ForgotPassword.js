@@ -141,7 +141,7 @@ export default class ForgotPassword extends Component {
         if(this.state.status === 'sending'){
             return (
         
-                <Form>
+                <Form className="login">
                     <p>Enter the email associated with your account and we'll email you a reset link.</p>
                     <Form.Group className="mb-3" controlId="formGroupEmail">
                         <Form.Label>Email address</Form.Label>
@@ -158,7 +158,7 @@ export default class ForgotPassword extends Component {
             );
         } else {
             return (
-                <Form>
+                <Form className="login">
                     <Form.Group className="mb-3">
                         <Form.Label>Confirmation Code</Form.Label>
                         <Form.Control type="confirmationCode" name="confirmationCode" 
@@ -181,7 +181,7 @@ export default class ForgotPassword extends Component {
                             {this.state.formErrors.confirmPassword}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Button variant="primary" type="button" onClick = {this.onSubmit}>
+                    <Button variant="primary" className="pink-btn" type="button" onClick = {this.onSubmit}>
                         Submit
                     </Button>
                 </Form>

@@ -85,7 +85,7 @@ class RegistrationForm extends Component {
                                 />
                             </Form.Group>
                              </> : ""}
-                            <Button variant="primary" type="button" onClick={this.onSubmit}>
+                            <Button variant="primary" className="pink-btn" type="button" onClick={this.onSubmit}>
                                 Submit
                             </Button>
                     </Form>
