@@ -1,5 +1,5 @@
 
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Link,
   Route,
@@ -18,48 +18,32 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
-import LoginButton from './components/LoginButton'
-import LogoutButton from './components/LogoutButton'
-import RegisterButton from './components/RegisterButton'
 import PetProfile from './pages/PetProfile'
 import {getUser} from './components/Account.js';
+import UserBox from './components/UserBox.js';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 import './App.css';
-import { NavItem } from 'react-bootstrap';
 
-export default class App extends Component {
-  constructor(props){
-    super(props);
-    this.state ={
-      user: null,
-      authenticated: false,
-      authenticating: true
-    }
+export default function App(){
+    const [isAuthenticated, updateAuthStatus] = useState(false);
+    const [user, setUser] = useState(null);
 
-    this.hasAuthenticated = this.hasAuthenticated.bind(this);
-  }
-
-  async componentDidMount(){
+  useEffect(async () => {
     var user = await getUser();
-    console.log(user);
-
     if(user){
-        this.setState({user: user, authenticated: true});
+      updateAuthStatus(true);
+      setUser(user);
     }
-    this.setState({authenticating: false});
+  }, []);
+
+  const auth = {
+    isAuthenticated: isAuthenticated,
+    updateAuthStatus: updateAuthStatus
   }
 
-  hasAuthenticated(authenticated) {
-    this.setState({authenticated: authenticated});
-  }
-  render(){
-    const authProps = {
-      authenticated: this.state.authenticated,
-      hasAuthenticated: this.hasAuthenticated
-    }
     
   return (
     <div className="App">
@@ -92,11 +76,8 @@ export default class App extends Component {
           <Nav.Item>
             <Link className="nav-link" to="/contact">Contact Us</Link>
           </Nav.Item>
-     
         </Nav>
-        <Nav className="user-box">
-        {this.state.authenticated ? (<><Nav.Item><Link className="nav-link" to="/notifications"><img className="notification-icon"src="/images/notifications.svg"></img></Link></Nav.Item><Nav.Item><LogoutButton hasAuthenticated ={this.hasAuthenticated}/></Nav.Item></>) : (<><Nav.Item><RegisterButton/></Nav.Item><Nav.Item><LoginButton/></Nav.Item></>)}
-        </Nav>
+        <UserBox auth={auth}/>
       </Navbar>
       <Routes>
         <Route path="/about" element={<HowItWorksPage />}></Route>
@@ -105,15 +86,15 @@ export default class App extends Component {
         <Route path="/contact" element={<ContactPage />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
-        <Route exact path="/pet/profile" element={<PetProfile />}></Route>
+        <Route exact path="/pets/:petId" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/" element={<LandingPage />}></Route>
-        <Route exact path="/login" element={<Login authProps={authProps}/>}></Route>
-        <Route exact path="/register" element={<Register authProps={authProps}/>}></Route>
-        <Route exact path="/reset-password" element={<ForgotPassword authProps={authProps}/>}></Route>
-        <Route exact path="/notifications" element={<NotificationCenter authProps={authProps}/>}></Route>
+        <Route exact path="/login" element={<Login auth={auth}/>}></Route>
+        <Route exact path="/register" element={<Register auth={auth}/>}></Route>
+        <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>
+        <Route exact path="/notifications" element={<NotificationCenter auth={auth}/>}></Route>
         <Route path = "*" element={<NotFound />}></Route>
       </Routes>
     </div>
   
-  );}
+  );
 };

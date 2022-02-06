@@ -1,92 +1,76 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import {authenticate} from "../components/Account";
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
-export default class Login extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            email: "",
-            password: "",
-            formErrors: {}
-        }
-        this.inputChange = this.inputChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
+export default function Login(props){
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [formErrors, setErrors] = useState({});
+    const navigate = useNavigate();
 
-    inputChange(e){
-        var name = e.target.name;
-        var value = e.target.value;
-        this.setState({[name]: value});
-    }
-    
-
-    async validateForm(){        
+    const validateForm = () => {        
         var errors = {};
-        if(this.state.email === '')
+        if(email === '')
             errors.email = "Username or email cannot be blank."
-        if(this.state.password === '')
+        if(password === '')
             errors.password = "Password cannot be blank."
 
-        this.setState({formErrors: errors});
+        setErrors(errors);
+        return Object.keys(formErrors).length > 0;
     }
 
-    hasError(key = null) {
-        if(key)
-            return this.state.formErrors.hasOwnProperty(key);
-
-        return Object.keys(this.state.formErrors).length > 0;
+    const hasError = (key) => {
+        return formErrors.hasOwnProperty(key);
     }
 
-    async onSubmit (e) {
-        await this.validateForm();
-        if(this.hasError())
+    const onSubmit = async (e) => {
+        if(validateForm())
             return;
 
         try{
-            await authenticate(this.state.email, this.state.password)
-            this.props.authProps.hasAuthenticated(true);
+            await authenticate(email, password)
+            props.auth.updateAuthStatus(true);
+            navigate(-1);
         }
         catch(err){
            var errors = {};
            errors.aws = err.message;
-           this.setState({formErrors: errors});
+           setErrors(errors);
         }
     }
-    render() {
-        return (
-            <div className="login-container">
-                <Form className='login'>
-                    <Form.Group className="mb-3" controlId="formGroupEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control 
-                            type="email" 
-                            name="email" 
-                            onChange = {this.inputChange} 
-                            isInvalid = {this.hasError('email')} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.email}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formGroupPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control 
-                            type="text" 
-                            name="password" 
-                            onChange = {this.inputChange}
-                            isInvalid ={this.hasError('password')} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.password}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <span>{this.state.formErrors.aws ? this.state.formErrors.aws : ""}</span>
-                    <Link className="password link" to="/reset-password">Forgot your password?</Link>
-                    <Button variant="primary" className="pink-btn" type="button" onClick = {this.onSubmit}>
-                        Login
-                    </Button>
-                </Form>
-            </div>
-        );
-    }
+
+    return (
+        <div className="login-container">
+            <Form className='login'>
+                <Form.Group className="mb-3" controlId="formGroupEmail">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control 
+                        type="email" 
+                        name="email" 
+                        onChange = {(e) => setEmail(e.target.value)} 
+                        isInvalid = {hasError('email')} />
+                    <Form.Control.Feedback type='invalid'>
+                        {formErrors.email}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formGroupPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control 
+                        type="text" 
+                        name="password" 
+                        onChange = {(e) => setPassword(e.target.value)}
+                        isInvalid ={hasError('password')} />
+                    <Form.Control.Feedback type='invalid'>
+                        {formErrors.password}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <span>{formErrors.aws ? formErrors.aws : ""}</span>
+                <Link className="password link" to="/reset-password">Forgot your password?</Link>
+                <Button variant="primary" className="pink-btn" type="button" onClick = {onSubmit}>
+                    Login
+                </Button>
+            </Form>
+        </div>
+    );
 }

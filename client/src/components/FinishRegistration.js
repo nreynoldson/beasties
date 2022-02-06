@@ -1,95 +1,75 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-export default function FinishRegistration(props) {
+export default function RegistrationForm(props){
+    const [name, setName]  = useState('');
+    const [dob, setDob] = useState('');
+    const [location, setLocation] = useState('');
+    const [isShelter, setShelter] = useState(false);
+    const [shelterName, setShelterName] = useState('');
     const navigate = useNavigate();
-  
-    return <RegistrationForm {...props} navigate={navigate} />;
-  }
 
-class RegistrationForm extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            name: "",
-            dob: "",
-            location: "",
-            isShelter: "",
-            shelterName: "",
-        }
-        this.onSubmit = this.onSubmit.bind(this);
-        this.inputChange = this.inputChange.bind(this);
-    }
-
-    onSubmit(){
+    const onSubmit = () => {
         //store data to db
-        this.props.updateStatus("complete")
-        this.props.navigate('/');
+        props.updateStatus("complete")
+        navigate(-1);
     }
 
-    inputChange(e){
-        var name = e.target.name;
-        var value = e.target.value;
-        this.setState({[name]: value});
-    }
-
-    render(){
-        return(
-            <div className="register">
-                <h2>Almost there! Finish setting up your account:</h2>
-                    <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                name="name" 
-                                value={this.state.name} 
-                                onChange= {this.inputChange}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Date of Birth</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                name="dob" 
-                                value={this.state.dob} 
-                                onChange= {this.inputChange}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Location</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                name="location" 
-                                value={this.state.location} 
-                                onChange= {this.inputChange}
-                                />
-                        </Form.Group>
-
-                        <Form.Check 
-                            type="switch"
-                            id="custom-switch"
-                            label="I am a shelter owner/worker"
-                            onChange = {(e) => {this.setState({isShelter: e.target.checked})}}
+    return(
+        <div className="register">
+            <h2>Almost there! Finish setting up your account:</h2>
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control 
+                            type="text" 
+                            name="name" 
+                            value={name} 
+                            onChange= {(e) => {setName(e.target.value)}}
                         />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Date of Birth</Form.Label>
+                        <Form.Control 
+                            type="text" 
+                            name="dob" 
+                            value={dob} 
+                            onChange= {(e) => {setDob(e.target.value)}}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Location</Form.Label>
+                        <Form.Control 
+                            type="text" 
+                            name="location" 
+                            value={location} 
+                            onChange= {(e) => {setLocation(e.target.value)}}
+                            />
+                    </Form.Group>
 
-                        {this.state.isShelter ? 
-                            <><Form.Group className="mb-3">
-                                <Form.Label>Shelter Name</Form.Label>
-                                <Form.Control 
-                                    type="text" 
-                                    name="shelterName" 
-                                    value={this.state.shelterName} 
-                                    onChange= {this.inputChange}
-                                />
-                            </Form.Group>
-                             </> : ""}
-                            <Button variant="primary" className="pink-btn" type="button" onClick={this.onSubmit}>
-                                Submit
-                            </Button>
-                    </Form>
-                </div>
-        );
-    }
+                    <Form.Check 
+                        type="switch"
+                        id="custom-switch"
+                        label="I am a shelter owner/worker"
+                        onChange = {(e) => {setShelter(e.target.checked)}}
+                    />
+
+                    {isShelter ? 
+                        <><Form.Group className="mb-3">
+                            <Form.Label>Shelter Name</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                name="shelterName" 
+                                value={shelterName} 
+                                onChange= {(e) => {setShelterName(e.target.value)}}
+                            />
+                        </Form.Group>
+                            </> : ""}
+                        <Button variant="primary" className="pink-btn" type="button" onClick={onSubmit}>
+                            Submit
+                        </Button>
+                </Form>
+            </div>
+    );
 }

@@ -1,0 +1,67 @@
+.carousel-container{
+    width: 90%;
+    margin: auto;
+}
+
+.slick-slide img {
+    margin: auto;
+    width: 100%;
+    height: auto;
+    filter: blur(2px);
+}
+
+.slick-slide.slick-current img{
+    filter: unset;
+}
+
+.profile-container{
+    display: flex;
+    flex-direction: row;
+    margin: 50px auto auto auto;
+}
+
+.profile-info{
+    height: 100%;
+}
+
+.right{
+    width: 70%;
+}
+
+.info-container{
+    flex: 2;
+    /*border: 1px solid black;*/
+    margin: 20px;
+}
+
+.bio-box{
+    /*border: 1px solid black;*/
+    margin: 50px 0px 0px 0px;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
+
+.slick-next{
+    right: -40px;
+}
+.slick-prev{
+    left: -40px;
+}
+
+span.label{
+    font-weight: bold;
+}
+
+.profile-actions button{
+    display:block;
+    margin: 20px auto;
+}
+
+.list-group-item{
+    display: flex;
+    justify-content: space-between;
+    border: none;
+}

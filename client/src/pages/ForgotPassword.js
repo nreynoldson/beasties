@@ -1,192 +1,157 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import {CognitoUser} from "amazon-cognito-identity-js";
 import Pool from "../UserPool";
 import {authenticate} from "../components/Account";
 
-export default class ForgotPassword extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            email: "",
-            password: "",
-            confirmPassword: "",
-            confirmationCode: "",
-            status: "sending",
-            formErrors: ""
-        }
-        this.inputChange = this.inputChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.onSend = this.onSend.bind(this);
-        this.user = null;
-        this.validateEmail = this.validateEmail.bind(this);
-        this.validatePassword = this.validatePassword.bind(this);
+export default function ForgotPassword(props) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [confirmationCode, setConfirmationCode] = useState('');
+    const [status, setStatus] = useState('');
+    const [formErrors, setErrors] = useState('');
+    var user = null;
 
-    }
-
-    inputChange(e){
-        var name = e.target.name;
-        var value = e.target.value;
-        this.setState({[name]: value});
-    }
-
-    async validateEmail(){
+    const validateEmail = () => {
         var errors = {};
-        if(this.state.status === 'sending'){
-            if(this.state.email === ""){
+        if(status === 'sending'){
+            if(email === ""){
                 errors.email = "Email cannot be blank"
             } else {
                 const expression = /\S+@\S+/;
-                var validEmail = expression.test(String(this.state.email).toLowerCase());
+                var validEmail = expression.test(String(email).toLowerCase());
                 if(!validEmail){
                     errors.email = "Invalid email"
                 }
             }
         }
-
-        this.setState({formErrors: errors});
+        setErrors(errors);
+        return Object.keys(formErrors).length > 0;
     }
 
-    async validatePassword(){
+    const validatePassword = () => {
         var errors = {};
-        console.log('in validate form')
         
-        if(this.state.status === 'confirming'){
-            if(this.state.password === "")
+        if(status === 'confirming'){
+            if(password === "")
                 errors.password = "New password can't be blank"
-            if(this.state.confirmPassword === "")
+            if(confirmPassword === "")
                 errors.confirmPassword = "Please confirm new password"
-            if(this.state.confirmationCode === "")
+            if(confirmationCode === "")
                 errors.confirmationCode = "Please provide the confirmation code to reset your password";
         }
         
-        if(this.state.password !== this.state.confirmPassword && !errors.hasOwnProperty('password') ){
+        if(password !== confirmPassword && !errors.hasOwnProperty('password') ){
             errors.password = errors.confirmPassword = "Passwords do not match"
         }
 
-        this.setState({formErrors: errors});
-        console.log(errors);
+        setErrors(errors);
+        return Object.keys(formErrors).length > 0;
     }
 
-    hasError(key = null) {
-        console.log('in has error')
-        if(key)
-            return this.state.formErrors.hasOwnProperty(key);
-            console.log('no key')
-            console.log(this.state.formErrors)
-            console.log(Object.keys(this.state.formErrors).length);
-        return Object.keys(this.state.formErrors).length > 0;
+    const hasError = (key) => {
+        return formErrors.hasOwnProperty(key);
     }
 
-    async onSubmit(e){
-        await this.validatePassword();
-        if(this.hasError())
+    const onSubmit = (e) => {
+        if(validatePassword())
             return;
         
-            this.user.confirmPassword(this.state.confirmationCode, this.state.password, {
-                onSuccess: async () => {
-                    console.log('Password confirmed!');
-                    await authenticate(this.state.email, this.state.password)
-                    this.props.authProps.hasAuthenticated(true);
-                },
-                onFailure(err) {
-                    console.log(err);
-                    console.log('Password not confirmed!');
-                },
-            });
+        user.confirmPassword(confirmationCode, password, {
+            onSuccess: async () => {
+                await authenticate(email, password)
+                props.auth.updateAuthStatus(true);
+            },
+            onFailure(err) {
+                console.log(err);
+                console.log('Password not confirmed!');
+            },
+        });
     }
 
-    async onSend (e) {
-        console.log('in on submit')
-        await this.validateEmail();
-        if(this.hasError())
+    const onSend = (e) => {
+        if(validateEmail())
             return;
-        this.setState({loading: true})
-
 
         var userData = {
-            Username: this.state.email,
+            Username: email,
             Pool: Pool
         };
-        this.user = new CognitoUser(userData);
-        console.log(this.user);
-        this.user.forgotPassword({
+        user = new CognitoUser(userData);
+
+        user.forgotPassword({
             onSuccess: (data) => {
                 // successfully initiated reset password request
                 console.log('CodeDeliveryData from forgotPassword: ' + data);
-                this.setState({status: 'confirming'});
+                setStatus('confirming');
             },
             onFailure: function(err) {
                 console.log(err);
-            },
-            //Optional automatic callback
-           /* inputVerificationCode: function(data) {
-                console.log('Code sent to: ' + data);
-                var code = document.getElementById('code').value;
-                var newPassword = document.getElementById('new_password').value;
-                cognitoUser.confirmPassword(verificationCode, newPassword, {
-                    onSuccess() {
-                        console.log('Password confirmed!');
-                    },
-                    onFailure(err) {
-                        console.log('Password not confirmed!');
-                    },
-                });
-            },*/
+            }
         });
-
     }
-    render() {
-        console.log(this.props)
-        if(this.state.status === 'sending'){
-            return (
-        
-                <Form className="login">
-                    <p>Enter the email associated with your account and we'll email you a reset link.</p>
-                    <Form.Group className="mb-3" controlId="formGroupEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" name="email" onChange = {this.inputChange}
-                        isInvalid= {this.hasError("email")} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.email}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Button variant="primary" type="button" onClick = {this.onSend}>
-                        Send
-                    </Button>
-                </Form>
-            );
-        } else {
-            return (
-                <Form className="login">
-                    <Form.Group className="mb-3">
-                        <Form.Label>Confirmation Code</Form.Label>
-                        <Form.Control type="confirmationCode" name="confirmationCode" 
-                        isInvalid= {this.hasError("confirmationCode")} onChange = {this.inputChange} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.confirmationCode}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label> New Password</Form.Label>
-                        <Form.Control type="password" name="password" isInvalid= {this.hasError("password")} onChange = {this.inputChange} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.password}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control type="password" name="confirmPassword" isInvalid= {this.hasError("confirmPassword")} onChange = {this.inputChange} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.confirmPassword}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Button variant="primary" className="pink-btn" type="button" onClick = {this.onSubmit}>
-                        Submit
-                    </Button>
-                </Form>
-            )
-        }
 
+    if(status === 'sending'){
+        return (
+            <Form className="login">
+                <p>Enter the email associated with your account and we'll email you a reset link.</p>
+                <Form.Group className="mb-3" controlId="formGroupEmail">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control 
+                        type="email" 
+                        name="email" 
+                        onChange = {(e) => {setEmail(e.target.value)}}
+                        isInvalid= {hasError("email")} />
+                    <Form.Control.Feedback type='invalid'>
+                        {formErrors.email}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Button variant="primary" type="button" onClick = {onSend}>
+                    Send
+                </Button>
+            </Form>
+        );
+    } else {
+        return (
+            <Form className="login">
+                <Form.Group className="mb-3">
+                    <Form.Label>Confirmation Code</Form.Label>
+                    <Form.Control 
+                        type="confirmationCode" 
+                        name="confirmationCode" 
+                        isInvalid= {hasError("confirmationCode")} 
+                        onChange = {(e) => {setConfirmationCode(e.target.value)}} />
+                    <Form.Control.Feedback type='invalid'>
+                        {formErrors.confirmationCode}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label> New Password</Form.Label>
+                    <Form.Control 
+                        type="password" 
+                        name="password" 
+                        isInvalid= {hasError("password")} 
+                        onChange = {(e) => {setPassword(e.target.value)}} />
+                    <Form.Control.Feedback type='invalid'>
+                        {formErrors.password}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Confirm Password</Form.Label>
+                    <Form.Control 
+                        type="password" 
+                        name="confirmPassword" 
+                        isInvalid= {hasError("confirmPassword")} 
+                        onChange = {(e) => {setConfirmPassword(e.target.value)}} />
+                    <Form.Control.Feedback type='invalid'>
+                        {formErrors.confirmPassword}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Button variant="primary" className="pink-btn" type="button" onClick = {onSubmit}>
+                    Submit
+                </Button>
+            </Form>
+        )
     }
 }

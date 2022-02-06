@@ -1,57 +1,42 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 
-export default class ChangePassword extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            oldPassword: "",
-            newPassword: "",
-            confirmPassword: "",
-            formErrors: ""
-        }
-        this.inputChange = this.inputChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.validateForm = this.validateEmail.bind(this);
-    }
-
-    inputChange(e){
-        var name = e.target.name;
-        var value = e.target.value;
-        this.setState({[name]: value});
-    }
-
-    async validateForm(){
+export default function ChangePassword(props) {
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [formErrors, setErrors] = useState('');
+    var user = null;
+    
+    const validateForm = () => {
         var errors = {};
-        for (const property in this.state) {
-            if(this.state[property] === "" && property !== 'formErrors'){
-                errors[property] = "Field cannot be blank"
-            }
-        }
-        if(this.state.newPassword !== this.state.confirmPassword && !errors.hasOwnProperty('newPassword') ){
+        if(oldPassword === '')
+            errors.oldPassword = "Please provide your most recent password."
+        if(newPassword === '')
+            errors.newPassword = "Please enter a new password."
+        if(confirmPassword === '')
+            errors.newPassword = "You must confirm your new password."
+            
+        if(newPassword !== confirmPassword && !errors.hasOwnProperty('newPassword') ){
             errors.newPassword = errors.confirmPassword = "Passwords do not match"
         }
         
-        this.setState({formErrors: errors});
+        setErrors(errors);
+        return Object.keys(formErrors).length > 0;
     }
 
-    hasError(key = null) {
-        if(key)
-            return this.state.formErrors.hasOwnProperty(key);
-
-        return Object.keys(this.state.formErrors).length > 0;
+    const hasError = (key) => {
+        return formErrors.hasOwnProperty(key);
     }
 
-    async onSubmit(e){
-        await this.validateForm();
-        if(this.hasError())
+    const onSubmit = (e) => {
+        if(validateForm())
             return;
         
-        this.user.changePassword(this.state.oldPassword, this.state.newPassword, (err, result) => {
+        user.changePassword(oldPassword, newPassword, (err, result) => {
             if (err) {
-                console.log(err)
                 var errors = {'aws': err.message};
-                this.setState({formErrors: errors});
+                setErrors(errors)
             } else {
                 console.log('success!');
             }
@@ -59,46 +44,44 @@ export default class ChangePassword extends Component {
 
     }
 
-    render() {
-        return (
-            <Form>
-                <Form.Group className="mb-3">
-                    <Form.Label>Old Password</Form.Label>
-                    <Form.Control 
-                        type="password" 
-                        name="oldPassword" 
-                        isInvalid= {this.hasError("oldPassword")} 
-                        onChange = {this.inputChange} />
-                    <Form.Control.Feedback type='invalid'>
-                        {this.state.formErrors.oldPassword}
-                    </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label> New Password</Form.Label>
-                    <Form.Control 
-                        type="newPassword" 
-                        name="newPassword" 
-                        isInvalid= {this.hasError("newPassword")} 
-                        onChange = {this.inputChange} />
-                    <Form.Control.Feedback type='invalid'>
-                        {this.state.formErrors.newPassword}
-                    </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control 
-                        type="password" 
-                        name="confirmPassword" 
-                        isInvalid= {this.hasError("confirmPassword")} 
-                        onChange = {this.inputChange} />
-                    <Form.Control.Feedback type='invalid'>
-                        {this.state.formErrors.confirmPassword}
-                    </Form.Control.Feedback>
-                </Form.Group>
-                <Button variant="primary" className="pink-btn" type="button" onClick = {this.onSubmit}>
-                    Submit
-                </Button>
-            </Form>
-        )
-    }
+    return (
+        <Form>
+            <Form.Group className="mb-3">
+                <Form.Label>Old Password</Form.Label>
+                <Form.Control 
+                    type="password" 
+                    name="oldPassword" 
+                    isInvalid= {hasError("oldPassword")} 
+                    onChange = {(e) => {setOldPassword(e.target.value)}} />
+                <Form.Control.Feedback type='invalid'>
+                    {formErrors.oldPassword}
+                </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label> New Password</Form.Label>
+                <Form.Control 
+                    type="newPassword" 
+                    name="newPassword" 
+                    isInvalid= {hasError("newPassword")} 
+                    onChange = {(e) => {setNewPassword(e.target.value)}} />
+                <Form.Control.Feedback type='invalid'>
+                    {formErrors.newPassword}
+                </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control 
+                    type="password" 
+                    name="confirmPassword" 
+                    isInvalid= {hasError("confirmPassword")} 
+                    onChange = {(e) => {setConfirmPassword(e.target.value)}} />
+                <Form.Control.Feedback type='invalid'>
+                    {formErrors.confirmPassword}
+                </Form.Control.Feedback>
+            </Form.Group>
+            <Button variant="primary" className="pink-btn" type="button" onClick = {onSubmit}>
+                Submit
+            </Button>
+        </Form>
+    );
 }

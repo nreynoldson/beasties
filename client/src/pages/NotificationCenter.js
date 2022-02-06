@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { Col, Row, Container} from 'react-bootstrap';
-import { getUser } from '../components/Account';
+import React, { useState, useEffect } from 'react';
+import {Container} from 'react-bootstrap';
 import Notification from '../components/Notification';
 import './css/Notification.css'
 
@@ -31,35 +30,26 @@ const testData = [
     },
 ]
 
-export default class NotificationCenter extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            isShelter: true,
-            requests: []
-        }
-    }
+export default function NotificationCenter(props) {
+    const [isShelter, setShelter] = useState(false);
+    const [requests, setRequests] = useState([]);
 
-    async componentDidMount(){
-        //If the account is a shelter account, set isShelter
-        var user = await getUser();
+    useEffect(() => {
+        //var user = await getUser();
+        setRequests(testData)
+    });
 
-        //Grab all notifications that involve the given user
-        this.setState({requests: testData});
+    var requestEl = [];
+    requests.forEach((req) => {
+            requestEl.push(
+                <Notification  isShelter = {isShelter} req = {req}/>
+        )
+    });
 
-    }
-    render() {
-        var requests = [];
-        this.state.requests.forEach((req) => {
-    
-            requests.push(
-                <Notification  isShelter = {this.state.isShelter} req = {req}/>
-          )});
-        return (
-            <Container>
-                {requests}
-            </Container>
-        );
-    }
+    return (
+        <Container className="notifications">
+            {requestEl}
+        </Container>
+    );
 }
 

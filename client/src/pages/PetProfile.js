@@ -1,92 +1,126 @@
-import React, { Component } from 'react';
-import {Form, Button} from 'react-bootstrap';
-import {authenticate} from "../components/Account";
-import {Link} from 'react-router-dom';
+import React, { useEffect, useState} from 'react';
+import {Container, Card, ListGroup, Col, Button} from 'react-bootstrap';
+import LoginButton from '../components/LoginButton';
+import AnimalConsts from '../consts/Animal';
+import {useParams} from 'react-router-dom';
+import Slider from 'react-slick';
+import './css/PetProfile.css';
 
-export default class PetProfile extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            email: "",
-            password: "",
-            formErrors: {}
+var data = {
+    id: 1,
+    name: 'Fido',
+    age: 'young',
+    gender: 'male',
+    type: 'dog',
+    breed: 'englishSpringerSpaniel',
+    availability: 'available',
+    imageUrl: null,
+    dateCreated: '2022-01-23T18:44:20.051Z',
+    shelter: 'Happy Paws',
+    bio: "Fido was rescued from the streets of Fresno where he was running around with a gang of small dogs. He is a sweet boy that loves to give kisses and cuddle. Given his background, he can be slightly skittish when it comes to body handling and does exhibit some resource guarding. He would do well in a house without children, but would fare well with other dogs."
+};
+
+export default function PetProfile(props) {
+    const { petId } = useParams();
+    const [petInfo, setPetInfo] = useState({});
+
+    useEffect(() => {
+        // Request the necessary data from the back end
+        // Grab images from S3
+        var petData = {...data};
+        var type = AnimalConsts.typeToDisplayNameMap[data.type];
+
+        if (data.type === 'dog' || data.type === 'cat') {
+        const breedToDisplayNameMap = (data.type === 'dog') ?
+            AnimalConsts.dogBreedsToDisplayNameMap :
+            AnimalConsts.catBreedsToDisplayNameMap;
+            var breed = breedToDisplayNameMap[data.breed];
         }
-        this.inputChange = this.inputChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
+
+        petData.type = type;
+        petData.breed = breed;
+
+        setPetInfo(petData);
+    }, []);
+
+    const requestDate = () => {
+        // Create request to backend
     }
 
-    inputChange(e){
-        var name = e.target.name;
-        var value = e.target.value;
-        this.setState({[name]: value});
-    }
-    
-
-    async validateForm(){        
-        var errors = {};
-        if(this.state.email === '')
-            errors.email = "Username or email cannot be blank."
-        if(this.state.password === '')
-            errors.password = "Password cannot be blank."
-
-        this.setState({formErrors: errors});
+    const requestToAdopt = () => {
+        // Create request to backend
     }
 
-    hasError(key = null) {
-        if(key)
-            return this.state.formErrors.hasOwnProperty(key);
+    var settings = {
+        dots: true,
+        infinite: true,
+        centerMode: true,
+        centerPadding: 0,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: true
+      };
 
-        return Object.keys(this.state.formErrors).length > 0;
-    }
 
-    async onSubmit (e) {
-        await this.validateForm();
-        if(this.hasError())
-            return;
+    var profileActions;
+    if(props.auth.updateAuthStatus){
+        profileActions = (
+            <div className="profile-actions"> 
+                <Button onClick={requestDate}>Request a Date</Button>
+                <Button onClick={requestToAdopt}>Request to Adopt</Button>
+            </div>);
+    } else{
+        profileActions = (
+            <div className="profile-actions">
+                <span>Login to make a request!</span>
+                <LoginButton></LoginButton>
+            </div>);
+    }
+    return(
+        <Container className="profile-container">
+            <Col>
+                <Card className="profile-info">
+                <Card.Header>{petInfo.name}</Card.Header>
+                <ListGroup variant="flush">
+                    <ListGroup.Item><span className='label'>Type:</span> <span>{petInfo.type}</span></ListGroup.Item>
+                    <ListGroup.Item><span className='label'>Breed:</span> <span>{petInfo.breed}</span></ListGroup.Item>
+                    <ListGroup.Item><span className='label'>Age:</span> <span>{petInfo.age}</span></ListGroup.Item>
+                    <ListGroup.Item><span className='label'>Gender:</span><span>{petInfo.gender}</span></ListGroup.Item>
+                    <ListGroup.Item><span className='label'>Availability:</span><span>{petInfo.availability}</span></ListGroup.Item>
+                    <ListGroup.Item><span className='label'>Shelter:</span><span>{petInfo.shelter}</span></ListGroup.Item>
+                </ListGroup>
 
-        try{
-            await authenticate(this.state.email, this.state.password)
-            this.props.authProps.hasAuthenticated(true);
-        }
-        catch(err){
-           var errors = {};
-           errors.aws = err.message;
-           this.setState({formErrors: errors});
-        }
-    }
-    render() {
-        return (
-            <div className="login-container">
-                <Form className='login'>
-                    <Form.Group className="mb-3" controlId="formGroupEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control 
-                            type="email" 
-                            name="email" 
-                            onChange = {this.inputChange} 
-                            isInvalid = {this.hasError('email')} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.email}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formGroupPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control 
-                            type="text" 
-                            name="password" 
-                            onChange = {this.inputChange}
-                            isInvalid ={this.hasError('password')} />
-                        <Form.Control.Feedback type='invalid'>
-                            {this.state.formErrors.password}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <span>{this.state.formErrors.aws ? this.state.formErrors.aws : ""}</span>
-                    <Link className="password link" to="/reset-password">Forgot your password?</Link>
-                    <Button variant="primary" className="pink-btn" type="button" onClick = {this.onSubmit}>
-                        Login
-                    </Button>
-                </Form>
-            </div>
-        );
-    }
+                {profileActions}
+                </Card>
+            </Col>
+
+            <Col className="right">
+                <div className="carousel-container">
+                    <Slider {...settings}>
+                    <div>
+                        <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
+                    </div>
+                    <div>
+                        <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
+                    </div>
+                    <div>
+                        <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
+                    </div>
+                    <div>
+                        <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
+                    </div>
+                    </Slider>
+                </div>
+
+                <Card className="bio-box">
+                    <Card.Header>Bio</Card.Header>
+                    <Card.Body>
+                        {petInfo.bio}
+                    </Card.Body>
+                </Card>
+            </Col>
+        </Container>
+    );
 }
+
