@@ -3,7 +3,7 @@ import './css/Common.css';
 const ContactPage = (props) => {
 
   return (
-    <div className="flexColumn">
+    <div>
       <h1 className="display-3 mb-4">Contact Us</h1>
       <img
         alt="Beasties Logo"

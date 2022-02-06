@@ -24,15 +24,15 @@ const BrowsePetsPage = (props) => {
       goodWithChildren: false,
       mustBeLeashed: false,
       availability: 'available',
-      sortOrder: 'newest'
+      sortOrder: 'dateCreated'
     };
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(false);
-  const [petData, setPetData] = useState({ results: [] });
+  const [searchData, setSearchData] = useState({ results: [] });
 
-  const afterGetPetInfo = useCallback((response) => {
+  const afterGetSearchResults = useCallback((response) => {
 
     if (response.err) {
       // Handle error
@@ -47,23 +47,10 @@ const BrowsePetsPage = (props) => {
 
   }, []);
 
-  const afterSearch = useCallback((response) => {
-
-    if (response.err) {
-      // Handle error
-      return;
-    }
-
-    else {
-      // Navigate to pet profile page
-    }
-
-  }, []);
-
   const handleSearch = useCallback(() => {
 
     // TODO: make this actually search when the back end api is ready
-    setPetData({ results: [
+    setSearchData({ results: [
       {
         id: 1,
         name: 'Fido',
@@ -72,8 +59,12 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'englishSpringerSpaniel',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: true,
+        goodWithOtherAnimals: true,
+        mustBeLeashed: true,
+        images: []
       },
       {
         id: 2,
@@ -83,8 +74,12 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'akita',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       },
       {
         id: 3,
@@ -94,8 +89,28 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'cavalierKingCharlesSpaniel',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: true,
+        images: [
+          {
+            id: 1,
+            url: '/images/no_image.svg',
+            displayName: 'fido.jpg'
+          },
+          {
+            id: 2,
+            url: '/images/no_image.svg',
+            displayName: 'fido.jpg'
+          },
+          {
+            id: 3,
+            url: '/images/no_image.svg',
+            displayName: 'fido.jpg'
+          }
+        ]
       },
       {
         id: 4,
@@ -105,8 +120,12 @@ const BrowsePetsPage = (props) => {
         type: 'cat',
         breed: 'norwegianForestCat',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       },
       {
         id: 5,
@@ -116,8 +135,12 @@ const BrowsePetsPage = (props) => {
         type: 'other',
         breed: null,
         availability: 'pending',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       },
       {
         id: 6,
@@ -127,8 +150,12 @@ const BrowsePetsPage = (props) => {
         type: 'cat',
         breed: 'other',
         availability: 'available',
-        imageUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z'
+        avatarUrl: null,
+        dateCreated: '2022-01-23T18:44:20.051Z',
+        goodWithChildren: false,
+        goodWithOtherAnimals: false,
+        mustBeLeashed: false,
+        images: []
       }
     ] });
   }, []);
@@ -288,11 +315,11 @@ const BrowsePetsPage = (props) => {
 
   const searchResults = useMemo(() => {
 
-    if (!petData?.results?.length) {
+    if (!searchData?.results?.length) {
       return 'No matching results found'
     }
 
-    const resultComponents = petData.results.map((pet) => {
+    const resultComponents = searchData.results.map((pet) => {
 
       return (
         <div key={pet.id}>
@@ -302,14 +329,20 @@ const BrowsePetsPage = (props) => {
             age={pet.age}
             breed={pet.breed}
             type={pet.type}
-            imageUrl={pet.imageUrl}
+            avatarUrl={pet.avatarUrl}
+            images={pet.images}
+            availability={pet.availability}
+            gender={pet.gender}
+            goodWithChildren={pet.goodWithChildren}
+            goodWithOtherAnimals={pet.goodWithOtherAnimals}
+            mustBeLeashed={pet.mustBeLeashed}
           />
         </div>
       );
     });
 
     return (
-      <div className="d-flex flex-column">
+      <div className="d-flex flex-column w-100">
         <Form.Select
           className="sortOrderSelect mr-3"
           onChange={handleValueChange}
@@ -327,7 +360,7 @@ const BrowsePetsPage = (props) => {
         </div>
       </div>
     );
-  }, [handleValueChange, inputs, petData]);
+  }, [handleValueChange, inputs, searchData]);
 
   const componentOutput = useMemo(() => {
 

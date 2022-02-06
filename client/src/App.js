@@ -1,14 +1,15 @@
-
 import React, {useState, useEffect} from 'react';
 import {
-  Link,
+  NavLink,
   Route,
   Routes
 } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import AdminLandingPage from './pages/AdminLandingPage';
 import BrowsePetsPage from './pages/BrowsePetsPage';
 import BrowseSheltersPage from './pages/BrowseSheltersPage';
+import BrowseUsersPage from './pages/BrowseUsersPage';
 import ContactPage from './pages/ContactPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import LandingPage from './pages/LandingPage';
@@ -27,9 +28,10 @@ import Navbar from 'react-bootstrap/Navbar';
 
 import './App.css';
 
+
 export default function App(){
-    const [isAuthenticated, updateAuthStatus] = useState(false);
-    const [user, setUser] = useState(null);
+  const [isAuthenticated, updateAuthStatus] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(async () => {
     var user = await getUser();
@@ -39,18 +41,35 @@ export default function App(){
     }
   }, []);
 
+  const isAdmin = true;
+
+  let adminPageLink = null;
+  let userSearchLink = null;
+  if (isAdmin) {
+    adminPageLink = (
+      <Nav.Item>
+        <NavLink className="nav-link" to="/admin">Admin</NavLink>
+      </Nav.Item>
+    );
+
+    userSearchLink = (
+      <Nav.Item>
+        <NavLink className="nav-link" to="/browse-users">Users</NavLink>
+      </Nav.Item>
+    );
+  }
+
   const auth = {
     isAuthenticated: isAuthenticated,
     updateAuthStatus: updateAuthStatus
   }
 
-    
   return (
     <div className="App">
       <Navbar className="me-auto" variant="dark">
         <Nav>
           <Navbar.Brand>
-            <Link className="nav-link" to="/">
+            <NavLink className="nav-link" to="/">
               <div className="d-flex align-items-center">
                 <img
                   alt="Beasties Logo"
@@ -60,29 +79,35 @@ export default function App(){
                 />
                 Beasties
               </div>
-            </Link>
+            </NavLink>
           </Navbar.Brand>
         </Nav>
         <Nav className="ml-auto navLinks">
           <Nav.Item>
-            <Link className="nav-link" to="/about">How It Works</Link>
+            <NavLink className="nav-link" to="/about" >
+              How It Works
+            </NavLink>
+          </Nav.Item>
+          {adminPageLink}
+          {userSearchLink}
+          <Nav.Item>
+            <NavLink className="nav-link" to="/browse-pets">Pets</NavLink>
           </Nav.Item>
           <Nav.Item>
-            <Link className="nav-link" to="/browse-pets">Pets</Link>
+            <NavLink className="nav-link" to="/browse-shelters">Shelters</NavLink>
           </Nav.Item>
           <Nav.Item>
-            <Link className="nav-link" to="/browse-shelters">Shelters</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link className="nav-link" to="/contact">Contact Us</Link>
+            <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
           </Nav.Item>
         </Nav>
         <UserBox auth={auth}/>
       </Navbar>
       <Routes>
         <Route path="/about" element={<HowItWorksPage />}></Route>
+        <Route path="/admin" element={<AdminLandingPage />}></Route>
         <Route path="/browse-pets" element={<BrowsePetsPage />}></Route>
         <Route path="/browse-shelters" element={<BrowseSheltersPage />}></Route>
+        <Route path="/browse-users" element={<BrowseUsersPage />}></Route>
         <Route path="/contact" element={<ContactPage />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>

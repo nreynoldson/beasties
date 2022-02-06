@@ -1,7 +1,8 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
 import AnimalConsts from '../consts/Animal';
+import ImageManagement from '../components/images/ImageManagement';
 
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
@@ -123,9 +124,9 @@ const PetModifyProfilePage = (props) => {
   const componentOutput = useMemo(() => {
 
     return (
-      <Fragment>
+      <div className="d-flex flex-column align-items-center">
         <h1 className="display-4 mt-2">{(isNewPet) ? 'Add' : 'Edit'} Pet</h1>
-        <div className="fields p-5 d-flex flex-column justify-content-between align-items-right">
+        <div className="fields p-5 d-flex flex-column justify-content-between align-items-right w-75">
           <FloatingLabel controlId="floatingInput" label="Name">
             <Form.Control
               type="text"
@@ -221,8 +222,14 @@ const PetModifyProfilePage = (props) => {
           </FloatingLabel>
         </div>
 
+        <ImageManagement
+          allowEdit={true}
+          avatarImageId={2}
+          type="pet"
+        />
+
         <Button size="lg" variant="primary" onClick={handleSubmit}>Submit</Button>
-      </Fragment>
+      </div>
     );
   }, [breedSelect, handleSubmit, handleValueChange, inputs, isNewPet]);
 
