@@ -1,14 +1,4 @@
-.petProfileQuickView {
-  border-width: 1px;
-  min-width: 450px;
-  box-shadow: 6px 6px 10px gray;
-}
-
-.petProfileQuickViewTable {
-  font-size: 0.75rem;
-}
-
-.petSearchResult {
+.shelterSearchResult {
   background-color: whitesmoke;
   border: 2px solid black;
   border-radius: 10px;
@@ -20,7 +10,7 @@
   text-decoration: none;
 }
 
-.petSearchResult:hover {
+.shelterSearchResult:hover {
   color: black;
   text-decoration: none;
 }
