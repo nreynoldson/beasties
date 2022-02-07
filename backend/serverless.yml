@@ -58,6 +58,20 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
+  
+  GetUserByUserName:
+    handler: src/lambda/http/getUserByUsername.handler
+    events:
+      - http:
+          method: get
+          path: user/{userName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
 
 resources:
   Resources:
