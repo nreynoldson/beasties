@@ -7,7 +7,7 @@ import { createLogger } from '../utils/logger'
 
 //generate BlogAccess and BlogS3Access object instance
 const userAccess = new UserTableAccess()
-const logger = createLogger('Blog BusinessLogic Execution')
+const logger = createLogger('Beasties BusinessLogic Execution')
 
 export async function createUser(createUserRequest: CreateUserAPIRequest) : Promise<CreateUserAPIRequest> {
     

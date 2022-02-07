@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-import { getUserByUsername } from '../../businessLogic/beastiesLogic'
+import { getUserByUsername } from '../../businessLogic/beastiesUserLogic'
 
 import {createLogger} from '../../utils/logger'
 
