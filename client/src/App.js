@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   NavLink,
   Route,
@@ -15,13 +15,31 @@ import HowItWorksPage from './pages/HowItWorksPage';
 import LandingPage from './pages/LandingPage';
 import NotFound from './pages/NotFound';
 import PetModifyProfilePage from './pages/PetModifyProfilePage';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword'
+import NotificationCenter from './pages/NotificationCenter'
+import PetProfile from './pages/PetProfile'
+import {getUser} from './components/Account.js';
+import UserBox from './components/UserBox.js';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 import './App.css';
 
-export default function App() {
+
+export default function App(){
+  const [isAuthenticated, updateAuthStatus] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(async () => {
+    var user = await getUser();
+    if(user){
+      updateAuthStatus(true);
+      setUser(user);
+    }
+  }, []);
 
   const isAdmin = true;
 
@@ -41,8 +59,12 @@ export default function App() {
     );
   }
 
-  return (
+  const auth = {
+    isAuthenticated: isAuthenticated,
+    updateAuthStatus: updateAuthStatus
+  }
 
+  return (
     <div className="App">
       <Navbar className="me-auto" variant="dark">
         <Nav>
@@ -78,6 +100,7 @@ export default function App() {
             <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
           </Nav.Item>
         </Nav>
+        <UserBox auth={auth}/>
       </Navbar>
       <Routes>
         <Route path="/about" element={<HowItWorksPage />}></Route>
@@ -88,10 +111,15 @@ export default function App() {
         <Route path="/contact" element={<ContactPage />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
+        <Route exact path="/pets/:petId" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/" element={<LandingPage />}></Route>
+        <Route exact path="/login" element={<Login auth={auth}/>}></Route>
+        <Route exact path="/register" element={<Register auth={auth}/>}></Route>
+        <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>
+        <Route exact path="/notifications" element={<NotificationCenter auth={auth}/>}></Route>
         <Route path = "*" element={<NotFound />}></Route>
       </Routes>
     </div>
+  
   );
 };
-

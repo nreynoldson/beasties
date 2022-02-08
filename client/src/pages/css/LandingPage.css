@@ -1,27 +1,25 @@
 .btn-warning {
-  background-color: deeppink;
-  border-color: deeppink;
+  background-color: #F45474;
+  border-color: #F45474;
   color: white;
-
   font-size: 1.4rem;
 }
 
 .btn-warning:hover {
-  background-color: rgb(250, 81, 171);
-  border-color: deeppink;
+  background-color: #f12750;
+  border-color: #f12750;
   color: white;
-
   font-size: 1.4rem;
 }
 
 .pinkLink {
-  color: deeppink;
+  color: #F45474;
   text-decoration: none;
   font-size: 1.4rem;
 }
 
 .pinkLink:hover {
-  color: deeppink;
+  color: #F45474;
   text-decoration: none;
   font-size: 1.4rem;
 }

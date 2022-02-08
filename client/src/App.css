@@ -67,3 +67,41 @@
 .navLinks {
   font-size: 1.5rem;
 }
+
+.pink-btn{
+  width: 100%;
+  margin: 5px 0px;
+  background-color: #F45474;
+  border: none;
+}
+.pink-btn:hover{
+  background-color: #f12750;
+  border:none;
+}
+.pink-btn:focus {
+  background-color: #F45474;
+  border-color: #F45474;
+}
+.pink-btn:active {
+  background-color: #F45474;
+  border-color: #F45474;
+}
+
+.pink-btn:not(:disabled):not(.disabled):active{
+  background-color: #F45474;
+  border-color: #F45474;
+}
+
+.nav-btn{
+  width: unset;
+  margin: 10px;
+}
+
+img.notification-icon{
+  height: 30px;
+  margin: 5px;
+}
+
+.user-box{
+  padding: 0 30px;
+}

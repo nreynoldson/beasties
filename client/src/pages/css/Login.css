@@ -1,0 +1,39 @@
+
+.login, .register{
+    max-width: 400px;
+    margin: 50px auto;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 20%);
+    padding: 40px;
+    text-align:left;
+}
+
+.login h2, .register h2{
+    font-size: 1.5em;
+}
+
+.login p{
+    font-weight: bold;
+}
+
+.password.link{
+    font-size: 0.8em;
+    display: block;
+}
+
+.login button, .register button{
+    width: 100%;
+    margin: 5px 0px;
+    background-color: #F45474;
+    border: none;
+
+}
+.login button:hover, .register button:hover{
+    background-color: #f12750;
+}
+
+.form-check-input:checked{
+    background-color: #6290C3;
+    border-color: #6290C3;
+}
