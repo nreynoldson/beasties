@@ -111,7 +111,7 @@ export default function App(){
         <Route path="/contact" element={<ContactPage />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
-        <Route exact path="/pets/:petId" element={<PetProfile auth={auth} />}></Route>
+        <Route exact path="/pet/:petId" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/" element={<LandingPage />}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
