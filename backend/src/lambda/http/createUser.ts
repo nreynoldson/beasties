@@ -3,7 +3,7 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 
 import { CreateUserAPIRequest } from '../../requests/CreateUserAPIRequest'
-import { createUser } from '../../businessLogic/beastiesLogic'
+import { createUser } from '../../businessLogic/beastiesUserLogic'
 
 import {createLogger} from '../../utils/logger'
 
