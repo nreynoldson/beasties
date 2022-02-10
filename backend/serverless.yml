@@ -37,6 +37,9 @@ custom:
       - name: CreateUserAPIRequest
         contentType: application/json
         schema: ${file(models/create-user.json)}
+      - name: CreateAnimalAPIRequest
+        contentType: application/json
+        schema: ${file(models/create-animal.json)}
 
 functions:
   
@@ -58,6 +61,25 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
+  
+  CreateAnimal:
+    handler: src/lambda/http/createAnimal.handler
+    events:
+      - http:
+          method: post
+          path: animal
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new animal
+            description: Create a pet animal
+            requestModels:
+              'application/json': CreateAnimalAPIRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
   
   GetUserByUserName:
     handler: src/lambda/http/getUserByUsername.handler
