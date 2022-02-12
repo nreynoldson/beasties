@@ -1,16 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import NotFound from './NotFound';
 import UserSearchResult from '../components/users/UserSearchResult';
 
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal'
 
 import './css/Common.css';
 import './css/BrowseUsersPage.css';
 
 
 const BrowseUsersPage = (props) => {
+
+  const {
+    auth
+  } = props;
 
   const getOriginalInputs = useMemo(() => {
 
@@ -25,10 +31,11 @@ const BrowseUsersPage = (props) => {
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(false);
   const [searchData, setSearchData] = useState({ results: [] });
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
@@ -87,9 +94,11 @@ const BrowseUsersPage = (props) => {
   useEffect(() => {
 
     // Run a search whenever the component loads or inputs.sortOrder changes
-    handleSearch();
+    if (auth.isAdmin) {
+      handleSearch();
+    }
 
-  }, [handleSearch, inputs.sortOrder]);
+  }, [auth.isAdmin, handleSearch, inputs.sortOrder]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -105,6 +114,16 @@ const BrowseUsersPage = (props) => {
 
     setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
+
+
+  const handleCloseDeleteUserDialog = useCallback(() => setUserToDelete(null), []);
+
+  const handleShowDeleteUserDialog = useCallback((id, name) => setUserToDelete({ id, name }), []);
+
+  const handleConfirmDeleteUser = useCallback(() => {
+  
+    handleCloseDeleteUserDialog();
+  }, [handleCloseDeleteUserDialog]);
 
   
   const searchControls = useMemo(() => {
@@ -165,11 +184,13 @@ const BrowseUsersPage = (props) => {
         <div key={user.id}>
           <UserSearchResult
             avatarUrl={user.avatarUrl}
+            canDelete={true}
             id={user.id}
             isShelterOwner={user.isShelterOwner}
             shelterName={user.shelterName}
             email={user.email}
             name={user.name}
+            onDelete={handleShowDeleteUserDialog}
             availableAnimals={user.availableAnimals}
           />
         </div>
@@ -195,9 +216,45 @@ const BrowseUsersPage = (props) => {
         </div>
       </div>
     );
-  }, [handleValueChange, inputs, searchData]);
+  }, [handleShowDeleteUserDialog, handleValueChange, inputs, searchData]);
+
+  
+  const confirmDeleteModal = useMemo(() => {
+
+    if (!auth.isAdmin) {
+      return null;
+    }
+
+    return (
+      <Modal show={Boolean(userToDelete?.id)} onHide={handleCloseDeleteUserDialog}>
+        <Modal.Header closeButton>
+          <Modal.Title>Really delete this users?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="d-flex flex-column align-items-center">
+          <h5 className="mt-3">Delete user "{userToDelete?.name}"?</h5>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDeleteUserDialog}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleConfirmDeleteUser}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }, [
+    auth.isAdmin,
+    handleCloseDeleteUserDialog,
+    handleConfirmDeleteUser,
+    userToDelete
+  ]);
 
   const componentOutput = useMemo(() => {
+
+    if (!auth.isAdmin) {
+      return <NotFound />;
+    }
 
     return (
       <div>
@@ -206,9 +263,10 @@ const BrowseUsersPage = (props) => {
           {searchControls}
           {searchResults}
         </div>
+        {confirmDeleteModal}
       </div>
     );
-  }, [searchControls, searchResults]);
+  }, [auth, confirmDeleteModal, searchControls, searchResults]);
 
   return componentOutput;
 }

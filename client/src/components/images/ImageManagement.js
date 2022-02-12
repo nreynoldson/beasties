@@ -1,13 +1,19 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-
-import { CircleFill } from 'react-bootstrap-icons';
-import { XCircleFill } from 'react-bootstrap-icons';
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+
+import { CircleFill } from 'react-bootstrap-icons';
+import { XCircleFill } from 'react-bootstrap-icons';
 
 import './css/ImageManagement.css';
 

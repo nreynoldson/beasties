@@ -38,7 +38,7 @@ const PetModifyProfilePage = (props) => {
 
   const afterGetPetInfo = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
@@ -52,7 +52,7 @@ const PetModifyProfilePage = (props) => {
 
   const afterSubmit = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }

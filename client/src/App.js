@@ -31,7 +31,7 @@ import './App.css';
 
 export default function App() {
 
-  console.log(process.env);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -42,11 +42,14 @@ export default function App() {
       if (user) {
         updateAuthStatus(true);
         setUser(user);
+
+        const adminInfo = user.find((info) => info.name === 'is_admin');
+        // Temporarily setting isAdmin to always be true for testing
+        // setIsAdmin(adminInfo?.value || false);
+        setIsAdmin(true);
       }
     });
   }, []);
-
-  const isAdmin = true;
 
   let adminPageLink = null;
   let userSearchLink = null;
@@ -65,8 +68,10 @@ export default function App() {
   }
 
   const auth = {
+    isAdmin,
     isAuthenticated: isAuthenticated,
-    updateAuthStatus: updateAuthStatus
+    updateAuthStatus: updateAuthStatus,
+    user
   }
 
   return (
@@ -108,16 +113,16 @@ export default function App() {
         <UserBox auth={auth}/>
       </Navbar>
       <Routes>
-        <Route path="/about" element={<HowItWorksPage />}></Route>
-        <Route path="/admin" element={<AdminLandingPage />}></Route>
-        <Route path="/browse-pets" element={<BrowsePetsPage />}></Route>
-        <Route path="/browse-shelters" element={<BrowseSheltersPage />}></Route>
-        <Route path="/browse-users" element={<BrowseUsersPage />}></Route>
-        <Route path="/contact" element={<ContactPage />}></Route>
-        <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
-        <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
+        <Route path="/about" element={<HowItWorksPage auth={auth} />}></Route>
+        <Route path="/admin" element={<AdminLandingPage auth={auth} />}></Route>
+        <Route path="/browse-pets" element={<BrowsePetsPage auth={auth} />}></Route>
+        <Route path="/browse-shelters" element={<BrowseSheltersPage auth={auth} />}></Route>
+        <Route path="/browse-users" element={<BrowseUsersPage auth={auth} />}></Route>
+        <Route path="/contact" element={<ContactPage auth={auth} />}></Route>
+        <Route path="/pet/new" element={<PetModifyProfilePage auth={auth} />}></Route>
+        <Route path="/pet/:petId/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route exact path="/pets/:petId" element={<PetProfile auth={auth} />}></Route>
-        <Route exact path="/" element={<LandingPage />}></Route>
+        <Route exact path="/" element={<LandingPage auth={auth} />}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>

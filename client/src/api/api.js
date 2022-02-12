@@ -3,7 +3,8 @@ const { API_KEY, BACKEND_URL_PREFIX } = process.env;
 
 console.log(API_KEY, BACKEND_URL_PREFIX);
 
-const makeBackendUrl = (suffix) => `https://${REACT_APP_API_KEY}.${REACT_APP_BACKEND_URL_PREFIX}${suffix}`;
+const makeBackendUrl =
+  (suffix) => `https://${REACT_APP_API_KEY}.${REACT_APP_BACKEND_URL_PREFIX}${suffix}`;
 
 const handleRequest = async (req) => {
 

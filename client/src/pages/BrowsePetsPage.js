@@ -34,7 +34,7 @@ const BrowsePetsPage = (props) => {
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
