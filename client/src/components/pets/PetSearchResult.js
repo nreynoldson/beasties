@@ -35,7 +35,7 @@ const PetSearchResult = (props) => {
   } = props;
 
   const handleDeleteClick = useCallback((evt) => {
-  
+
     evt.preventDefault();
     evt.stopPropagation();
     onDelete(id, name);
