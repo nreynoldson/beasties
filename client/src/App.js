@@ -33,6 +33,7 @@ export default function App() {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, updateAuthStatus] = useState(false);
+  const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -47,6 +48,9 @@ export default function App() {
         // Temporarily setting isAdmin to always be true for testing
         // setIsAdmin(adminInfo?.value || false);
         setIsAdmin(true);
+
+        const shelterOwnerInfo = user.find((info) => info.name === 'is_shelter_owner');
+        setIsShelterOwner(shelterOwnerInfo?.value || false);
       }
     });
   }, []);
@@ -70,6 +74,7 @@ export default function App() {
   const auth = {
     isAdmin,
     isAuthenticated: isAuthenticated,
+    isShelterOwner,
     updateAuthStatus: updateAuthStatus,
     user
   }
