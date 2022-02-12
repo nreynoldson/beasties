@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import AnimalConsts from '../consts/Animal';
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import PetSearchResult from '../components/pets/PetSearchResult';
 
 import Button from 'react-bootstrap/Button';
@@ -12,6 +13,10 @@ import './css/BrowsePetsPage.css';
 
 
 const BrowsePetsPage = (props) => {
+
+  const {
+    auth
+  } = props;
 
   const getOriginalInputs = useMemo(() => {
 
@@ -30,6 +35,7 @@ const BrowsePetsPage = (props) => {
 
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(false);
+  const [petToDelete, setPetToDelete] = useState(null);
   const [searchData, setSearchData] = useState({ results: [] });
 
   const afterGetSearchResults = useCallback((response) => {
@@ -182,6 +188,15 @@ const BrowsePetsPage = (props) => {
     setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
 
+  const handleCloseDeletePetDialog = useCallback(() => setPetToDelete(null), []);
+
+  const handleShowDeletePetDialog = useCallback((id, name) => setPetToDelete({ id, name }), []);
+
+  const handleConfirmDeletePet = useCallback(() => {
+  
+    handleCloseDeletePetDialog();
+  }, [handleCloseDeletePetDialog]);
+
   const breedSelect = useMemo(() => {
 
     if (inputs.type === 'other' || inputs.type === 'any') {
@@ -328,6 +343,7 @@ const BrowsePetsPage = (props) => {
             name={pet.name}
             age={pet.age}
             breed={pet.breed}
+            canDelete={auth.isAdmin}
             type={pet.type}
             avatarUrl={pet.avatarUrl}
             images={pet.images}
@@ -336,6 +352,7 @@ const BrowsePetsPage = (props) => {
             goodWithChildren={pet.goodWithChildren}
             goodWithOtherAnimals={pet.goodWithOtherAnimals}
             mustBeLeashed={pet.mustBeLeashed}
+            onDelete={handleShowDeletePetDialog}
           />
         </div>
       );
@@ -360,7 +377,36 @@ const BrowsePetsPage = (props) => {
         </div>
       </div>
     );
-  }, [handleValueChange, inputs, searchData]);
+  }, [
+    auth,
+    handleShowDeletePetDialog,
+    handleValueChange,
+    inputs,
+    searchData
+  ]);
+
+  
+  const confirmDeleteModal = useMemo(() => {
+
+    if (!auth.isAdmin) {
+      return null;
+    }
+
+    return (
+      <ConfirmDeleteModal
+        bodyText={`Really delete "${petToDelete?.name}"?`}
+        onClose={handleCloseDeletePetDialog}
+        onConfirm={handleConfirmDeletePet}
+        show={Boolean(petToDelete)}
+        title="Confirm Delete Pet"
+      />
+    );
+  }, [
+    auth.isAdmin,
+    handleCloseDeletePetDialog,
+    handleConfirmDeletePet,
+    petToDelete
+  ]);
 
   const componentOutput = useMemo(() => {
 
@@ -371,9 +417,10 @@ const BrowsePetsPage = (props) => {
           {searchControls}
           {searchResults}
         </div>
+        {confirmDeleteModal}
       </div>
     );
-  }, [searchControls, searchResults]);
+  }, [confirmDeleteModal, searchControls, searchResults]);
 
   return componentOutput;
 }

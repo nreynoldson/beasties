@@ -227,7 +227,7 @@ const BrowseUsersPage = (props) => {
 
     return (
       <ConfirmDeleteModal
-        bodyText={`Really delete user "${userToDelete?.name}"?`}
+        bodyText={`Really delete "${userToDelete?.name}"?`}
         onClose={handleCloseDeleteUserDialog}
         onConfirm={handleConfirmDeleteUser}
         show={Boolean(userToDelete)}

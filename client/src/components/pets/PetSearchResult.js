@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import AnimalConsts from '../../consts/Animal';
@@ -7,8 +7,11 @@ import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Table from 'react-bootstrap/Table';
+import Tooltip from 'react-bootstrap/Tooltip'
 
 import { Check } from 'react-bootstrap-icons';
+import { CircleFill } from 'react-bootstrap-icons';
+import { XCircleFill } from 'react-bootstrap-icons';
 
 import './css/PetSearchResult.css';
 
@@ -19,15 +22,24 @@ const PetSearchResult = (props) => {
     availability,
     avatarUrl,
     breed,
+    canDelete,
     gender,
     goodWithOtherAnimals,
     goodWithChildren,
     id,
     images,
-    name,
     mustBeLeashed,
+    name,
+    onDelete,
     type
   } = props;
+
+  const handleDeleteClick = useCallback((evt) => {
+  
+    evt.preventDefault();
+    evt.stopPropagation();
+    onDelete(id, name);
+  }, [id, name, onDelete]);
 
   const breedDisplay = useMemo(() => {
   
@@ -141,6 +153,23 @@ const PetSearchResult = (props) => {
 
   const componentOutput = useMemo(() => {
 
+    let deleteButton = null;
+    if (canDelete && onDelete) {
+      deleteButton = (
+        <Fragment>
+          <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
+            <XCircleFill
+              className="deleteButton"
+              color="darkRed"
+              size={25}
+              onClick={handleDeleteClick}
+            />
+          </OverlayTrigger>
+          <CircleFill className="deleteButtonBackground" color="white" size={25} />
+        </Fragment>
+      );
+    }
+
     return (
       <OverlayTrigger placement="auto" overlay={popover}>
         <Link className="d-flex flex-column petSearchResult" to={`/pet/${id}/`}>
@@ -151,10 +180,21 @@ const PetSearchResult = (props) => {
               {AnimalConsts.ageToDisplayNameMap[age]} <b className="mr-1 ml-1">•</b> {breedDisplay}
             </span>
           </div>
+          {deleteButton}
         </Link>
       </OverlayTrigger>
     );
-  }, [age, avatarUrl, breedDisplay, id, name, popover]);
+  }, [
+    age,
+    avatarUrl,
+    breedDisplay,
+    canDelete,
+    handleDeleteClick,
+    id,
+    name,
+    onDelete,
+    popover
+  ]);
 
   return componentOutput;
 }

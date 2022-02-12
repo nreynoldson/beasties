@@ -17,10 +17,21 @@
   margin: 1rem;
   max-width: 425px;
   padding: 0.5rem;
+  position: relative;
   text-decoration: none;
 }
 
 .petSearchResult:hover {
   color: black;
   text-decoration: none;
+}
+
+.petSearchResult > .deleteButton,
+.petSearchResult > .deleteButtonBackground {
+  opacity: 0;
+}
+
+.petSearchResult:hover > .deleteButton,
+.petSearchResult:hover > .deleteButtonBackground {
+  opacity: 1;
 }

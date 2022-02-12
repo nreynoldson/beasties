@@ -23,7 +23,7 @@ const UserSearchResult = (props) => {
     shelterName
   } = props;
 
-  const handleDeleteUserClick = useCallback((evt) => {
+  const handleDeleteClick = useCallback((evt) => {
   
     evt.preventDefault();
     evt.stopPropagation();
@@ -45,7 +45,7 @@ const UserSearchResult = (props) => {
               className="deleteButton"
               color="darkRed"
               size={25}
-              onClick={handleDeleteUserClick}
+              onClick={handleDeleteClick}
             />
           </OverlayTrigger>
           <CircleFill className="deleteButtonBackground" color="white" size={25} />
@@ -68,7 +68,7 @@ const UserSearchResult = (props) => {
     avatarUrl,
     canDelete,
     email,
-    handleDeleteUserClick,
+    handleDeleteClick,
     id,
     isShelterOwner,
     name,
