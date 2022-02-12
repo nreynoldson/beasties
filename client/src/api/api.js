@@ -1,7 +1,9 @@
 import request from 'superagent';
 const { API_KEY, BACKEND_URL_PREFIX } = process.env;
 
-const makeBackendUrl = (suffix) => `${API_KEY}.${BACKEND_URL_PREFIX}${suffix}`;
+console.log(API_KEY, BACKEND_URL_PREFIX);
+
+const makeBackendUrl = (suffix) => `https://${REACT_APP_API_KEY}.${REACT_APP_BACKEND_URL_PREFIX}${suffix}`;
 
 const handleRequest = async (req) => {
 
@@ -32,6 +34,7 @@ const api = {
       return await handleRequest(req);
     }
   },
+
 
   User: {
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   NavLink,
   Route,
@@ -20,7 +20,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
 import PetProfile from './pages/PetProfile'
-import {getUser} from './components/Account.js';
+import { getUser } from './components/Account.js';
 import UserBox from './components/UserBox.js';
 
 import Nav from 'react-bootstrap/Nav';
@@ -29,16 +29,21 @@ import Navbar from 'react-bootstrap/Navbar';
 import './App.css';
 
 
-export default function App(){
+export default function App() {
+
+  console.log(process.env);
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect(async () => {
-    var user = await getUser();
-    if(user){
-      updateAuthStatus(true);
-      setUser(user);
-    }
+  useEffect(() => {
+
+    getUser().then((user) => {
+
+      if (user) {
+        updateAuthStatus(true);
+        setUser(user);
+      }
+    });
   }, []);
 
   const isAdmin = true;
