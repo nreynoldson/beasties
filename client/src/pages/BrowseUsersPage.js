@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import NotFound from './NotFound';
 import UserSearchResult from '../components/users/UserSearchResult';
 
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal'
 
 import './css/Common.css';
 import './css/BrowseUsersPage.css';
@@ -218,7 +218,7 @@ const BrowseUsersPage = (props) => {
     );
   }, [handleShowDeleteUserDialog, handleValueChange, inputs, searchData]);
 
-  
+
   const confirmDeleteModal = useMemo(() => {
 
     if (!auth.isAdmin) {
@@ -226,22 +226,13 @@ const BrowseUsersPage = (props) => {
     }
 
     return (
-      <Modal show={Boolean(userToDelete?.id)} onHide={handleCloseDeleteUserDialog}>
-        <Modal.Header closeButton>
-          <Modal.Title>Really delete this users?</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="d-flex flex-column align-items-center">
-          <h5 className="mt-3">Delete user "{userToDelete?.name}"?</h5>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDeleteUserDialog}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleConfirmDeleteUser}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ConfirmDeleteModal
+        bodyText={`Really delete user "${userToDelete?.name}"?`}
+        onClose={handleCloseDeleteUserDialog}
+        onConfirm={handleConfirmDeleteUser}
+        show={Boolean(userToDelete)}
+        title="Confirm Delete User"
+      />
     );
   }, [
     auth.isAdmin,

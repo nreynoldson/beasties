@@ -28,7 +28,7 @@ const UserSearchResult = (props) => {
     evt.preventDefault();
     evt.stopPropagation();
     onDelete(id, name);
-  }, [id, name]);
+  }, [id, name, onDelete]);
 
   const componentOutput = useMemo(() => {
 
@@ -66,6 +66,7 @@ const UserSearchResult = (props) => {
     );
   }, [
     avatarUrl,
+    canDelete,
     email,
     handleDeleteUserClick,
     id,
