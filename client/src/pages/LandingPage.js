@@ -31,7 +31,9 @@ const LandingPage = (props) => {
         </h4>
 
         <div className="d-flex flex-row align-items-center">
-          <Button className="mr-3" variant="warning" href={getStartedUrl}>Get Started</Button>
+          <Button className="mr-3" variant="get-started" href={getStartedUrl}>
+            Get Started
+          </Button>
           <a className="pinkLink" href="/about">How it works {'>'}</a>
         </div>
 

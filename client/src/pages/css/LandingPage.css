@@ -1,11 +1,11 @@
-.btn-warning {
+.btn-get-started {
   background-color: #F45474;
   border-color: #F45474;
   color: white;
   font-size: 1.4rem;
 }
 
-.btn-warning:hover {
+.btn-get-started:hover {
   background-color: #f12750;
   border-color: #f12750;
   color: white;

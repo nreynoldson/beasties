@@ -65,6 +65,7 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'englishSpringerSpaniel',
         availability: 'available',
+        dateInfo: null,
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
         goodWithChildren: true,
@@ -80,6 +81,7 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'akita',
         availability: 'available',
+        dateInfo: null,
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
         goodWithChildren: false,
@@ -95,6 +97,7 @@ const BrowsePetsPage = (props) => {
         type: 'dog',
         breed: 'cavalierKingCharlesSpaniel',
         availability: 'available',
+        dateInfo: null,
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
         goodWithChildren: false,
@@ -125,7 +128,12 @@ const BrowsePetsPage = (props) => {
         gender: 'male',
         type: 'cat',
         breed: 'norwegianForestCat',
-        availability: 'available',
+        dateInfo: {
+          id: 1,
+          startDate: '2022-03-23T18:44:20.051Z',
+          endDate: '2022-03-25T18:44:20.051Z'
+        },
+        availability: 'notAvailable',
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
         goodWithChildren: false,
@@ -141,6 +149,7 @@ const BrowsePetsPage = (props) => {
         type: 'other',
         breed: null,
         availability: 'pending',
+        dateInfo: null,
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
         goodWithChildren: false,
@@ -156,6 +165,7 @@ const BrowsePetsPage = (props) => {
         type: 'cat',
         breed: 'other',
         availability: 'available',
+        dateInfo: null,
         avatarUrl: null,
         dateCreated: '2022-01-23T18:44:20.051Z',
         goodWithChildren: false,
@@ -336,6 +346,12 @@ const BrowsePetsPage = (props) => {
 
     const resultComponents = searchData.results.map((pet) => {
 
+      const canDate = (
+        auth.user &&
+        !auth.isShelterOwner &&
+        pet.availability === AnimalConsts.availabilityTypes.available
+      );
+
       return (
         <div key={pet.id}>
           <PetSearchResult
@@ -343,7 +359,9 @@ const BrowsePetsPage = (props) => {
             name={pet.name}
             age={pet.age}
             breed={pet.breed}
+            canDate={canDate}
             canDelete={auth.isAdmin}
+            dateInfo={pet.dateInfo}
             type={pet.type}
             avatarUrl={pet.avatarUrl}
             images={pet.images}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import AnimalConsts from '../../consts/Animal';
 
+import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
@@ -22,7 +23,9 @@ const PetSearchResult = (props) => {
     availability,
     avatarUrl,
     breed,
+    canDate,
     canDelete,
+    dateInfo,
     gender,
     goodWithOtherAnimals,
     goodWithChildren,
@@ -170,6 +173,35 @@ const PetSearchResult = (props) => {
       );
     }
 
+    let dateButton = null;
+    if (canDate && !dateInfo) {
+      dateButton = (
+        <Link to={`/pet/${id}/request-date`}>
+          <Button className="mt-2" size="sm" variant="date-pet">
+            Request Date
+          </Button>
+        </Link>
+      );
+    }
+
+    let dateInfoElement = null;
+    if (dateInfo) {
+      const dateDisplayOptions = ['en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}];
+      const startDate = new Date(dateInfo.startDate)
+        .toLocaleDateString(...dateDisplayOptions);
+      const endDate = new Date(dateInfo.endDate)
+      .toLocaleDateString(...dateDisplayOptions);
+      dateInfoElement = (
+        <Link className="dateInfo mt-2" to={`/date/${id}/`}>
+          Date scheduled:
+          <br/>
+          {startDate}{' - '}
+          <br/>
+          {endDate}
+        </Link>
+      );
+    }
+
     return (
       <OverlayTrigger placement="auto" overlay={popover}>
         <Link className="d-flex flex-column petSearchResult" to={`/pet/${id}/`}>
@@ -181,6 +213,8 @@ const PetSearchResult = (props) => {
             </span>
           </div>
           {deleteButton}
+          {dateButton}
+          {dateInfoElement}
         </Link>
       </OverlayTrigger>
     );
@@ -188,7 +222,9 @@ const PetSearchResult = (props) => {
     age,
     avatarUrl,
     breedDisplay,
+    canDate,
     canDelete,
+    dateInfo,
     handleDeleteClick,
     id,
     name,

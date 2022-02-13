@@ -1,3 +1,31 @@
+.btn-date-pet {
+  background-color: #F45474;
+  border-color: #F45474;
+  color: white;
+  font-weight: bold;
+}
+
+.btn-date-pet:hover {
+  background-color: #f12750;
+  border-color: #ffa2b5;
+  color: white;
+  font-weight: bold;
+}
+
+.dateInfo {
+  border: 2px solid black;
+  border-radius: 5px;
+  background-color: lightslategray;
+  color: white;
+  text-decoration: none;
+}
+
+.dateInfo:hover {
+  border-color: darkslategray;
+  color: lightcyan;
+  text-decoration: none;
+}
+
 .petProfileQuickView {
   border-width: 1px;
   min-width: 450px;

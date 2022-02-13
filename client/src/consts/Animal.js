@@ -14,6 +14,13 @@ const PetConsts = {
     adopted: 'Adopted'
   },
 
+  availabilityTypes: {
+    available: 'available',
+    notAvailable: 'notAvailable',
+    pending: 'pending',
+    adopted: 'adopted'
+  },
+
   catBreedsToDisplayNameMap: {
     ragdoll: 'Ragdoll',
     exoticShorthair: 'Exotic Shorthair',
