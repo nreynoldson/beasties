@@ -40,7 +40,15 @@ const PetModifyProfilePage = (props) => {
     };
   }, []);
 
+  const originalInvalidFields = useMemo(() => {
+
+    return {
+      name: false
+    };
+  }, []);
+
   const [inputs, setInputs] = useState(originalInputs);
+  const [invalidFields, setInvalidFields] = useState(originalInvalidFields);
   const [isLoading, setIsLoading] = useState(!isNewPet);
 
   const afterGetPetInfo = useCallback((response) => {
@@ -108,6 +116,14 @@ const PetModifyProfilePage = (props) => {
 
   const handleSubmit = useCallback(() => {
 
+    if (!inputs.name.length) {
+      setInvalidFields({ ...invalidFields, name: true });
+      return;
+    }
+    else {
+      setInvalidFields(originalInvalidFields);
+    }
+
     if (isNewPet) {
       // api.Animal.create(inputs).then(afterSubmit);
       api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
@@ -116,7 +132,13 @@ const PetModifyProfilePage = (props) => {
       // api.Animal.edit(inputs).then(afterSubmit);
       api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
     }
-  }, [afterSubmit, isNewPet]);
+  }, [
+    afterSubmit,
+    inputs.name,
+    invalidFields,
+    isNewPet,
+    originalInvalidFields
+  ]);
 
   const breedSelect = useMemo(() => {
 
@@ -161,6 +183,8 @@ const PetModifyProfilePage = (props) => {
         <div className="fields p-5 d-flex flex-column justify-content-between align-items-right w-75">
           <FloatingLabel controlId="floatingInput" label="Name">
             <Form.Control
+              required
+              isInvalid={invalidFields.name}
               type="text"
               onChange={handleValueChange}
               name="name"
@@ -168,6 +192,9 @@ const PetModifyProfilePage = (props) => {
               placeholder="Name"
               size="lg"
               />
+            <Form.Control.Feedback type="invalid">
+              Name is required
+            </Form.Control.Feedback>
           </FloatingLabel>
 
           <FloatingLabel controlId="floatingSelect" label="Age">
@@ -268,6 +295,7 @@ const PetModifyProfilePage = (props) => {
     handleSubmit,
     handleValueChange,
     inputs,
+    invalidFields,
     isLoading,
     isNewPet
   ]);
