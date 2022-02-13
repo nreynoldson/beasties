@@ -52,6 +52,15 @@ const api = {
         .get(makeBackendUrl(`/animal${id}`));
 
       return await handleRequest(req);
+    },
+
+    search: async (searchParams) => {
+
+      const req = request
+        .get(makeBackendUrl(`/animal/search`))
+        .query(searchParams);
+
+      return await handleRequest(req);
     }
   },
 
@@ -66,12 +75,41 @@ const api = {
     }
   },
 
+  Shelter: {
+
+    getInfo: async (id) => {
+
+      const req = request
+        .get(makeBackendUrl(`/shelter${id}`));
+
+      return await handleRequest(req);
+    },
+
+    search: async (searchParams) => {
+
+      const req = request
+        .get(makeBackendUrl(`/shelter/search`))
+        .query(searchParams);
+
+      return await handleRequest(req);
+    }
+  },
+
   User: {
 
     getInfo: async (id) => {
 
       const req = request
         .get(makeBackendUrl(`/user${id}`));
+
+      return await handleRequest(req);
+    },
+
+    search: async (searchParams) => {
+
+      const req = request
+        .get(makeBackendUrl(`/user/search`))
+        .query(searchParams);
 
       return await handleRequest(req);
     }

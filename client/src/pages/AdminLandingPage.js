@@ -1,8 +1,18 @@
 import { Link } from 'react-router-dom';
 
+import NotFound from './NotFound';
+
 import './css/Common.css';
 
 const AdminLandingPage = (props) => {
+
+  const {
+    auth
+  } = props;
+
+  if (!auth.isAdmin) {
+    return <NotFound />;
+  }
 
   // TODO: redirect to 404 page for non-admins and add links to admin specific pages
   return (

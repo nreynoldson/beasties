@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import api from '../api/api';
 import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import ShelterSearchResult from '../components/shelters/ShelterSearchResult';
 
@@ -27,7 +28,7 @@ const BrowseSheltersPage = (props) => {
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchData, setSearchData] = useState({ results: [] });
   const [shelterToDelete, setShelterToDelete] = useState(null);
 
@@ -40,7 +41,7 @@ const BrowseSheltersPage = (props) => {
 
     else {
       // Set inputs to pet values
-      // setInputs();
+      setSearchData(response.result);
       setIsLoading(false);
     }
 
@@ -48,38 +49,44 @@ const BrowseSheltersPage = (props) => {
 
   const handleSearch = useCallback(() => {
 
-    // TODO: make this actually search when the back end api is ready
-    setSearchData({ results: [
-      {
-        id: 1,
-        name: 'Bob\'s Pets',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 250
-      },
-      {
-        id: 2,
-        name: 'Critters',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 130
-      },
-      {
-        id: 3,
-        name: 'Paw Pals',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 23
-      },
-      {
-        id: 4,
-        name: 'Doug\'s Dogs',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 5
-      }
-    ] });
-  }, []);
+    setIsLoading(true);
+    // api.Shelter.search(inputs).then(afterGetSearchResults);
+
+    const dummyResults = {
+      results: [
+        {
+          id: 1,
+          name: 'Bob\'s Pets',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 250
+        },
+        {
+          id: 2,
+          name: 'Critters',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 130
+        },
+        {
+          id: 3,
+          name: 'Paw Pals',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 23
+        },
+        {
+          id: 4,
+          name: 'Doug\'s Dogs',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 5
+        }
+      ]
+    };
+
+    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
+  }, [afterGetSearchResults, inputs]);
 
   useEffect(() => {
 
@@ -155,8 +162,11 @@ const BrowseSheltersPage = (props) => {
 
   const searchResults = useMemo(() => {
 
-    if (!searchData?.results?.length) {
-      return 'No matching results found'
+    if (isLoading) {
+      return 'Searching...';
+    }
+    else if (!searchData?.results?.length) {
+      return 'No matching results found';
     }
 
     const resultComponents = searchData.results.map((shelter) => {
@@ -193,7 +203,13 @@ const BrowseSheltersPage = (props) => {
         </div>
       </div>
     );
-  }, [handleShowDeleteShelterDialog, handleValueChange, inputs, searchData]);
+  }, [
+    handleShowDeleteShelterDialog,
+    handleValueChange,
+    inputs,
+    isLoading,
+    searchData
+  ]);
 
 
   const confirmDeleteModal = useMemo(() => {
@@ -231,7 +247,11 @@ const BrowseSheltersPage = (props) => {
         {confirmDeleteModal}
       </div>
     );
-  }, [confirmDeleteModal, searchControls, searchResults]);
+  }, [
+    confirmDeleteModal,
+    searchControls,
+    searchResults
+  ]);
 
   return componentOutput;
 }

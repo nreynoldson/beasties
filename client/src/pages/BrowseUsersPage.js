@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import api from '../api/api';
 import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import NotFound from './NotFound';
 import UserSearchResult from '../components/users/UserSearchResult';
@@ -29,7 +30,7 @@ const BrowseUsersPage = (props) => {
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchData, setSearchData] = useState({ results: [] });
   const [userToDelete, setUserToDelete] = useState(null);
 
@@ -41,8 +42,7 @@ const BrowseUsersPage = (props) => {
     }
 
     else {
-      // Set inputs to pet values
-      // setInputs();
+      setSearchData(response.result);
       setIsLoading(false);
     }
 
@@ -50,45 +50,51 @@ const BrowseUsersPage = (props) => {
 
   const handleSearch = useCallback(() => {
 
-    // TODO: make this actually search when the back end api is ready
-    setSearchData({ results: [
-      {
-        id: 1,
-        name: 'Bob Petman',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: true,
-        shelterName: 'Bob\'s Pets'
-      },
-      {
-        id: 2,
-        name: 'Casey Smith',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: true,
-        shelterName: 'Bob\'s Pets'
-      },
-      {
-        id: 3,
-        name: 'Jackie Smith',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: false,
-        shelterName: null
-      },
-      {
-        id: 4,
-        name: 'Doug Dogman',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: true,
-        shelterName: 'Doug\'s Dogs'
-      }
-    ] });
+    setIsLoading(true);
+    // api.User.search(inputs).then(afterGetSearchResults);
+
+    const dummyResults = {
+      results: [
+        {
+          id: 1,
+          name: 'Bob Petman',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: true,
+          shelterName: 'Bob\'s Pets'
+        },
+        {
+          id: 2,
+          name: 'Casey Smith',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: true,
+          shelterName: 'Bob\'s Pets'
+        },
+        {
+          id: 3,
+          name: 'Jackie Smith',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: false,
+          shelterName: null
+        },
+        {
+          id: 4,
+          name: 'Doug Dogman',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: true,
+          shelterName: 'Doug\'s Dogs'
+        }
+      ]
+    };
+
+    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
   }, []);
 
   useEffect(() => {
@@ -174,8 +180,11 @@ const BrowseUsersPage = (props) => {
 
   const searchResults = useMemo(() => {
 
-    if (!searchData?.results?.length) {
-      return 'No matching results found'
+    if (isLoading) {
+      return 'Searching...';
+    }
+    else if (!searchData?.results?.length) {
+      return 'No matching results found';
     }
 
     const resultComponents = searchData.results.map((user) => {
@@ -216,7 +225,13 @@ const BrowseUsersPage = (props) => {
         </div>
       </div>
     );
-  }, [handleShowDeleteUserDialog, handleValueChange, inputs, searchData]);
+  }, [
+    handleShowDeleteUserDialog,
+    handleValueChange,
+    inputs,
+    isLoading,
+    searchData
+  ]);
 
 
   const confirmDeleteModal = useMemo(() => {
@@ -257,7 +272,12 @@ const BrowseUsersPage = (props) => {
         {confirmDeleteModal}
       </div>
     );
-  }, [auth, confirmDeleteModal, searchControls, searchResults]);
+  }, [
+    auth,
+    confirmDeleteModal,
+    searchControls,
+    searchResults
+  ]);
 
   return componentOutput;
 }
