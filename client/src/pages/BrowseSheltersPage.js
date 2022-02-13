@@ -204,6 +204,7 @@ const BrowseSheltersPage = (props) => {
       </div>
     );
   }, [
+    auth.isAdmin,
     handleShowDeleteShelterDialog,
     handleValueChange,
     inputs,

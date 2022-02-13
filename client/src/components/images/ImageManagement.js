@@ -44,7 +44,7 @@ const ImageManagement = (props) => {
     if (type === 'user') {
       return api.User;
     }
-  }, []);
+  }, [type]);
 
   const afterGetImages = useCallback((response) => {
 

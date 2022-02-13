@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 
 import AnimalConsts from '../consts/Animal';
 import api from '../api/api';
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import ImageManagement from '../components/images/ImageManagement';
 
 import Button from 'react-bootstrap/Button';
@@ -50,6 +51,7 @@ const PetModifyProfilePage = (props) => {
   const [inputs, setInputs] = useState(originalInputs);
   const [invalidFields, setInvalidFields] = useState(originalInvalidFields);
   const [isLoading, setIsLoading] = useState(!isNewPet);
+  const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
 
   const afterGetPetInfo = useCallback((response) => {
 
@@ -140,6 +142,18 @@ const PetModifyProfilePage = (props) => {
     originalInvalidFields
   ]);
 
+  const handleShowConfirmDeleteDialog =
+    useCallback(() => setShowConfirmDeleteDialog(true), []);
+
+  const handleCloseDeleteDialog =
+    useCallback(() => setShowConfirmDeleteDialog(false), []);
+
+  const handleConfirmDelete = useCallback(() => {
+    
+    setShowConfirmDeleteDialog(false);
+    api.Animal.delete(petId).then(() => navigate('/browse-pets'));
+  }, []);
+
   const breedSelect = useMemo(() => {
 
     if (inputs.type === 'other') {
@@ -167,6 +181,23 @@ const PetModifyProfilePage = (props) => {
     );
   }, [inputs, handleValueChange]);
 
+  const confirmDeleteModal = useMemo(() => {
+
+    if (isNewPet) {
+      return null;
+    }
+
+    return (
+      <ConfirmDeleteModal
+        bodyText="Really delete this pet?"
+        onClose={handleCloseDeleteDialog}
+        onConfirm={handleConfirmDelete}
+        show={showConfirmDeleteDialog}
+        title="Confirm Delete Pet"
+      />
+    );
+  }, [handleCloseDeleteDialog, handleConfirmDelete, showConfirmDeleteDialog]);
+
   const componentOutput = useMemo(() => {
 
     if (isLoading) {
@@ -174,6 +205,20 @@ const PetModifyProfilePage = (props) => {
         <div>
             <h1>Loading...</h1>
         </div>
+      );
+    }
+
+    let deleteButton = null;
+    if (auth.isAdmin) {
+      deleteButton = (
+        <Button
+          className="mt-4 mb-4"
+          size="sm"
+          variant="danger"
+          onClick={handleShowConfirmDeleteDialog}
+        >
+          Delete Pet
+        </Button>
       );
     }
 
@@ -290,15 +335,29 @@ const PetModifyProfilePage = (props) => {
               <option value="adopted">{AnimalConsts.availabilityToDisplayNameMap.adopted}</option>
             </Form.Select>
           </FloatingLabel>
+
         </div>
+
+        {deleteButton}
 
         {imageManagement}
 
-        <Button size="lg" variant="primary" onClick={handleSubmit}>Save</Button>
+        <Button
+          className="mb-3"
+          size="lg"
+          variant="primary"
+          onClick={handleSubmit}
+        >
+          Save Pet
+        </Button>
+        {confirmDeleteModal}
       </div>
     );
   }, [
+    auth.isAdmin,
     breedSelect,
+    confirmDeleteModal,
+    handleShowConfirmDeleteDialog,
     handleSubmit,
     handleValueChange,
     inputs,
