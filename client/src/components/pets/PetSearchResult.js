@@ -186,11 +186,11 @@ const PetSearchResult = (props) => {
 
     let dateInfoElement = null;
     if (dateInfo) {
-      const dateDisplayOptions = ['en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}];
+      const dateDisplayOptions = ['en-us', { weekday:"short", year:"numeric", month:"short", day:"numeric"}];
       const startDate = new Date(dateInfo.startDate)
         .toLocaleDateString(...dateDisplayOptions);
       const endDate = new Date(dateInfo.endDate)
-      .toLocaleDateString(...dateDisplayOptions);
+        .toLocaleDateString(...dateDisplayOptions);
       dateInfoElement = (
         <Link className="dateInfo mt-2" to={`/date/${id}/`}>
           Date scheduled:

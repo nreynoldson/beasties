@@ -1,7 +1,8 @@
 import request from 'superagent';
-const { API_KEY, BACKEND_URL_PREFIX } = process.env;
-
-console.log(API_KEY, BACKEND_URL_PREFIX);
+const {
+  REACT_APP_API_KEY,
+  REACT_APP_BACKEND_URL_PREFIX
+} = process.env;
 
 const makeBackendUrl =
   (suffix) => `https://${REACT_APP_API_KEY}.${REACT_APP_BACKEND_URL_PREFIX}${suffix}`;
@@ -27,6 +28,24 @@ const api = {
 
   Animal: {
 
+    create: async (petParams) => {
+
+      const req = request
+        .post(makeBackendUrl(`/animal`))
+        .send(petParams);
+
+      return await handleRequest(req);
+    },
+
+    edit: async (id, petParams) => {
+
+      const req = request
+        .patch(makeBackendUrl(`/animal${id}`))
+        .send(petParams);
+
+      return await handleRequest(req);
+    },
+
     getInfo: async (id) => {
 
       const req = request
@@ -36,6 +55,16 @@ const api = {
     }
   },
 
+  Dummy: {
+
+    returnThisData: async (data) => {
+
+      return {
+        error: null,
+        result: data
+      };
+    }
+  },
 
   User: {
 

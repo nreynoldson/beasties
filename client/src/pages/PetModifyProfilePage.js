@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import AnimalConsts from '../consts/Animal';
+import api from '../api/api';
 import ImageManagement from '../components/images/ImageManagement';
 
 import Button from 'react-bootstrap/Button';
@@ -14,11 +15,17 @@ import './css/PetModifyProfilePage.css';
 
 const PetModifyProfilePage = (props) => {
 
+  const navigate = useNavigate();
+
+  const {
+    auth
+  } = props;
+
   const params = useParams();
   const petId = parseInt(params.petId);
   const isNewPet = !petId;
 
-  const getOriginalInputs = useMemo(() => {
+  const originalInputs = useMemo(() => {
 
     return {
       name: '',
@@ -33,7 +40,7 @@ const PetModifyProfilePage = (props) => {
     };
   }, []);
 
-  const [inputs, setInputs] = useState(getOriginalInputs);
+  const [inputs, setInputs] = useState(originalInputs);
   const [isLoading, setIsLoading] = useState(!isNewPet);
 
   const afterGetPetInfo = useCallback((response) => {
@@ -44,8 +51,7 @@ const PetModifyProfilePage = (props) => {
     }
 
     else {
-      // Set inputs to pet values
-      // setInputs();
+      setInputs(response.result);
       setIsLoading(false);
     }
   }, []);
@@ -59,15 +65,31 @@ const PetModifyProfilePage = (props) => {
 
     else {
       // Navigate to pet profile page
+      navigate(`/pet/${response.result.id}`);
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
 
     if (!isNewPet) {
-      // make api request and pass result to afterGetPetInfo
+      // api.Animal.getInfo(petId).then(afterGetPetInfo);
+
+      const dummyData = {
+        id: petId,
+        name: 'Fido',
+        type: 'dog',
+        breed: 'greatDane',
+        age: 'young',
+        gender: 'Male',
+        goodWithOtherAnimals: true,
+        goodWithChildren: true,
+        mustBeLeashed: false,
+        availability: 'pending'
+      };
+
+      api.Dummy.returnThisData(dummyData).then(afterGetPetInfo);
     }
-  }, [isNewPet, petId]);
+  }, [afterGetPetInfo, isNewPet, petId]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -87,12 +109,14 @@ const PetModifyProfilePage = (props) => {
   const handleSubmit = useCallback(() => {
 
     if (isNewPet) {
-      // Use create route
+      // api.Animal.create(inputs).then(afterSubmit);
+      api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
     }
     else {
-      // Use edit route
+      // api.Animal.edit(inputs).then(afterSubmit);
+      api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
     }
-  }, [isNewPet]);
+  }, [afterSubmit, isNewPet]);
 
   const breedSelect = useMemo(() => {
 
@@ -122,6 +146,14 @@ const PetModifyProfilePage = (props) => {
   }, [inputs, handleValueChange]);
 
   const componentOutput = useMemo(() => {
+
+    if (isLoading) {
+      return (
+        <div>
+            <h1>Loading...</h1>
+        </div>
+      );
+    }
 
     return (
       <div className="d-flex flex-column align-items-center">
@@ -228,10 +260,17 @@ const PetModifyProfilePage = (props) => {
           type="pet"
         />
 
-        <Button size="lg" variant="primary" onClick={handleSubmit}>Submit</Button>
+        <Button size="lg" variant="primary" onClick={handleSubmit}>Save</Button>
       </div>
     );
-  }, [breedSelect, handleSubmit, handleValueChange, inputs, isNewPet]);
+  }, [
+    breedSelect,
+    handleSubmit,
+    handleValueChange,
+    inputs,
+    isLoading,
+    isNewPet
+  ]);
 
   return componentOutput;
 }

@@ -8,7 +8,6 @@ import {
 
 import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 
-import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -24,8 +23,7 @@ const ImageManagement = (props) => {
   // type can be 'animal', 'shelter', or 'user'
   const {
     allowEdit,
-    avatarImageId,
-    type
+    avatarImageId
   } = props;
 
   const [images, setImages] = useState([]);
@@ -115,7 +113,7 @@ const ImageManagement = (props) => {
     reader.onloadend = handleUploadFile
   }, [handleUploadFile]);
 
-  const handleCloseDeleteImageModal = useCallback(() => setImageToDelete(null), [null]);
+  const handleCloseDeleteImageModal = useCallback(() => setImageToDelete(null), []);
 
   const handleConfirmDeleteImage = useCallback(() => {
 
