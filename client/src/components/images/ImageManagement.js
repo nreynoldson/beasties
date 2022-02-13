@@ -6,6 +6,7 @@ import {
   useState
 } from 'react';
 
+import api from '../../api/api';
 import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 
 import Image from 'react-bootstrap/Image';
@@ -23,11 +24,27 @@ const ImageManagement = (props) => {
   // type can be 'animal', 'shelter', or 'user'
   const {
     allowEdit,
-    avatarImageId
+    id,
+    type
   } = props;
 
   const [images, setImages] = useState([]);
   const [imageToDelete, setImageToDelete] = useState(null);
+
+  const apiLibrary = useMemo(() => {
+  
+    if (type === 'animal') {
+      return api.Animal;
+    }
+
+    if (type === 'shelter') {
+      return api.Shelter;
+    }
+
+    if (type === 'user') {
+      return api.User;
+    }
+  }, []);
 
   const afterGetImages = useCallback((response) => {
 
@@ -37,37 +54,44 @@ const ImageManagement = (props) => {
     }
 
     else {
-      setImages([
-        {
-          id: 1,
-          displayName: 'Fido.jpg',
-          url: '/images/no_image.svg'
-        },
-        {
-          id: 2,
-          displayName: 'Fido.jpg',
-          url: '/images/no_image.svg'
-        },
-        {
-          id: 3,
-          displayName: 'Fido.jpg',
-          url: '/images/no_image.svg'
-        },
-        {
-          id: 4,
-          displayName: 'Fido.jpg',
-          url: '/images/no_image.svg'
-        }
-      ]);
+      setImages(response.result);
     }
 
   }, []);
 
   const getImages = useCallback(() => {
 
-    // TODO: make this actually fetch images when the back end api is ready
-    afterGetImages();
-  }, [afterGetImages]);
+    // apiLibrary.getImages(id).then(afterGetImages);
+
+    const dummyData = [
+      {
+        id: 1,
+        displayName: 'Fido.jpg',
+        url: '/images/no_image.svg',
+        isAvatar: false
+      },
+      {
+        id: 2,
+        displayName: 'Fido.jpg',
+        url: '/images/no_image.svg',
+        isAvatar: true
+      },
+      {
+        id: 3,
+        displayName: 'Fido.jpg',
+        url: '/images/no_image.svg',
+        isAvatar: false
+      },
+      {
+        id: 4,
+        displayName: 'Fido.jpg',
+        url: '/images/no_image.svg',
+        isAvatar: false
+      }
+    ];
+
+    api.Dummy.returnThisData(dummyData).then(afterGetImages);
+  }, [apiLibrary, afterGetImages]);
 
   useEffect(() => {
 
@@ -94,13 +118,13 @@ const ImageManagement = (props) => {
 
     const { id } = evt.currentTarget.dataset;
 
-    // TODO: Api call to set avatar image
-  }, [allowEdit]);
+    apiLibrary.setAvatar(id).then(getImages);
+  }, [allowEdit, apiLibrary, getImages]);
 
   const handleUploadFile = useCallback((evt) => {
 
-    // TODO: Upload image, refresh results, and clear upload input
-  }, []);
+    apiLibrary.uploadImage(id, evt.result);
+  }, [apiLibrary, id]);
 
   const handleFileInputChange = useCallback((evt) => {
 
@@ -110,16 +134,16 @@ const ImageManagement = (props) => {
 
     const reader = new FileReader();
     reader.readAsDataURL(evt.currentTarget.files[0]);
-    reader.onloadend = handleUploadFile
+    reader.onloadend = handleUploadFile;
   }, [handleUploadFile]);
 
   const handleCloseDeleteImageModal = useCallback(() => setImageToDelete(null), []);
 
   const handleConfirmDeleteImage = useCallback(() => {
 
-    // TODO: make api request to delete image and refresh images
+    apiLibrary.deleteImage(imageToDelete.id).then(getImages);
     handleCloseDeleteImageModal();
-  }, [handleCloseDeleteImageModal]);
+  }, [apiLibrary, getImages, handleCloseDeleteImageModal, imageToDelete]);
 
   const confirmDeleteModal = useMemo(() => {
 
@@ -150,7 +174,7 @@ const ImageManagement = (props) => {
 
   const imageList = useMemo(() => {
 
-    return images.map(({ id, displayName, url }) => {
+    return images.map(({ id, displayName, url, isAvatar }) => {
 
       let imageClass = 'imageWrapper';
       let deleteButton = null;
@@ -158,7 +182,7 @@ const ImageManagement = (props) => {
       let title = displayName;
 
       if (allowEdit) {
-        if (id === avatarImageId){
+        if (isAvatar){
           imageClass += ' avatar';
           title = 'Current avatar';
         }
@@ -201,7 +225,7 @@ const ImageManagement = (props) => {
         </div>
       );
     });
-  }, [allowEdit, avatarImageId, handleDeleteImageClick, handleImageClick, images]);
+  }, [allowEdit, handleDeleteImageClick, handleImageClick, images]);
 
   const imageUploader = useMemo(() => {
 

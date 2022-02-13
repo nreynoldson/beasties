@@ -177,6 +177,17 @@ const PetModifyProfilePage = (props) => {
       );
     }
 
+    let imageManagement = null;
+    if (petId) {
+      imageManagement = (
+        <ImageManagement
+          allowEdit={true}
+          id={petId}
+          type="animal"
+        />
+      );
+    }
+
     return (
       <div className="d-flex flex-column align-items-center">
         <h1 className="display-4 mt-2">{(isNewPet) ? 'Add' : 'Edit'} Pet</h1>
@@ -281,11 +292,7 @@ const PetModifyProfilePage = (props) => {
           </FloatingLabel>
         </div>
 
-        <ImageManagement
-          allowEdit={true}
-          avatarImageId={2}
-          type="pet"
-        />
+        {imageManagement}
 
         <Button size="lg" variant="primary" onClick={handleSubmit}>Save</Button>
       </div>
@@ -297,7 +304,8 @@ const PetModifyProfilePage = (props) => {
     inputs,
     invalidFields,
     isLoading,
-    isNewPet
+    isNewPet,
+    petId
   ]);
 
   return componentOutput;
