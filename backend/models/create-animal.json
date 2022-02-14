@@ -15,7 +15,7 @@
         },
         "age": {
             "type": "string",
-            "enum": ["baby", "yound", "adult", "senior"]
+            "enum": ["baby", "young", "adult", "senior"]
         },
         "gender": {
             "type": "string",

@@ -1,21 +1,29 @@
+import { APIGatewayProxyEvent } from 'aws-lambda'
 import { AnimalTableAccess } from '../dataLayer/animalTableAccess'
 
 import { CreateAnimalAPIRequest } from '../requests/CreateAnimalAPIRequest'
-import { AnimalItem } from '../modals/AnimalItem'
 import { createLogger } from '../utils/logger'
 
-//generate BlogAccess and BlogS3Access object instance
-const userAccess = new AnimalTableAccess()
+const animalAccess = new AnimalTableAccess()
 const logger = createLogger('Beasties BusinessLogic Execution')
 
-export async function createUser(createUserRequest: CreateUserAPIRequest) : Promise<CreateUserAPIRequest> {
+export async function createAnimal(event: APIGatewayProxyEvent, createAnimalRequest: CreateAnimalAPIRequest) : Promise<CreateAnimalAPIRequest> {
     
-    logger.info(`Executing logic for createUser API request ${createUserRequest}`)
+    logger.info(`Executing logic for createAnimal API request ${createAnimalRequest}`)
+    const eventlog = JSON.stringify(event.body)
+    const eventBody = JSON.parse(event['body']);
+    const animal_name = eventBody['animalName']
+    const shelter_name = eventBody['shelterName']
+    logger.info(`animal name, ${animal_name}`)
+    logger.info(`shelter name, ${shelter_name}`)
+    const animal_shelter = animal_name + "_" + shelter_name
+
     const animalItem = {
-        ...createUserRequest
+        animalName_shelterName: animal_shelter,
+        ...createAnimalRequest
     }
-    logger.info('Adding a user to dynamodb')
-    await userAccess.createAnimal(animalItem);
+    logger.info('Adding a pet animal to dynamodb')
+    await animalAccess.createAnimal(animalItem);
 
     return animalItem
 
