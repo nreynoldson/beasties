@@ -10,7 +10,6 @@ const logger = createLogger('Beasties BusinessLogic Execution')
 export async function createAnimal(event: APIGatewayProxyEvent, createAnimalRequest: CreateAnimalAPIRequest) : Promise<CreateAnimalAPIRequest> {
     
     logger.info(`Executing logic for createAnimal API request ${createAnimalRequest}`)
-    const eventlog = JSON.stringify(event.body)
     const eventBody = JSON.parse(event['body']);
     const animal_name = eventBody['animalName']
     const shelter_name = eventBody['shelterName']
