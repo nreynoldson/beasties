@@ -37,6 +37,7 @@ export default function App(){
 
   useEffect(async () => {
     var user = await getUser();
+    console.log(user);
     if(user){
       updateAuthStatus(true);
       setUser(user);

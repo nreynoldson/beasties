@@ -9,7 +9,7 @@ export default function UserBox(props){
         return(
             <Nav className="user-box">
                 <Nav.Item>
-                    <Link className="nav-link" to="/notifications">
+                    <Link className="nav-link" to="/">
                     <img className="notification-icon"src="/images/notifications.svg"></img>
                     </Link>
                 </Nav.Item>

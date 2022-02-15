@@ -1,0 +1,8 @@
+.dashboard-container{
+    display: flex;
+}
+
+.dashboard-menu{
+    height: 100%;
+    background: lightgrey;
+}
