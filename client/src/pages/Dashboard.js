@@ -1,9 +1,7 @@
-import Button from 'react-bootstrap/Button';
-
 import './css/Common.css';
 import './css/LandingPage.css';
 
-const LandingPage = (props) => {
+const Dashboard = (props) => {
 
   return (
     <div>
@@ -14,4 +12,4 @@ const LandingPage = (props) => {
   );
 }
  
-export default LandingPage;
+export default Dashboard;
