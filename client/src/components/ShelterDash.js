@@ -1,6 +1,7 @@
 import {ListGroup, Col, Container, Tab} from 'react-bootstrap';
 import NotificationCenter from '../pages/NotificationCenter';
 import {useState, useEffect} from 'react';
+import ManagePets from './ManagePets';
 
 const ShelterDash = (props) => {
 
@@ -35,6 +36,15 @@ const ShelterDash = (props) => {
               <Tab.Pane eventKey="#link2">
                 
               </Tab.Pane>
+              <Tab.Pane eventKey="#link3">
+                
+                </Tab.Pane>
+                <Tab.Pane eventKey="#link4">
+                  <ManagePets></ManagePets>
+                </Tab.Pane>
+                <Tab.Pane eventKey="#link5">
+                
+                </Tab.Pane>
             </Tab.Content>
           </Col>
       </Tab.Container>

@@ -7,12 +7,8 @@ import UserDash from '../components/UserDash';
 import ShelterDash from '../components/ShelterDash';
 import {useState, useEffect} from 'react';
 
-<<<<<<< Updated upstream
-const LandingPage = (props) => {
-=======
 const Dashboard = (props) => {
   const [loading, setLoading] = useState('true');
->>>>>>> Stashed changes
 
   useEffect(() => {
     setLoading(!props.auth.currentUser)
@@ -26,7 +22,6 @@ const Dashboard = (props) => {
     </Spinner>
   );
     } else {
-      console.log(props)
   return (
     <div>
       <h1 className="display-1 titleText"><b>HI, {props.auth.currentUser.userName}</b></h1>
@@ -37,4 +32,4 @@ const Dashboard = (props) => {
     }
 }
  
-export default LandingPage;
+export default Dashboard;
