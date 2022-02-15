@@ -15,11 +15,11 @@ export default function RegisterForm(props){
         var errors = {};
         if(username === "")
             errors['username'] = "Username cannot be blank.";
-        if(username === "")
+        if(email === "")
             errors['email'] = "Email cannot be blank.";
-        if(username === "")
+        if(password === "")
             errors['password'] = "Please set a password";
-        if(username === "")
+        if(confirmPassword === "")
             errors['confirmPass'] = "You must confirm your password.";
         
         if(!errors.hasOwnProperty('email')){
@@ -69,7 +69,7 @@ export default function RegisterForm(props){
                 setErrors(errors);
             }
             else{
-                props.saveCredentials(username, password, data.user);
+                props.saveCredentials(username, password, email, data.user);
             }
         });
     }

@@ -17,8 +17,8 @@ export default function Register(props) {
         setStatus(newStatus)
     }
 
-    const saveCredentials = (username, password, user) => {
-        var cognitoUser = {username: username, password: password, cognitoUser: user}
+    const saveCredentials = (username, password, email, user) => {
+        var cognitoUser = {username: username, password: password, email: email, cognitoUser: user}
         setUser(cognitoUser);
         setStatus('confirm');
     }
@@ -30,6 +30,6 @@ export default function Register(props) {
     } else if(status === 'confirm') {
         return(<RegisterConfirm user={user} updateStatus={updateStatus}></RegisterConfirm>);
     } else {
-        return(<FinishRegistration updateStatus={updateStatus}></FinishRegistration>);
+        return(<FinishRegistration user={user} updateStatus={updateStatus}></FinishRegistration>);
     }
 }
