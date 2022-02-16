@@ -3,157 +3,10 @@ import {Container, Card, ListGroup, Row, Col, Image} from 'react-bootstrap';
 import {useParams} from 'react-router-dom';
 import './css/ShelterProfile.css';
 import PetSearchResult from '../components/pets/PetSearchResult';
-
-var testData = { results: [
-    {
-      id: 1,
-      name: 'Fido',
-      age: 'young',
-      gender: 'male',
-      type: 'dog',
-      breed: 'englishSpringerSpaniel',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: true,
-      goodWithOtherAnimals: true,
-      mustBeLeashed: true,
-      images: []
-    },
-    {
-      id: 2,
-      name: 'Rex',
-      age: 'young',
-      gender: 'male',
-      type: 'dog',
-      breed: 'akita',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    },
-    {
-      id: 3,
-      name: 'Milly',
-      age: 'senior',
-      gender: 'female',
-      type: 'dog',
-      breed: 'cavalierKingCharlesSpaniel',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: true,
-      images: [
-        {
-          id: 1,
-          url: '/images/no_image.svg',
-          displayName: 'fido.jpg'
-        },
-        {
-          id: 2,
-          url: '/images/no_image.svg',
-          displayName: 'fido.jpg'
-        },
-        {
-          id: 3,
-          url: '/images/no_image.svg',
-          displayName: 'fido.jpg'
-        }
-      ]
-    },
-    {
-      id: 4,
-      name: 'Sam',
-      age: 'adult',
-      gender: 'male',
-      type: 'cat',
-      breed: 'norwegianForestCat',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    },
-    {
-      id: 5,
-      name: 'Lizzy',
-      age: 'young',
-      gender: 'female',
-      type: 'other',
-      breed: null,
-      availability: 'pending',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    },
-    {
-      id: 6,
-      name: 'Benny',
-      age: 'baby',
-      gender: 'male',
-      type: 'cat',
-      breed: 'other',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    }
-  ] };
-console.log(testData);
+import ShelterPets from '../components/shelters/ShelterPets';
 
 export default function ShelterProfile(props) {
-    const { petId } = useParams();
-    const [pets, setPets] = useState({});
-    
-
-    useEffect(async () => {
-        // Request the necessary data from the back end
-        // Grab images from S3
-        var petData = {...testData};
-        setPets(petData);
-    }, []);
-
-    const petCards = useMemo(()=>{
-        if (!pets?.results?.length) {
-            return 'No matching results found'
-        }
-        var results = pets.results.map((pet) => {
-    
-            return (
-              <div key={pet.id}>
-                <PetSearchResult
-                  id={pet.id}
-                  name={pet.name}
-                  age={pet.age}
-                  breed={pet.breed}
-                  type={pet.type}
-                  avatarUrl={pet.avatarUrl}
-                  images={pet.images}
-                  availability={pet.availability}
-                  gender={pet.gender}
-                  goodWithChildren={pet.goodWithChildren}
-                  goodWithOtherAnimals={pet.goodWithOtherAnimals}
-                  mustBeLeashed={pet.mustBeLeashed}
-                />
-              </div>
-            );
-        })
-        return results;
-    }, [pets]);
-
+    const { shelterId } = useParams();
     return(
         <Container className="shelter-container">
             <Row className="shelter-info" xs={1}>
@@ -171,10 +24,7 @@ export default function ShelterProfile(props) {
             </Row>
 
             <Row>
-                <div className="shelter pets-container">
-                    <div className="available-pets"><h3>Available Pets</h3></div>
-                    {petCards}
-                </div>
+                <ShelterPets shelter={shelterId}/>
             </Row>
         </Container>
     );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import {Container, Card, ListGroup, Col, Button} from 'react-bootstrap';
-import LoginButton from '../components/LoginButton';
+import LoginButton from '../components/account/LoginButton';
 import AnimalConsts from '../consts/Animal';
 import {useParams} from 'react-router-dom';
 import Slider from 'react-slick';

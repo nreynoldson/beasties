@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
-import UserPool from "../UserPool";
+import UserPool from "../../UserPool";
 import {CognitoUserAttribute} from "amazon-cognito-identity-js";
 import {TailSpin} from 'react-loader-spinner'
 

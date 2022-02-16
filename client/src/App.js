@@ -21,8 +21,8 @@ import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
 import PetProfile from './pages/PetProfile'
 import ShelterProfile from './pages/ShelterProfile'
-import {getUser, RequireAuth} from './components/Account.js';
-import UserBox from './components/UserBox';
+import {getUser, RequireAuth} from './components/account/Account.js';
+import UserBox from './components/account/UserBox';
 import Dashboard from './pages/Dashboard';
 
 import Nav from 'react-bootstrap/Nav';

@@ -1,9 +1,8 @@
 import {ListGroup, Col, Container, Tab} from 'react-bootstrap';
-import NotificationCenter from '../pages/NotificationCenter';
+import NotificationCenter from '../../pages/NotificationCenter';
 import {useState, useEffect} from 'react';
-import ManagePets from './ManagePets';
 
-const ShelterDash = (props) => {
+const UserDash = (props) => {
 
   return (
       <Container className='dashboard-container'>
@@ -12,18 +11,15 @@ const ShelterDash = (props) => {
           <Col sm={3}>
             <ListGroup>
               <ListGroup.Item action href="#link1">
-                Requests
+                Your Requests
               </ListGroup.Item>
               <ListGroup.Item action href="#link2">
                 Account Settings
               </ListGroup.Item>
               <ListGroup.Item action href="#link3">
-                Edit Shelter Profile
+                Edit Profile
               </ListGroup.Item>
               <ListGroup.Item action href="#link4">
-                Manage Animals
-              </ListGroup.Item>
-              <ListGroup.Item action href="#link5">
                 Admin
               </ListGroup.Item>
             </ListGroup>
@@ -36,15 +32,6 @@ const ShelterDash = (props) => {
               <Tab.Pane eventKey="#link2">
                 
               </Tab.Pane>
-              <Tab.Pane eventKey="#link3">
-                
-                </Tab.Pane>
-                <Tab.Pane eventKey="#link4">
-                  <ManagePets></ManagePets>
-                </Tab.Pane>
-                <Tab.Pane eventKey="#link5">
-                
-                </Tab.Pane>
             </Tab.Content>
           </Col>
       </Tab.Container>
@@ -53,4 +40,4 @@ const ShelterDash = (props) => {
   );
 }
  
-export default ShelterDash;
+export default UserDash;

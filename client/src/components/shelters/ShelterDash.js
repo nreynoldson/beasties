@@ -1,8 +1,10 @@
 import {ListGroup, Col, Container, Tab} from 'react-bootstrap';
-import NotificationCenter from '../pages/NotificationCenter';
+import NotificationCenter from '../../pages/NotificationCenter';
 import {useState, useEffect} from 'react';
+import ManagePets from '../account/ManagePets';
+import EditAccount from '../account/EditAccount';
 
-const UserDash = (props) => {
+const ShelterDash = (props) => {
 
   return (
       <Container className='dashboard-container'>
@@ -11,13 +13,13 @@ const UserDash = (props) => {
           <Col sm={3}>
             <ListGroup>
               <ListGroup.Item action href="#link1">
-                Your Requests
+                Requests
               </ListGroup.Item>
               <ListGroup.Item action href="#link2">
                 Account Settings
               </ListGroup.Item>
               <ListGroup.Item action href="#link3">
-                Edit Profile
+                Manage Animals
               </ListGroup.Item>
               <ListGroup.Item action href="#link4">
                 Admin
@@ -30,8 +32,14 @@ const UserDash = (props) => {
                 <NotificationCenter/>
               </Tab.Pane>
               <Tab.Pane eventKey="#link2">
-                
+                <EditAccount></EditAccount>
               </Tab.Pane>
+                <Tab.Pane eventKey="#link3">
+                  <ManagePets></ManagePets>
+                </Tab.Pane>
+                <Tab.Pane eventKey="#link4">
+                
+                </Tab.Pane>
             </Tab.Content>
           </Col>
       </Tab.Container>
@@ -40,4 +48,4 @@ const UserDash = (props) => {
   );
 }
  
-export default UserDash;
+export default ShelterDash;

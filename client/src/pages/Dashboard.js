@@ -3,8 +3,8 @@ import Button from 'react-bootstrap/Button';
 import './css/Common.css';
 import './css/Dashboard.css';
 import {ListGroup, Col, Container, Spinner} from 'react-bootstrap';
-import UserDash from '../components/UserDash';
-import ShelterDash from '../components/ShelterDash';
+import UserDash from '../components/users/UserDash';
+import ShelterDash from '../components/shelters/ShelterDash';
 import {useState, useEffect} from 'react';
 
 const Dashboard = (props) => {

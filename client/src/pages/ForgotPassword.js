@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import {CognitoUser} from "amazon-cognito-identity-js";
 import Pool from "../UserPool";
-import {authenticate} from "../components/Account";
+import {authenticate} from "../components/account/Account";
 
 export default function ForgotPassword(props) {
     const [email, setEmail] = useState('');

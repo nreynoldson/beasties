@@ -26,7 +26,8 @@ const PetSearchResult = (props) => {
     images,
     name,
     mustBeLeashed,
-    type
+    type,
+    canEdit
   } = props;
 
   const breedDisplay = useMemo(() => {
