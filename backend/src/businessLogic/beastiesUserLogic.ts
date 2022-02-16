@@ -5,7 +5,6 @@ import { CreateUserAPIRequest } from '../requests/CreateUserAPIRequest'
 import { UserItem } from '../modals/UserItem'
 import { createLogger } from '../utils/logger'
 
-//generate BlogAccess and BlogS3Access object instance
 const userAccess = new UserTableAccess()
 const logger = createLogger('Beasties BusinessLogic Execution')
 
