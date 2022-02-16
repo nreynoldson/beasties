@@ -22,15 +22,16 @@
             "enum": ["n/a", "male", "female"]
         },
         "disposition": {
-            "type": "string",
-            "enum": ["goodWithOtherAnimals", "goodWithChildren", "mustBeLeashed"]
+            "type": "array",
+            "items": { "type": "string" }
         },
         "availability": {
             "type": "string",
             "enum": ["available", "notAvailable", "pending", "adopted"]
         },
         "imageCollections": {
-            "type": "array"
+            "type": "array",
+            "items": { "type": "string" }
         },
         "avatar": {
             "type": "string",

@@ -4,7 +4,7 @@ export interface CreateAnimalAPIRequest {
     age: string
     breed: string
     availability: string
-    disposition: string
+    disposition: string[]
     gender: string
     shelterName: string
     animalName_shelterName: string
