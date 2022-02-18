@@ -9,7 +9,7 @@ export default function ForgotPassword(props) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [confirmationCode, setConfirmationCode] = useState('');
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState('sending');
     const [formErrors, setErrors] = useState('');
     var user = null;
 

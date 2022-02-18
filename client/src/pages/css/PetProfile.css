@@ -65,3 +65,17 @@ span.label{
     justify-content: space-between;
     border: none;
 }
+
+.shelter-container .shelter-info{
+    flex-wrap: unset !important;
+}
+
+.shelter-container .shelter-info .col{
+    flex: 1 1 auto;
+} 
+
+.pets-container.shelter{
+    display: flex;
+    flex-wrap: wrap;
+
+}
