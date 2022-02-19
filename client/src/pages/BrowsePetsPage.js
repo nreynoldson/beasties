@@ -58,6 +58,12 @@ const BrowsePetsPage = (props) => {
     setIsLoading(true);
     // api.Animal.search(inputs).then(afterGetSearchResults);
 
+    const {
+      goodWithChildren,
+      goodWithOtherAnimals,
+      mustBeLeashed
+    } = AnimalConsts.dispositions;
+
     const dummyResults = {
       results: [
         {
@@ -71,9 +77,11 @@ const BrowsePetsPage = (props) => {
           dateInfo: null,
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
-          goodWithChildren: true,
-          goodWithOtherAnimals: true,
-          mustBeLeashed: true,
+          disposition: [
+            goodWithChildren,
+            goodWithOtherAnimals,
+            mustBeLeashed,
+          ],
           images: []
         },
         {
@@ -87,9 +95,7 @@ const BrowsePetsPage = (props) => {
           dateInfo: null,
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
-          goodWithChildren: false,
-          goodWithOtherAnimals: false,
-          mustBeLeashed: false,
+          disposition: [],
           images: []
         },
         {
@@ -103,9 +109,7 @@ const BrowsePetsPage = (props) => {
           dateInfo: null,
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
-          goodWithChildren: false,
-          goodWithOtherAnimals: false,
-          mustBeLeashed: true,
+          disposition: [mustBeLeashed],
           images: [
             {
               id: 1,
@@ -139,9 +143,7 @@ const BrowsePetsPage = (props) => {
           availability: 'notAvailable',
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
-          goodWithChildren: false,
-          goodWithOtherAnimals: false,
-          mustBeLeashed: false,
+          disposition: [],
           images: []
         },
         {
@@ -155,9 +157,7 @@ const BrowsePetsPage = (props) => {
           dateInfo: null,
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
-          goodWithChildren: false,
-          goodWithOtherAnimals: false,
-          mustBeLeashed: false,
+          disposition: [],
           images: []
         },
         {
@@ -171,9 +171,7 @@ const BrowsePetsPage = (props) => {
           dateInfo: null,
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
-          goodWithChildren: false,
-          goodWithOtherAnimals: false,
-          mustBeLeashed: false,
+          disposition: [],
           images: []
         }
       ]
@@ -355,7 +353,7 @@ const BrowsePetsPage = (props) => {
     const resultComponents = searchData.results.map((pet) => {
 
       const canDate = (
-        auth.user &&
+        auth.currentUser &&
         !auth.isShelterOwner &&
         pet.availability === AnimalConsts.availabilityTypes.available
       );
@@ -369,15 +367,13 @@ const BrowsePetsPage = (props) => {
             breed={pet.breed}
             canDate={canDate}
             canDelete={auth.isAdmin}
-            dateInfo={pet.dateInfo}
+            dateInfo={(auth.currentUser) ? pet.dateInfo : null}
             type={pet.type}
             avatarUrl={pet.avatarUrl}
             images={pet.images}
             availability={pet.availability}
             gender={pet.gender}
-            goodWithChildren={pet.goodWithChildren}
-            goodWithOtherAnimals={pet.goodWithOtherAnimals}
-            mustBeLeashed={pet.mustBeLeashed}
+            disposition={pet.disposition}
             onDelete={handleShowDeletePetDialog}
           />
         </div>
@@ -412,7 +408,7 @@ const BrowsePetsPage = (props) => {
     searchData
   ]);
 
-  
+
   const confirmDeleteModal = useMemo(() => {
 
     if (!auth.isAdmin) {

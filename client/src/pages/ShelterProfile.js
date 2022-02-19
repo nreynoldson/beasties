@@ -1,8 +1,17 @@
-import React, { useEffect, useState, useMemo} from 'react';
+import React, { useCallback, useEffect, useState, useMemo} from 'react';
+
+import AnimalConsts from '../consts/Animal';
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import {Container, Card, ListGroup, Row, Col, Image} from 'react-bootstrap';
 import {useParams} from 'react-router-dom';
 import './css/ShelterProfile.css';
 import PetSearchResult from '../components/pets/PetSearchResult';
+
+const {
+  goodWithChildren,
+  goodWithOtherAnimals,
+  mustBeLeashed
+} = AnimalConsts.dispositions;
 
 var testData = { results: [
     {
@@ -15,9 +24,11 @@ var testData = { results: [
       availability: 'available',
       avatarUrl: null,
       dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: true,
-      goodWithOtherAnimals: true,
-      mustBeLeashed: true,
+      disposition: [
+        goodWithChildren,
+        goodWithOtherAnimals,
+        mustBeLeashed,
+      ],
       images: []
     },
     {
@@ -30,9 +41,7 @@ var testData = { results: [
       availability: 'available',
       avatarUrl: null,
       dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
+      disposition: [],
       images: []
     },
     {
@@ -45,9 +54,7 @@ var testData = { results: [
       availability: 'available',
       avatarUrl: null,
       dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: true,
+      disposition: [mustBeLeashed],
       images: [
         {
           id: 1,
@@ -76,9 +83,7 @@ var testData = { results: [
       availability: 'available',
       avatarUrl: null,
       dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
+      disposition: [],
       images: []
     },
     {
@@ -91,9 +96,7 @@ var testData = { results: [
       availability: 'pending',
       avatarUrl: null,
       dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
+      disposition: [],
       images: []
     },
     {
@@ -106,9 +109,7 @@ var testData = { results: [
       availability: 'available',
       avatarUrl: null,
       dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
+      disposition: [],
       images: []
     }
   ] };
@@ -117,14 +118,28 @@ console.log(testData);
 export default function ShelterProfile(props) {
     const { petId } = useParams();
     const [pets, setPets] = useState({});
+    const [petToDelete, setPetToDelete] = useState(null);
+
+    const {
+      auth
+    } = props;
     
 
-    useEffect(async () => {
+    useEffect(() => {
         // Request the necessary data from the back end
         // Grab images from S3
         var petData = {...testData};
         setPets(petData);
     }, []);
+
+    const handleCloseDeletePetDialog = useCallback(() => setPetToDelete(null), []);
+
+    const handleShowDeletePetDialog = useCallback((id, name) => setPetToDelete({ id, name }), []);
+
+    const handleConfirmDeletePet = useCallback(() => {
+    
+      handleCloseDeletePetDialog();
+    }, [handleCloseDeletePetDialog]);
 
     const petCards = useMemo(()=>{
         if (!pets?.results?.length) {
@@ -132,6 +147,12 @@ export default function ShelterProfile(props) {
         }
         var results = pets.results.map((pet) => {
     
+          const canDate = (
+            auth.currentUser &&
+            !auth.isShelterOwner &&
+            pet.availability === AnimalConsts.availabilityTypes.available
+          );
+
             return (
               <div key={pet.id}>
                 <PetSearchResult
@@ -139,20 +160,45 @@ export default function ShelterProfile(props) {
                   name={pet.name}
                   age={pet.age}
                   breed={pet.breed}
+                  canDate={canDate}
+                  canDelete={auth.isAdmin}
+                  dateInfo={(auth.currentUser) ? pet.dateInfo : null}
                   type={pet.type}
                   avatarUrl={pet.avatarUrl}
                   images={pet.images}
                   availability={pet.availability}
                   gender={pet.gender}
-                  goodWithChildren={pet.goodWithChildren}
-                  goodWithOtherAnimals={pet.goodWithOtherAnimals}
-                  mustBeLeashed={pet.mustBeLeashed}
+                  disposition={pet.disposition}
+                  onDelete={handleShowDeletePetDialog}
                 />
               </div>
             );
         })
         return results;
-    }, [pets]);
+    }, [auth, handleShowDeletePetDialog, pets]);
+
+    
+    const confirmDeleteModal = useMemo(() => {
+
+      if (!auth.isAdmin) {
+        return null;
+      }
+
+      return (
+        <ConfirmDeleteModal
+          bodyText={`Really delete "${petToDelete?.name}"?`}
+          onClose={handleCloseDeletePetDialog}
+          onConfirm={handleConfirmDeletePet}
+          show={Boolean(petToDelete)}
+          title="Confirm Delete Pet"
+        />
+      );
+    }, [
+      auth.isAdmin,
+      handleCloseDeletePetDialog,
+      handleConfirmDeletePet,
+      petToDelete
+    ]);
 
     return(
         <Container className="shelter-container">
@@ -176,6 +222,7 @@ export default function ShelterProfile(props) {
                     {petCards}
                 </div>
             </Row>
+            {confirmDeleteModal}
         </Container>
     );
 }

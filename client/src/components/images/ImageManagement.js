@@ -9,6 +9,7 @@ import {
 import api from '../../api/api';
 import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 
+import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -235,14 +236,16 @@ const ImageManagement = (props) => {
 
     return (
       <div className="w-100 d-flex justify-content-center align-items-center">
-        <h5 className="mr-3">Upload Image</h5>
-        <input
-          className="mt-3 mb-3"
-          name="imageUpload"
-          type="file"
-          accept="image/*"
-          onChange={handleFileInputChange}
-        />
+        <Form.Group controlId="formFile" className="mb-3">
+        <Form.Label>Upload Image</Form.Label>
+          <Form.Control
+            className="mt-3 mb-3"
+            name="imageUpload"
+            type="file"
+            accept="image/*"
+            onChange={handleFileInputChange}
+          />
+        </Form.Group>
       </div>
     );
   }, [allowEdit, handleFileInputChange]);

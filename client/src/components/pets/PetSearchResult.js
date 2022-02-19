@@ -26,12 +26,10 @@ const PetSearchResult = (props) => {
     canDate,
     canDelete,
     dateInfo,
+    disposition,
     gender,
-    goodWithOtherAnimals,
-    goodWithChildren,
     id,
     images,
-    mustBeLeashed,
     name,
     onDelete,
     type
@@ -46,7 +44,6 @@ const PetSearchResult = (props) => {
 
   const breedDisplay = useMemo(() => {
   
-    
     let breedDisplay = AnimalConsts.typeToDisplayNameMap[type];
     if (type === 'dog' || type === 'cat') {
       const breedToDisplayNameMap = (type === 'dog') ?
@@ -75,6 +72,10 @@ const PetSearchResult = (props) => {
       );
     });
 
+    const { dispositions } = AnimalConsts;
+    const goodWithOtherAnimals = disposition.includes(dispositions.goodWithOtherAnimals);
+    const goodWithChildren = disposition.includes(dispositions.goodWithChildren);
+    const mustBeLeashed = disposition.includes(dispositions.mustBeLeashed);
     let goodWithOtherAnimalsRow = null;
     let goodWithChildrenRow = null;
     let mustBeLeashedRow = null;
@@ -145,13 +146,11 @@ const PetSearchResult = (props) => {
     age,
     availability,
     breedDisplay,
+    disposition,
     gender,
-    goodWithOtherAnimals,
-    goodWithChildren,
     id,
     images,
-    name,
-    mustBeLeashed
+    name
   ]);
 
   const componentOutput = useMemo(() => {

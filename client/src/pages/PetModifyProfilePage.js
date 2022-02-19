@@ -13,6 +13,11 @@ import Form from 'react-bootstrap/Form';
 import './css/Common.css';
 import './css/PetModifyProfilePage.css';
 
+const {
+  goodWithChildren,
+  goodWithOtherAnimals,
+  mustBeLeashed
+} = AnimalConsts.dispositions;
 
 const PetModifyProfilePage = (props) => {
 
@@ -37,7 +42,8 @@ const PetModifyProfilePage = (props) => {
       goodWithOtherAnimals: false,
       goodWithChildren: false,
       mustBeLeashed: false,
-      availability: 'available'
+      availability: 'available',
+      bio: ''
     };
   }, []);
 
@@ -60,10 +66,16 @@ const PetModifyProfilePage = (props) => {
       return;
     }
 
-    else {
-      setInputs(response.result);
-      setIsLoading(false);
-    }
+    const newInputs = { ...response.result };
+    delete newInputs.disposition;
+
+    const dispositions = response.result.disposition;
+    newInputs.goodWithOtherAnimals = dispositions.includes(goodWithOtherAnimals);
+    newInputs.goodWithChildren = dispositions.includes(goodWithChildren);
+    newInputs.mustBeLeashed = dispositions.includes(mustBeLeashed);
+
+    setInputs(newInputs);
+    setIsLoading(false);
   }, []);
 
   const afterSubmit = useCallback((response) => {
@@ -91,10 +103,12 @@ const PetModifyProfilePage = (props) => {
         breed: 'greatDane',
         age: 'young',
         gender: 'Male',
-        goodWithOtherAnimals: true,
-        goodWithChildren: true,
-        mustBeLeashed: false,
-        availability: 'pending'
+        disposition: [
+          goodWithChildren,
+          goodWithOtherAnimals
+        ],
+        availability: 'pending',
+        bio: 'This is my bio'
       };
 
       api.Dummy.returnThisData(dummyData).then(afterGetPetInfo);
@@ -334,6 +348,17 @@ const PetModifyProfilePage = (props) => {
               <option value="pending">{AnimalConsts.availabilityToDisplayNameMap.pending}</option>
               <option value="adopted">{AnimalConsts.availabilityToDisplayNameMap.adopted}</option>
             </Form.Select>
+          </FloatingLabel>
+
+          <FloatingLabel controlId="floatingTextarea" label="Bio">
+            <Form.Control
+              as="textarea"
+              className="bioTextArea"
+              name="bio"
+              onChange={handleValueChange}
+              placeholder="Leave a comment here"
+              value={inputs.bio}
+            />
           </FloatingLabel>
 
         </div>

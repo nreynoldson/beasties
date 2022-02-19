@@ -20,8 +20,6 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
 import PetProfile from './pages/PetProfile'
-import { getUser } from './components/Account.js';
-import UserBox from './components/UserBox.js';
 import ShelterProfile from './pages/ShelterProfile'
 import {getUser, RequireAuth} from './components/Account.js';
 import UserBox from './components/UserBox';
@@ -57,7 +55,7 @@ export default function App() {
         setIsShelterOwner(shelterOwnerInfo?.value || false);
       }
     });
-  }, []);
+  }, [isAuthenticated]);
 
   let adminPageLink = null;
   let userSearchLink = null;
@@ -132,7 +130,7 @@ export default function App() {
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route exact path="/pet/:petId" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
-        <Route exact path="/" element={isAuthenticated ? <Dashboard auth={auth}/> : <LandingPage />}></Route>
+        <Route exact path="/" element={isAuthenticated ? <Dashboard auth={auth}/> : <LandingPage auth={auth}/>}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>

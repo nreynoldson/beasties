@@ -45,6 +45,12 @@ const PetConsts = {
     other: 'Other Breed'
   },
 
+  dispositions: {
+    goodWithOtherAnimals: 'goodWithOtherAnimals',
+    goodWithChildren: 'goodWithChildren',
+    mustBeLeashed: 'mustBeLeashed'
+  },
+
   dispositionToDisplayNameMap: {
     goodWithOtherAnimals: 'Good with other animals',
     goodWithChildren: 'Good with children',
