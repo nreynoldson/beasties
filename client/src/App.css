@@ -105,3 +105,20 @@ img.notification-icon{
 .user-box{
   padding: 0 30px;
 }
+
+.site-branding {
+  position: relative;
+}
+
+.site-branding-image {
+  z-index: 1;
+}
+
+.site-loading-indicator {
+  position: absolute;
+  top: -1px;
+  left: -4px;
+  height: 3.6rem;
+  width: 3.6rem;
+  z-index: 0;
+}

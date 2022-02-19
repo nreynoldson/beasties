@@ -27,6 +27,7 @@ import Dashboard from './pages/Dashboard';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Spinner from 'react-bootstrap/Spinner'
 
 import './App.css';
 
@@ -34,6 +35,7 @@ import './App.css';
 export default function App() {
 
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
@@ -81,17 +83,28 @@ export default function App() {
     currentUser: user
   }
 
+  let loadingIndicator = null;
+  if (isLoading) {
+    loadingIndicator = (
+      <Spinner
+        className="site-loading-indicator"
+        animation="border"
+        variant="info"
+      />);
+  }
+
   return (
     <div className="App">
       <Navbar className="me-auto" variant="dark">
         <Nav>
           <Navbar.Brand>
             <NavLink className="nav-link" to="/">
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center site-branding">
+                {loadingIndicator}
                 <img
                   alt="Beasties Logo"
                   src="/images/paw_heart.png"
-                  className="d-inline-block align-top mr-3"
+                  className="d-inline-block align-top mr-3 site-branding-image"
                   height="50"
                 />
                 Beasties
