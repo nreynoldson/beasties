@@ -43,7 +43,8 @@
   box-shadow: 3px 3px 4px gray;
   color: black;
   margin: 1rem;
-  max-width: 425px;
+  max-width: 350px;
+  min-width: 350px;
   padding: 0.5rem;
   position: relative;
   text-decoration: none;

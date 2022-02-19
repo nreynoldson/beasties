@@ -1,0 +1,33 @@
+.shelter.pets-container{
+    border: lightgrey 1px solid;
+    justify-content: center;
+    border-radius: 5px;
+    margin: 10px 0px 40px 0px;
+}
+
+.shelter-info{
+    padding: 50px 0px;
+    justify-content: space-between;
+}
+
+.shelter-info col{
+    padding: 0px 50px;
+}
+
+.shelter-container{
+    padding: 0px 70px;
+}
+
+.available-pets{
+    width: 100%;
+    padding: 20px;
+}
+
+.shelter-container .profile-info{
+    height: 400px;
+}
+
+.shelter-info img{
+    object-fit: cover;
+    height: 100%
+}

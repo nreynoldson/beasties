@@ -1,5 +1,8 @@
 import {CognitoUser, AuthenticationDetails} from "amazon-cognito-identity-js";
 import Pool from "../UserPool";
+import { useNavigate } from "react-router-dom";
+import {useEffect} from 'react';
+import axios from 'axios';
 
 const authenticate = async (Username, Password) => {
     return await new Promise((resolve, reject) => {
@@ -29,19 +32,22 @@ const authenticate = async (Username, Password) => {
 
 
 const getUser = async() => {
+    const URL = 'https://idvmpyv72b.execute-api.us-east-1.amazonaws.com/dev/user/';
     return await new Promise((resolve, reject) => {
        var user = Pool.getCurrentUser();
+       console.log(user);
        if(user != null){
            user.getSession(function(err, session) {
                if(err){
                    resolve(null)
                    return;
                }
-               user.getUserAttributes(function(err,attributes) {
-                   if(err){
-                       resolve(null);
-                   }
-                   resolve(attributes);
+               axios.get(URL + user.username)
+               .then(function (response) {
+                   resolve(response.data.items);
+               })
+               .catch(function (error) {
+                   console.log(error);
                });
                
            });
@@ -52,4 +58,16 @@ const getUser = async() => {
        
     });
 }
-export {getUser, authenticate};
+
+function RequireAuth(props){
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!props.auth.isAuthenticated){
+         navigate("/login")   
+        }
+    },[])
+
+    return props.children;
+}
+export {getUser, authenticate, RequireAuth};

@@ -22,6 +22,10 @@ import NotificationCenter from './pages/NotificationCenter'
 import PetProfile from './pages/PetProfile'
 import { getUser } from './components/Account.js';
 import UserBox from './components/UserBox.js';
+import ShelterProfile from './pages/ShelterProfile'
+import {getUser, RequireAuth} from './components/Account.js';
+import UserBox from './components/UserBox';
+import Dashboard from './pages/Dashboard';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -76,7 +80,7 @@ export default function App() {
     isAuthenticated: isAuthenticated,
     isShelterOwner,
     updateAuthStatus: updateAuthStatus,
-    user
+    currentUser: user
   }
 
   return (
@@ -127,11 +131,12 @@ export default function App() {
         <Route path="/pet/new" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route exact path="/pet/:petId" element={<PetProfile auth={auth} />}></Route>
-        <Route exact path="/" element={<LandingPage auth={auth} />}></Route>
+        <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
+        <Route exact path="/" element={isAuthenticated ? <Dashboard auth={auth}/> : <LandingPage />}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>
-        <Route exact path="/notifications" element={<NotificationCenter auth={auth}/>}></Route>
+        <Route exact path="/notifications" element={<RequireAuth auth={auth}><NotificationCenter auth={auth}/></RequireAuth>}></Route>
         <Route path = "*" element={<NotFound />}></Route>
       </Routes>
     </div>
