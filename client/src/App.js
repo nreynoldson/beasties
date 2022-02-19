@@ -25,6 +25,7 @@ import {getUser, RequireAuth} from './components/Account.js';
 import UserBox from './components/UserBox';
 import Dashboard from './pages/Dashboard';
 
+import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Spinner from 'react-bootstrap/Spinner'
@@ -95,7 +96,7 @@ export default function App() {
 
   return (
     <div className="App">
-      <Navbar className="me-auto" variant="dark">
+      <Navbar className="me-auto" variant="dark" collapseOnSelect expand="lg">
         <Nav>
           <Navbar.Brand>
             <NavLink className="nav-link" to="/">
@@ -112,25 +113,28 @@ export default function App() {
             </NavLink>
           </Navbar.Brand>
         </Nav>
-        <Nav className="ml-auto navLinks">
-          <Nav.Item>
-            <NavLink className="nav-link" to="/about" >
-              How It Works
-            </NavLink>
-          </Nav.Item>
-          {adminPageLink}
-          {userSearchLink}
-          <Nav.Item>
-            <NavLink className="nav-link" to="/browse-pets">Pets</NavLink>
-          </Nav.Item>
-          <Nav.Item>
-            <NavLink className="nav-link" to="/browse-shelters">Shelters</NavLink>
-          </Nav.Item>
-          <Nav.Item>
-            <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
-          </Nav.Item>
-        </Nav>
-        <UserBox auth={auth}/>
+        <Navbar.Toggle/>
+        <Navbar.Collapse id="site-navbar">
+          <Nav className="ml-auto navLinks">
+            <Nav.Item>
+              <NavLink className="nav-link" to="/about" >
+                How It Works
+              </NavLink>
+            </Nav.Item>
+            {adminPageLink}
+            {userSearchLink}
+            <Nav.Item>
+              <NavLink className="nav-link" to="/browse-pets">Pets</NavLink>
+            </Nav.Item>
+            <Nav.Item>
+              <NavLink className="nav-link" to="/browse-shelters">Shelters</NavLink>
+            </Nav.Item>
+            <Nav.Item>
+              <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
+            </Nav.Item>
+          </Nav>
+          <UserBox auth={auth}/>
+        </Navbar.Collapse>
       </Navbar>
       <Routes>
         <Route path="/about" element={<HowItWorksPage auth={auth} />}></Route>

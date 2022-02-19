@@ -6,8 +6,11 @@ import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import PetSearchResult from '../components/pets/PetSearchResult';
 
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 import './css/Common.css';
 import './css/BrowsePetsPage.css';
@@ -315,7 +318,7 @@ const BrowsePetsPage = (props) => {
             type="checkbox"
             id="mustBeLeashed"
             name="mustBeLeashed"
-            label="Animal must be leashed at all times"
+            label="Must be leashed at all times"
             checked={inputs.mustBeLeashed}
             onChange={handleValueChange}
           />
@@ -434,14 +437,16 @@ const BrowsePetsPage = (props) => {
   const componentOutput = useMemo(() => {
 
     return (
-      <div>
-        <h1 className="display-4 mt-2">Browse Pets</h1>
-        <div className="d-flex">
-          {searchControls}
-          {searchResults}
-        </div>
+      <Container fluid>
+        <Row>
+          <h1 className="display-4 mt-2">Browse Pets</h1>
+        </Row>
+        <Row>
+          <Col md="auto">{searchControls}</Col>
+          <Col>{searchResults}</Col>
+        </Row>
         {confirmDeleteModal}
-      </div>
+      </Container>
     );
   }, [
     confirmDeleteModal,

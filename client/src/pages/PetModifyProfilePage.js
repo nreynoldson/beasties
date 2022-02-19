@@ -330,7 +330,7 @@ const PetModifyProfilePage = (props) => {
               type="checkbox"
               id="mustBeLeashed"
               name="mustBeLeashed"
-              label="Animal must be leashed at all times"
+              label="Must be leashed at all times"
               checked={inputs.mustBeLeashed}
               onChange={handleValueChange}
             />

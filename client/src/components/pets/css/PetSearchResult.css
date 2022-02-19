@@ -28,7 +28,8 @@
 
 .petProfileQuickView {
   border-width: 1px;
-  min-width: 450px;
+  max-width: 450px;
+  min-width: 300px;
   box-shadow: 6px 6px 10px gray;
 }
 
@@ -43,8 +44,8 @@
   box-shadow: 3px 3px 4px gray;
   color: black;
   margin: 1rem;
-  max-width: 350px;
-  min-width: 350px;
+  max-width: 300px;
+  min-width: 300px;
   padding: 0.5rem;
   position: relative;
   text-decoration: none;

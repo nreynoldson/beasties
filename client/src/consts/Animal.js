@@ -54,7 +54,7 @@ const PetConsts = {
   dispositionToDisplayNameMap: {
     goodWithOtherAnimals: 'Good with other animals',
     goodWithChildren: 'Good with children',
-    mustBeLeashed: 'Animal must be leashed at all times'
+    mustBeLeashed: 'Must be leashed at all times'
   },
 
   dogBreedsToDisplayNameMap: {
