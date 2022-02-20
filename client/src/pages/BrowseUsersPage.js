@@ -6,8 +6,11 @@ import NotFound from './NotFound';
 import UserSearchResult from '../components/users/UserSearchResult';
 
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 import './css/Common.css';
 import './css/BrowseUsersPage.css';
@@ -137,8 +140,8 @@ const BrowseUsersPage = (props) => {
     return (
       <div
         className={
-          'fields p-5 d-flex flex-column ' +
-          'justify-content-between align-items-right searchControls'
+          'fields p-5 d-flex flex-column justify-content-between ' +
+          'align-items-right userSearchControls'
         }
       >
 
@@ -263,14 +266,16 @@ const BrowseUsersPage = (props) => {
     }
 
     return (
-      <div>
-        <h1 className="display-4 mt-2">Browse Users</h1>
-        <div className="d-flex">
-          {searchControls}
-          {searchResults}
-        </div>
+      <Container fluid>
+        <Row>
+          <h1 className="display-4 mt-2">Browse Users</h1>
+        </Row>
+        <Row>
+          <Col md="auto">{searchControls}</Col>
+          <Col>{searchResults}</Col>
+        </Row>
         {confirmDeleteModal}
-      </div>
+      </Container>
     );
   }, [
     auth,

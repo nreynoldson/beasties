@@ -5,8 +5,11 @@ import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import ShelterSearchResult from '../components/shelters/ShelterSearchResult';
 
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 import './css/Common.css';
 import './css/BrowseSheltersPage.css';
@@ -126,8 +129,8 @@ const BrowseSheltersPage = (props) => {
     return (
       <div
         className={
-          'fields p-5 d-flex flex-column ' +
-          'justify-content-between align-items-right searchControls'
+          'fields p-5 d-flex flex-column justify-content-between ' +
+          'align-items-right shelterSearchControls'
         }
       >
 
@@ -140,7 +143,7 @@ const BrowseSheltersPage = (props) => {
           />
         </FloatingLabel>
 
-        <FloatingLabel controlId="floatingSelect" label="Minimum number of available pets">
+        <FloatingLabel controlId="floatingSelect" label="Minimum available pets">
           <Form.Select
             onChange={handleValueChange}
             name="availableAnimals"
@@ -239,14 +242,16 @@ const BrowseSheltersPage = (props) => {
   const componentOutput = useMemo(() => {
 
     return (
-      <div>
-        <h1 className="display-4 mt-2">Browse Shelters</h1>
-        <div className="d-flex">
-          {searchControls}
-          {searchResults}
-        </div>
-        {confirmDeleteModal}
-      </div>
+      <Container fluid>
+        <Row>
+          <h1 className="display-4 mt-2">Browse Shelters</h1>
+        </Row>
+        <Row>
+          <Col md="auto">{searchControls}</Col>
+          <Col>{searchResults}</Col>
+        </Row>
+          {confirmDeleteModal}
+      </Container>
     );
   }, [
     confirmDeleteModal,

@@ -12,6 +12,12 @@
   font-size: 1.4rem;
 }
 
+.landingContainer {
+  align-items: center;
+  display: flex;
+  height: calc(100vh - 11vh);
+}
+
 .pinkLink {
   color: #F45474;
   text-decoration: none;
