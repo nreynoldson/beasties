@@ -59,9 +59,17 @@
   border-radius: 10px;
 }
 
+.nav-link:hover > .nav-bar-icon {
+  color: lightgray;
+}
+
 .nav-link.active {
   background-color: rgb(50, 115, 168);
   box-shadow: 2px 2px 2px rgb(33, 84, 126);
+}
+
+.nav-link.active > .nav-bar-icon {
+  color: white;
 }
 
 .navLinks {
@@ -95,6 +103,13 @@
 .nav-btn{
   width: unset;
   margin: 10px;
+}
+
+.nav-bar-icon {
+  color: lightblue;
+  margin-bottom: 4px;
+  margin-right: 6px;
+  transition: color 0.25s;
 }
 
 img.notification-icon{

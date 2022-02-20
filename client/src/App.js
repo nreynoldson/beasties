@@ -30,12 +30,15 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Spinner from 'react-bootstrap/Spinner'
 
-import './App.css';
+import { FaUsers } from "react-icons/fa";
+import { MdAdminPanelSettings, MdPets } from "react-icons/md";
+import { RiHomeHeartFill } from "react-icons/ri";
 
+import './App.css';
 
 export default function App() {
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true);
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
@@ -66,13 +69,19 @@ export default function App() {
   if (isAdmin) {
     adminPageLink = (
       <Nav.Item>
-        <NavLink className="nav-link" to="/admin">Admin</NavLink>
+        <NavLink className="nav-link" to="/admin">
+          <MdAdminPanelSettings className="nav-bar-icon" />
+          Admin
+        </NavLink>
       </Nav.Item>
     );
 
     userSearchLink = (
       <Nav.Item>
-        <NavLink className="nav-link" to="/browse-users">Users</NavLink>
+        <NavLink className="nav-link" to="/browse-users">
+          <FaUsers className="nav-bar-icon" />
+          Users
+        </NavLink>
       </Nav.Item>
     );
   }
@@ -117,18 +126,24 @@ export default function App() {
         <Navbar.Toggle/>
         <Navbar.Collapse id="site-navbar">
           <Nav className="ml-auto navLinks">
+            {adminPageLink}
+            {userSearchLink}
+            <Nav.Item>
+              <NavLink className="nav-link" to="/browse-pets">
+                <MdPets className="nav-bar-icon" />
+                Pets
+              </NavLink>
+            </Nav.Item>
+            <Nav.Item>
+              <NavLink className="nav-link" to="/browse-shelters">
+                <RiHomeHeartFill className="nav-bar-icon" />
+                Shelters
+              </NavLink>
+            </Nav.Item>
             <Nav.Item>
               <NavLink className="nav-link" to="/about" >
                 How It Works
               </NavLink>
-            </Nav.Item>
-            {adminPageLink}
-            {userSearchLink}
-            <Nav.Item>
-              <NavLink className="nav-link" to="/browse-pets">Pets</NavLink>
-            </Nav.Item>
-            <Nav.Item>
-              <NavLink className="nav-link" to="/browse-shelters">Shelters</NavLink>
             </Nav.Item>
             <Nav.Item>
               <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
