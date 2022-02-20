@@ -4,6 +4,7 @@ import {
   Route,
   Routes
 } from 'react-router-dom';
+import { usePromiseTracker } from "react-promise-tracker";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import AdminLandingPage from './pages/AdminLandingPage';
@@ -25,7 +26,6 @@ import {getUser, RequireAuth} from './components/Account.js';
 import UserBox from './components/UserBox';
 import Dashboard from './pages/Dashboard';
 
-import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Spinner from 'react-bootstrap/Spinner'
@@ -36,10 +36,11 @@ import './App.css';
 export default function App() {
 
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
+
+  const { promiseInProgress: isLoading } = usePromiseTracker();
 
   useEffect(() => {
 

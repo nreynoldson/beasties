@@ -1,4 +1,6 @@
 import request from 'superagent';
+import { trackPromise } from 'react-promise-tracker';
+
 const {
   REACT_APP_API_KEY,
   REACT_APP_BACKEND_URL_PREFIX
@@ -9,6 +11,7 @@ const makeBackendUrl =
 
 const handleRequest = async (req, options = {}) => {
 
+  // Set options to default if they are not specified
   options = {
     requestTypeIsJson: true,
     ...options
@@ -24,7 +27,7 @@ const handleRequest = async (req, options = {}) => {
    }
 
    try {
-    response.result = await req;
+    response.result = await trackPromise(req);
    }
    catch (e) {
     response.error = e;
@@ -120,12 +123,19 @@ const api = {
 
   Dummy: {
 
-    returnThisData: async (data) => {
+    returnThisData: async (data, delay = 100) => {
 
-      return {
-        error: null,
-        result: data
-      };
+      const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+      return await trackPromise((async () => {
+
+        await sleep(delay);
+
+        return {
+          error: null,
+          result: data
+        };
+      })());
     }
   },
 

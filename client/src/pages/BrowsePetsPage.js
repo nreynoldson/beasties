@@ -247,8 +247,8 @@ const BrowsePetsPage = (props) => {
     return (
       <div
         className={
-          'fields p-5 d-flex flex-column ' +
-          'justify-content-between align-items-right searchControls'
+          'fields p-5 d-flex flex-column justify-content-between ' +
+          'align-items-right petSearchControls'
         }
       >
 
