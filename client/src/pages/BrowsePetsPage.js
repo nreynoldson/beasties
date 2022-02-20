@@ -210,8 +210,9 @@ const BrowsePetsPage = (props) => {
 
   const handleConfirmDeletePet = useCallback(() => {
   
+    api.Animal.delete(petToDelete.id).then(handleSearch);
     handleCloseDeletePetDialog();
-  }, [handleCloseDeletePetDialog]);
+  }, [handleCloseDeletePetDialog, handleSearch, petToDelete]);
 
   const breedSelect = useMemo(() => {
 

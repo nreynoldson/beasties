@@ -38,6 +38,7 @@ import './App.css';
 
 export default function App() {
 
+  // Temporarily setting isAdmin to true for development
   const [isAdmin, setIsAdmin] = useState(true);
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [isShelterOwner, setIsShelterOwner] = useState(false);
@@ -53,8 +54,8 @@ export default function App() {
         updateAuthStatus(true);
         setUser(user);
 
-        const adminInfo = user.find((info) => info.name === 'is_admin');
-        // Temporarily setting isAdmin to always be true for testing
+        // Temporarily setting isAdmin to always be true for development
+        // const adminInfo = user.find((info) => info.name === 'is_admin');
         // setIsAdmin(adminInfo?.value || false);
         setIsAdmin(true);
 

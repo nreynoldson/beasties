@@ -120,8 +120,9 @@ const BrowseSheltersPage = (props) => {
 
   const handleConfirmDeleteShelter = useCallback(() => {
   
+    api.Shelter.delete(shelterToDelete.id).then(handleSearch);
     handleCloseDeleteShelterDialog();
-  }, [handleCloseDeleteShelterDialog]);
+  }, [handleCloseDeleteShelterDialog, handleSearch, shelterToDelete]);
 
 
   const searchControls = useMemo(() => {

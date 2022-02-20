@@ -166,7 +166,7 @@ const PetModifyProfilePage = (props) => {
     
     setShowConfirmDeleteDialog(false);
     api.Animal.delete(petId).then(() => navigate('/browse-pets'));
-  }, []);
+  }, [navigate, petId]);
 
   const breedSelect = useMemo(() => {
 
@@ -210,7 +210,7 @@ const PetModifyProfilePage = (props) => {
         title="Confirm Delete Pet"
       />
     );
-  }, [handleCloseDeleteDialog, handleConfirmDelete, showConfirmDeleteDialog]);
+  }, [handleCloseDeleteDialog, handleConfirmDelete, isNewPet, showConfirmDeleteDialog]);
 
   const componentOutput = useMemo(() => {
 

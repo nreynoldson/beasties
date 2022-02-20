@@ -92,7 +92,7 @@ const ImageManagement = (props) => {
     ];
 
     api.Dummy.returnThisData(dummyData).then(afterGetImages);
-  }, [apiLibrary, afterGetImages]);
+  }, [afterGetImages]);
 
   useEffect(() => {
 

@@ -98,7 +98,7 @@ const BrowseUsersPage = (props) => {
     };
 
     api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
-  }, []);
+  }, [afterGetSearchResults]);
 
   useEffect(() => {
 
@@ -131,8 +131,9 @@ const BrowseUsersPage = (props) => {
 
   const handleConfirmDeleteUser = useCallback(() => {
   
+    api.User.delete(userToDelete.id).then(handleSearch);
     handleCloseDeleteUserDialog();
-  }, [handleCloseDeleteUserDialog]);
+  }, [handleCloseDeleteUserDialog, handleSearch, userToDelete]);
 
   
   const searchControls = useMemo(() => {
@@ -196,7 +197,7 @@ const BrowseUsersPage = (props) => {
         <div key={user.id}>
           <UserSearchResult
             avatarUrl={user.avatarUrl}
-            canDelete={true}
+            canDelete={user.id !== auth.currentUser?.id}
             id={user.id}
             isShelterOwner={user.isShelterOwner}
             shelterName={user.shelterName}
@@ -229,6 +230,7 @@ const BrowseUsersPage = (props) => {
       </div>
     );
   }, [
+    auth,
     handleShowDeleteUserDialog,
     handleValueChange,
     inputs,
