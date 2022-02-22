@@ -100,7 +100,7 @@ functions:
     events:
       - http:
           method: get
-          path: animals/{animalName}/{shelterName}
+          path: animal/{animalName}/{shelterName}
           cors: true
     iamRoleStatements:
       - Effect: Allow
