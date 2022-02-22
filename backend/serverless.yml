@@ -107,7 +107,7 @@ functions:
         Action:
           - dynamodb:GetItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
 
 resources:
   Resources:
