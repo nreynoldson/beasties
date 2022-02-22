@@ -94,6 +94,20 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
+  
+  GetAnimalByNameAndShelter:
+    handler: src/lambda/http/getAnimalByNameAndShelter.handler
+    events:
+      - http:
+          method: get
+          path: animals/{animalName}/{shelterName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
 
 resources:
   Resources:
