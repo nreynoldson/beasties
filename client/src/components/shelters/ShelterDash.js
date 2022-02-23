@@ -10,7 +10,7 @@ const ShelterDash = (props) => {
       <Container className='dashboard-container'>
         <Col sm={1}/>
         <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
-          <Col sm={3}>
+          <Col sm={3} className="menu">
             <ListGroup>
               <ListGroup.Item action href="#link1">
                 Requests
@@ -26,13 +26,13 @@ const ShelterDash = (props) => {
               </ListGroup.Item>
             </ListGroup>
           </Col>
-          <Col sm={7}>
+          <Col sm={7} className="view-content">
             <Tab.Content>
               <Tab.Pane eventKey="#link1">
                 <NotificationCenter/>
               </Tab.Pane>
               <Tab.Pane eventKey="#link2">
-                <EditAccount></EditAccount>
+                <EditAccount auth={props.auth}></EditAccount>
               </Tab.Pane>
                 <Tab.Pane eventKey="#link3">
                   <ManagePets></ManagePets>

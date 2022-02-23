@@ -48,6 +48,7 @@ export default function NotificationCenter(props) {
 
     return (
         <Container className="notifications">
+            <h3>Your Requests</h3>
             {requestEl}
         </Container>
     );

@@ -1,9 +1,16 @@
-import Button from 'react-bootstrap/Button';
+import {Button, Spinner} from 'react-bootstrap';
 
 import './css/Common.css';
 import './css/LandingPage.css';
 
 const LandingPage = (props) => {
+  if(props.loading){
+    return(
+      <Spinner size="large" animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+    </Spinner>
+    )
+  } else {
 
   return (
     <div className="d-flex justify-content-around p-4">
@@ -29,6 +36,7 @@ const LandingPage = (props) => {
       />
     </div>
   );
+  }
 }
  
 export default LandingPage;

@@ -120,11 +120,13 @@ export default function ShelterPets(props) {
 
     useEffect(async () => {
         // Request the necessary data from the back en
-        var user = props.auth.currentUser;
-        setPets(testData);
-        if(user.isShelter && user.shelterName == props.shelterName){
+        console.log(props);
+        //var user = props.auth.currentUser;
+       // var petData = {...testData};
+       // setPets(petData);
+        /*if(user.isShelter && user.shelterName == props.shelterName){
           setCanEdit(true);
-        }
+        }*/
     }, []);
 
     const petCards = useMemo(()=>{
@@ -148,7 +150,6 @@ export default function ShelterPets(props) {
                   goodWithChildren={pet.goodWithChildren}
                   goodWithOtherAnimals={pet.goodWithOtherAnimals}
                   mustBeLeashed={pet.mustBeLeashed}
-                  canEdit={canEdit}
                 />
               </div>
             );
@@ -158,7 +159,6 @@ export default function ShelterPets(props) {
 
     return(
         <div className="shelter pets-container">
-            <div className="available-pets"><h3>Available Pets</h3></div>
             {petCards}
         </div>
     );

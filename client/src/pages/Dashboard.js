@@ -25,7 +25,7 @@ const Dashboard = (props) => {
   return (
     <div>
       <h1 className="display-1 titleText"><b>HI, {props.auth.currentUser.userName}</b></h1>
-      {props.auth.currentUser.isShelterOwner ? <ShelterDash/> : <UserDash/>}
+      {props.auth.currentUser.isShelterOwner ? <ShelterDash auth={props.auth}/> : <UserDash auth={props.auth}/>}
     </div>
 
   );

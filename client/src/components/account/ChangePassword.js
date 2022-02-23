@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import {Form, Button} from 'react-bootstrap';
+import {Form, Button, Alert} from 'react-bootstrap';
+import {changePassword} from './Account.js'
 
 export default function ChangePassword(props) {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [formErrors, setErrors] = useState('');
+    const [success, setSuccess] = useState(false);
     var user = null;
     
     const validateForm = () => {
@@ -29,23 +31,30 @@ export default function ChangePassword(props) {
         return formErrors.hasOwnProperty(key);
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         if(validateForm())
             return;
         
-        user.changePassword(oldPassword, newPassword, (err, result) => {
-            if (err) {
-                var errors = {'aws': err.message};
-                setErrors(errors)
-            } else {
-                console.log('success!');
-            }
-        });
-
+        console.log(props)
+        
+        try{
+            await changePassword(oldPassword, newPassword);
+            setSuccess(true);
+        }
+        catch {
+            console.log('error!');
+        }
     }
 
+    var alertBanner = success ? <Alert variant={'success'}>
+                            Your password was successfully changed!
+                        </Alert> : '';
+
+
     return (
-        <Form>
+        <Form className="change-password">
+            <h3>Change Password</h3>
+            {alertBanner}
             <Form.Group className="mb-3">
                 <Form.Label>Old Password</Form.Label>
                 <Form.Control 
@@ -57,6 +66,9 @@ export default function ChangePassword(props) {
                     {formErrors.oldPassword}
                 </Form.Control.Feedback>
             </Form.Group>
+            <Form.Control.Feedback type='invalid'>
+                    {formErrors.oldPassword}
+                </Form.Control.Feedback>
             <Form.Group className="mb-3">
                 <Form.Label> New Password</Form.Label>
                 <Form.Control 

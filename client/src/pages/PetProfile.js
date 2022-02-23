@@ -5,6 +5,7 @@ import AnimalConsts from '../consts/Animal';
 import {useParams} from 'react-router-dom';
 import Slider from 'react-slick';
 import './css/PetProfile.css';
+import axios from 'axios';
 
 var data = {
     id: 1,
@@ -20,27 +21,44 @@ var data = {
     bio: "Fido was rescued from the streets of Fresno where he was running around with a gang of small dogs. He is a sweet boy that loves to give kisses and cuddle. Given his background, he can be slightly skittish when it comes to body handling and does exhibit some resource guarding. He would do well in a house without children, but would fare well with other dogs."
 };
 
+const getPetURL = "https://idvmpyv72b.execute-api.us-east-1.amazonaws.com/dev/animals/";
+
 export default function PetProfile(props) {
-    const { petId } = useParams();
+    const { petName, shelterName } = useParams();
     const [petInfo, setPetInfo] = useState({});
 
     useEffect(() => {
         // Request the necessary data from the back end
         // Grab images from S3
-        var petData = {...data};
-        var type = AnimalConsts.typeToDisplayNameMap[data.type];
+        async function getPetInfo() {
+            var url = getPetURL + petName +'/'+ shelterName;
+            axios.get(url)
+            .then(function (response) {
+                var data = response.data.items;
+                var pet = {};
 
-        if (data.type === 'dog' || data.type === 'cat') {
-        const breedToDisplayNameMap = (data.type === 'dog') ?
-            AnimalConsts.dogBreedsToDisplayNameMap :
-            AnimalConsts.catBreedsToDisplayNameMap;
-            var breed = breedToDisplayNameMap[data.breed];
+                pet.type = AnimalConsts.typeToDisplayNameMap[data.type];
+                if (data.type === 'dog' || data.type === 'cat') {
+                    const breedToDisplayNameMap = (data.type === 'dog') ?
+                        AnimalConsts.dogBreedsToDisplayNameMap :
+                        AnimalConsts.catBreedsToDisplayNameMap;
+                        pet.breed = breedToDisplayNameMap[data.breed];
+                }
+                pet.age = AnimalConsts.ageToDisplayNameMap[data.age];
+                pet.gender = AnimalConsts.genderToDisplayNameMap[data.gender];
+                pet.availability = AnimalConsts.availabilityToDisplayNameMap[data.availability];
+                pet.availability = AnimalConsts.availabilityToDisplayNameMap[data.availability];
+                pet.name = data.animalName;
+                pet.shelter = data.shelterName;
+                console.log(response);
+                setPetInfo(pet);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         }
-
-        petData.type = type;
-        petData.breed = breed;
-
-        setPetInfo(petData);
+        
+        getPetInfo();
     }, []);
 
     const requestDate = () => {

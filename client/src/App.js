@@ -34,14 +34,19 @@ import './App.css';
 export default function App(){
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(async () => {
-    var user = await getUser();
-    console.log(user);
-    if(user){
-      updateAuthStatus(true);
-      setUser(user);
+  useEffect(() => {
+    async function getUserInfo() {
+      var user = await getUser();
+      console.log(user);
+      if(user){
+        updateAuthStatus(true);
+        setUser(user);
+      }
+      setLoading(false);
     }
+    getUserInfo();
   }, []);
 
   const isAdmin = true;
@@ -115,9 +120,9 @@ export default function App(){
         <Route path="/contact" element={<ContactPage />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage />}></Route>
-        <Route exact path="/pet/:petId" element={<PetProfile auth={auth} />}></Route>
+        <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
-        <Route exact path="/" element={isAuthenticated ? <Dashboard auth={auth}/> : <LandingPage />}></Route>
+        <Route exact path="/" element={isAuthenticated ? <Dashboard auth={auth}/> : <LandingPage loading={loading} />}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>

@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function EditProfile(props){
     const [name, setName]  = useState('');
-    const [dob, setDob] = useState('');
     const [location, setLocation] = useState('');
     const [isShelter, setShelter] = useState(false);
     const [shelterName, setShelterName] = useState('');
@@ -18,8 +17,6 @@ export default function EditProfile(props){
         var errors = {};
         if(name === "")
             errors['name'] = "Name cannot be blank.";
-        if(dob === "")
-            errors['dob'] = "Date of birth cannot be blank.";
         if(location === "")
             errors['location'] = "Please set a password";
         if(isShelter && shelterName === "")
@@ -66,9 +63,12 @@ export default function EditProfile(props){
     }
 
     return(
-        <div className="register">
+        <div>
                 <Form>
-                    <Button variant="primary" className="pink-btn" type="button" onClick={() => props.setView('changePass')}>Change Password</Button>
+                    <div className="button-wrapper">
+                        <span className="button-label">Change Password: </span>
+                        <Button variant="light" className="change-pass" type="button" onClick={() => props.setView('changePass')}>Change Password</Button>
+                    </div>
                     <Form.Group className="mb-3">
                         <Form.Label>Name</Form.Label>
                         <Form.Control 
@@ -79,18 +79,6 @@ export default function EditProfile(props){
                         />
                         <Form.Control.Feedback type='invalid'>
                             {formErrors.name}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Date of Birth</Form.Label>
-                        <Form.Control 
-                            type="date" 
-                            name="dob" 
-                            value={dob} 
-                            onChange= {(e) => {setDob(e.target.value)}}
-                        />
-                        <Form.Control.Feedback type='invalid'>
-                            {formErrors.dob}
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -108,8 +96,9 @@ export default function EditProfile(props){
                     <Form.Group className="mb-3">
                         <Form.Label>Bio</Form.Label>
                         <Form.Control 
-                            type="text" 
+                            as="textarea" 
                             name="bio" 
+                            rows={3}
                             value={bio} 
                             onChange= {(e) => {setBio(e.target.value)}}
                         />
@@ -139,9 +128,12 @@ export default function EditProfile(props){
                             </Form.Control.Feedback>
                         </Form.Group>
                             </> : ""}
-                        <Button variant="primary" className="pink-btn" type="button" onClick={onSubmit}>
-                            Submit
-                        </Button>
+                        <div className="button-wrapper">
+                            <span className="button-label"></span>
+                            <Button variant="primary" className="pink-btn" type="button" onClick={onSubmit}>
+                                Submit
+                            </Button>
+                        </div>
                 </Form>
             </div>
     );
