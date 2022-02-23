@@ -1,4 +1,21 @@
-.shelterSearchResult {
+.deleteButton {
+  cursor: pointer;
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  transition: opacity 0.4s;
+  z-index: 2;
+}
+
+.deleteButtonBackground {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  transition: opacity 0.4s;
+  z-index: 0;
+}
+
+.userSearchResult {
   background-color: whitesmoke;
   border: 2px solid black;
   border-radius: 10px;
@@ -7,10 +24,22 @@
   margin: 1rem;
   max-width: 425px;
   padding: 0.5rem;
+  position: relative;
   text-decoration: none;
 }
 
-.shelterSearchResult:hover {
+.userSearchResult:hover {
   color: black;
   text-decoration: none;
+}
+
+
+.userSearchResult > .deleteButton,
+.userSearchResult > .deleteButtonBackground {
+  opacity: 0;
+}
+
+.userSearchResult:hover > .deleteButton,
+.userSearchResult:hover > .deleteButtonBackground {
+  opacity: 1;
 }

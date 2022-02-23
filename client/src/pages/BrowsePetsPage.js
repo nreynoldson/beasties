@@ -1,17 +1,26 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import AnimalConsts from '../consts/Animal';
+import api from '../api/api';
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import PetSearchResult from '../components/pets/PetSearchResult';
 
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 import './css/Common.css';
 import './css/BrowsePetsPage.css';
 
 
 const BrowsePetsPage = (props) => {
+
+  const {
+    auth
+  } = props;
 
   const getOriginalInputs = useMemo(() => {
 
@@ -29,142 +38,155 @@ const BrowsePetsPage = (props) => {
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [petToDelete, setPetToDelete] = useState(null);
   const [searchData, setSearchData] = useState({ results: [] });
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
 
     else {
       // Set inputs to pet values
-      // setInputs();
+      setSearchData(response.result);
       setIsLoading(false);
     }
-
   }, []);
 
   const handleSearch = useCallback(() => {
 
-    // TODO: make this actually search when the back end api is ready
-    setSearchData({ results: [
-      {
-        id: 1,
-        name: 'Fido',
-        age: 'young',
-        gender: 'male',
-        type: 'dog',
-        breed: 'englishSpringerSpaniel',
-        availability: 'available',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        goodWithChildren: true,
-        goodWithOtherAnimals: true,
-        mustBeLeashed: true,
-        images: []
-      },
-      {
-        id: 2,
-        name: 'Rex',
-        age: 'young',
-        gender: 'male',
-        type: 'dog',
-        breed: 'akita',
-        availability: 'available',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        goodWithChildren: false,
-        goodWithOtherAnimals: false,
-        mustBeLeashed: false,
-        images: []
-      },
-      {
-        id: 3,
-        name: 'Milly',
-        age: 'senior',
-        gender: 'female',
-        type: 'dog',
-        breed: 'cavalierKingCharlesSpaniel',
-        availability: 'available',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        goodWithChildren: false,
-        goodWithOtherAnimals: false,
-        mustBeLeashed: true,
-        images: [
-          {
+    setIsLoading(true);
+    // api.Animal.search(inputs).then(afterGetSearchResults);
+
+    const {
+      goodWithChildren,
+      goodWithOtherAnimals,
+      mustBeLeashed
+    } = AnimalConsts.dispositions;
+
+    const dummyResults = {
+      results: [
+        {
+          id: 1,
+          name: 'Fido',
+          age: 'young',
+          gender: 'male',
+          type: 'dog',
+          breed: 'englishSpringerSpaniel',
+          availability: 'available',
+          dateInfo: null,
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          disposition: [
+            goodWithChildren,
+            goodWithOtherAnimals,
+            mustBeLeashed,
+          ],
+          images: []
+        },
+        {
+          id: 2,
+          name: 'Rex',
+          age: 'young',
+          gender: 'male',
+          type: 'dog',
+          breed: 'akita',
+          availability: 'available',
+          dateInfo: null,
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          disposition: [],
+          images: []
+        },
+        {
+          id: 3,
+          name: 'Milly',
+          age: 'senior',
+          gender: 'female',
+          type: 'dog',
+          breed: 'cavalierKingCharlesSpaniel',
+          availability: 'available',
+          dateInfo: null,
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          disposition: [mustBeLeashed],
+          images: [
+            {
+              id: 1,
+              url: '/images/no_image.svg',
+              displayName: 'fido.jpg'
+            },
+            {
+              id: 2,
+              url: '/images/no_image.svg',
+              displayName: 'fido.jpg'
+            },
+            {
+              id: 3,
+              url: '/images/no_image.svg',
+              displayName: 'fido.jpg'
+            }
+          ]
+        },
+        {
+          id: 4,
+          name: 'Sam',
+          age: 'adult',
+          gender: 'male',
+          type: 'cat',
+          breed: 'norwegianForestCat',
+          dateInfo: {
             id: 1,
-            url: '/images/no_image.svg',
-            displayName: 'fido.jpg'
+            startDate: '2022-03-23T18:44:20.051Z',
+            endDate: '2022-03-25T18:44:20.051Z'
           },
-          {
-            id: 2,
-            url: '/images/no_image.svg',
-            displayName: 'fido.jpg'
-          },
-          {
-            id: 3,
-            url: '/images/no_image.svg',
-            displayName: 'fido.jpg'
-          }
-        ]
-      },
-      {
-        id: 4,
-        name: 'Sam',
-        age: 'adult',
-        gender: 'male',
-        type: 'cat',
-        breed: 'norwegianForestCat',
-        availability: 'available',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        goodWithChildren: false,
-        goodWithOtherAnimals: false,
-        mustBeLeashed: false,
-        images: []
-      },
-      {
-        id: 5,
-        name: 'Lizzy',
-        age: 'young',
-        gender: 'female',
-        type: 'other',
-        breed: null,
-        availability: 'pending',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        goodWithChildren: false,
-        goodWithOtherAnimals: false,
-        mustBeLeashed: false,
-        images: []
-      },
-      {
-        id: 6,
-        name: 'Benny',
-        age: 'baby',
-        gender: 'male',
-        type: 'cat',
-        breed: 'other',
-        availability: 'available',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        goodWithChildren: false,
-        goodWithOtherAnimals: false,
-        mustBeLeashed: false,
-        images: []
-      }
-    ] });
-  }, []);
+          availability: 'notAvailable',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          disposition: [],
+          images: []
+        },
+        {
+          id: 5,
+          name: 'Lizzy',
+          age: 'young',
+          gender: 'female',
+          type: 'other',
+          breed: null,
+          availability: 'pending',
+          dateInfo: null,
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          disposition: [],
+          images: []
+        },
+        {
+          id: 6,
+          name: 'Benny',
+          age: 'baby',
+          gender: 'male',
+          type: 'cat',
+          breed: 'other',
+          availability: 'available',
+          dateInfo: null,
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          disposition: [],
+          images: []
+        }
+      ]
+    };
+
+    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
+  }, [afterGetSearchResults, inputs]);
 
   useEffect(() => {
 
     // Run a search whenever the component loads or inputs.sortOrder changes
     handleSearch();
-
   }, [handleSearch, inputs.sortOrder]);
 
   const handleValueChange = useCallback((evt) => {
@@ -181,6 +203,16 @@ const BrowsePetsPage = (props) => {
 
     setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
+
+  const handleCloseDeletePetDialog = useCallback(() => setPetToDelete(null), []);
+
+  const handleShowDeletePetDialog = useCallback((id, name) => setPetToDelete({ id, name }), []);
+
+  const handleConfirmDeletePet = useCallback(() => {
+  
+    api.Animal.delete(petToDelete.id).then(handleSearch);
+    handleCloseDeletePetDialog();
+  }, [handleCloseDeletePetDialog, handleSearch, petToDelete]);
 
   const breedSelect = useMemo(() => {
 
@@ -216,8 +248,8 @@ const BrowsePetsPage = (props) => {
     return (
       <div
         className={
-          'fields p-5 d-flex flex-column ' +
-          'justify-content-between align-items-right searchControls'
+          'fields p-5 d-flex flex-column justify-content-between ' +
+          'align-items-right petSearchControls'
         }
       >
 
@@ -287,7 +319,7 @@ const BrowsePetsPage = (props) => {
             type="checkbox"
             id="mustBeLeashed"
             name="mustBeLeashed"
-            label="Animal must be leashed at all times"
+            label="Must be leashed at all times"
             checked={inputs.mustBeLeashed}
             onChange={handleValueChange}
           />
@@ -315,11 +347,20 @@ const BrowsePetsPage = (props) => {
 
   const searchResults = useMemo(() => {
 
-    if (!searchData?.results?.length) {
-      return 'No matching results found'
+    if (isLoading) {
+      return 'Searching...';
+    }
+    else if (!searchData?.results?.length) {
+      return 'No matching results found';
     }
 
     const resultComponents = searchData.results.map((pet) => {
+
+      const canDate = (
+        auth.currentUser &&
+        !auth.isShelterOwner &&
+        pet.availability === AnimalConsts.availabilityTypes.available
+      );
 
       return (
         <div key={pet.id}>
@@ -328,14 +369,16 @@ const BrowsePetsPage = (props) => {
             name={pet.name}
             age={pet.age}
             breed={pet.breed}
+            canDate={canDate}
+            canDelete={auth.isAdmin}
+            dateInfo={(auth.currentUser) ? pet.dateInfo : null}
             type={pet.type}
             avatarUrl={pet.avatarUrl}
             images={pet.images}
             availability={pet.availability}
             gender={pet.gender}
-            goodWithChildren={pet.goodWithChildren}
-            goodWithOtherAnimals={pet.goodWithOtherAnimals}
-            mustBeLeashed={pet.mustBeLeashed}
+            disposition={pet.disposition}
+            onDelete={handleShowDeletePetDialog}
           />
         </div>
       );
@@ -360,20 +403,57 @@ const BrowsePetsPage = (props) => {
         </div>
       </div>
     );
-  }, [handleValueChange, inputs, searchData]);
+  }, [
+    auth,
+    handleShowDeletePetDialog,
+    handleValueChange,
+    inputs,
+    isLoading,
+    searchData
+  ]);
+
+
+  const confirmDeleteModal = useMemo(() => {
+
+    if (!auth.isAdmin) {
+      return null;
+    }
+
+    return (
+      <ConfirmDeleteModal
+        bodyText={`Really delete "${petToDelete?.name}"?`}
+        onClose={handleCloseDeletePetDialog}
+        onConfirm={handleConfirmDeletePet}
+        show={Boolean(petToDelete)}
+        title="Confirm Delete Pet"
+      />
+    );
+  }, [
+    auth.isAdmin,
+    handleCloseDeletePetDialog,
+    handleConfirmDeletePet,
+    petToDelete
+  ]);
 
   const componentOutput = useMemo(() => {
 
     return (
-      <div>
-        <h1 className="display-4 mt-2">Browse Pets</h1>
-        <div className="d-flex">
-          {searchControls}
-          {searchResults}
-        </div>
-      </div>
+      <Container fluid>
+        <Row>
+          <h1 className="display-4 mt-2">Browse Pets</h1>
+        </Row>
+        <Row>
+          <Col md="auto">{searchControls}</Col>
+          <Col>{searchResults}</Col>
+        </Row>
+        {confirmDeleteModal}
+      </Container>
     );
-  }, [searchControls, searchResults]);
+  }, [
+    confirmDeleteModal,
+    searchControls,
+    searchResults
+  ]);
 
   return componentOutput;
 }

@@ -1,14 +1,18 @@
-import { useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import AnimalConsts from '../../consts/Animal';
 
+import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Table from 'react-bootstrap/Table';
+import Tooltip from 'react-bootstrap/Tooltip'
 
 import { Check } from 'react-bootstrap-icons';
+import { CircleFill } from 'react-bootstrap-icons';
+import { XCircleFill } from 'react-bootstrap-icons';
 
 import './css/PetSearchResult.css';
 
@@ -19,19 +23,27 @@ const PetSearchResult = (props) => {
     availability,
     avatarUrl,
     breed,
+    canDate,
+    canDelete,
+    dateInfo,
+    disposition,
     gender,
-    goodWithOtherAnimals,
-    goodWithChildren,
     id,
     images,
     name,
-    mustBeLeashed,
+    onDelete,
     type
   } = props;
 
+  const handleDeleteClick = useCallback((evt) => {
+
+    evt.preventDefault();
+    evt.stopPropagation();
+    onDelete(id, name);
+  }, [id, name, onDelete]);
+
   const breedDisplay = useMemo(() => {
   
-    
     let breedDisplay = AnimalConsts.typeToDisplayNameMap[type];
     if (type === 'dog' || type === 'cat') {
       const breedToDisplayNameMap = (type === 'dog') ?
@@ -60,6 +72,10 @@ const PetSearchResult = (props) => {
       );
     });
 
+    const { dispositions } = AnimalConsts;
+    const goodWithOtherAnimals = disposition.includes(dispositions.goodWithOtherAnimals);
+    const goodWithChildren = disposition.includes(dispositions.goodWithChildren);
+    const mustBeLeashed = disposition.includes(dispositions.mustBeLeashed);
     let goodWithOtherAnimalsRow = null;
     let goodWithChildrenRow = null;
     let mustBeLeashedRow = null;
@@ -130,16 +146,60 @@ const PetSearchResult = (props) => {
     age,
     availability,
     breedDisplay,
+    disposition,
     gender,
-    goodWithOtherAnimals,
-    goodWithChildren,
     id,
     images,
-    name,
-    mustBeLeashed
+    name
   ]);
 
   const componentOutput = useMemo(() => {
+
+    let deleteButton = null;
+    if (canDelete && onDelete) {
+      deleteButton = (
+        <Fragment>
+          <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
+            <XCircleFill
+              className="deleteButton"
+              color="darkRed"
+              size={25}
+              onClick={handleDeleteClick}
+            />
+          </OverlayTrigger>
+          <CircleFill className="deleteButtonBackground" color="white" size={25} />
+        </Fragment>
+      );
+    }
+
+    let dateButton = null;
+    if (canDate && !dateInfo) {
+      dateButton = (
+        <Link to={`/pet/${id}/request-date`}>
+          <Button className="mt-2" size="sm" variant="date-pet">
+            Request Date
+          </Button>
+        </Link>
+      );
+    }
+
+    let dateInfoElement = null;
+    if (dateInfo) {
+      const dateDisplayOptions = ['en-us', { weekday:"short", year:"numeric", month:"short", day:"numeric"}];
+      const startDate = new Date(dateInfo.startDate)
+        .toLocaleDateString(...dateDisplayOptions);
+      const endDate = new Date(dateInfo.endDate)
+        .toLocaleDateString(...dateDisplayOptions);
+      dateInfoElement = (
+        <Link className="dateInfo mt-2" to={`/date/${id}/`}>
+          Date scheduled:
+          <br/>
+          {startDate}{' - '}
+          <br/>
+          {endDate}
+        </Link>
+      );
+    }
 
     return (
       <OverlayTrigger placement="auto" overlay={popover}>
@@ -151,10 +211,25 @@ const PetSearchResult = (props) => {
               {AnimalConsts.ageToDisplayNameMap[age]} <b className="mr-1 ml-1">•</b> {breedDisplay}
             </span>
           </div>
+          {deleteButton}
+          {dateButton}
+          {dateInfoElement}
         </Link>
       </OverlayTrigger>
     );
-  }, [age, avatarUrl, breedDisplay, id, name, popover]);
+  }, [
+    age,
+    avatarUrl,
+    breedDisplay,
+    canDate,
+    canDelete,
+    dateInfo,
+    handleDeleteClick,
+    id,
+    name,
+    onDelete,
+    popover
+  ]);
 
   return componentOutput;
 }

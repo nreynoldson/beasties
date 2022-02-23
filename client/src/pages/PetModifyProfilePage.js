@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import AnimalConsts from '../consts/Animal';
+import api from '../api/api';
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import ImageManagement from '../components/images/ImageManagement';
 
 import Button from 'react-bootstrap/Button';
@@ -11,14 +13,25 @@ import Form from 'react-bootstrap/Form';
 import './css/Common.css';
 import './css/PetModifyProfilePage.css';
 
+const {
+  goodWithChildren,
+  goodWithOtherAnimals,
+  mustBeLeashed
+} = AnimalConsts.dispositions;
 
 const PetModifyProfilePage = (props) => {
+
+  const navigate = useNavigate();
+
+  const {
+    auth
+  } = props;
 
   const params = useParams();
   const petId = parseInt(params.petId);
   const isNewPet = !petId;
 
-  const getOriginalInputs = useMemo(() => {
+  const originalInputs = useMemo(() => {
 
     return {
       name: '',
@@ -29,45 +42,78 @@ const PetModifyProfilePage = (props) => {
       goodWithOtherAnimals: false,
       goodWithChildren: false,
       mustBeLeashed: false,
-      availability: 'available'
+      availability: 'available',
+      bio: ''
     };
   }, []);
 
-  const [inputs, setInputs] = useState(getOriginalInputs);
+  const originalInvalidFields = useMemo(() => {
+
+    return {
+      name: false
+    };
+  }, []);
+
+  const [inputs, setInputs] = useState(originalInputs);
+  const [invalidFields, setInvalidFields] = useState(originalInvalidFields);
   const [isLoading, setIsLoading] = useState(!isNewPet);
+  const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
 
   const afterGetPetInfo = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
 
-    else {
-      // Set inputs to pet values
-      // setInputs();
-      setIsLoading(false);
-    }
+    const newInputs = { ...response.result };
+    delete newInputs.disposition;
+
+    const dispositions = response.result.disposition;
+    newInputs.goodWithOtherAnimals = dispositions.includes(goodWithOtherAnimals);
+    newInputs.goodWithChildren = dispositions.includes(goodWithChildren);
+    newInputs.mustBeLeashed = dispositions.includes(mustBeLeashed);
+
+    setInputs(newInputs);
+    setIsLoading(false);
   }, []);
 
   const afterSubmit = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
 
     else {
       // Navigate to pet profile page
+      navigate(`/pet/${response.result.id}`);
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
 
     if (!isNewPet) {
-      // make api request and pass result to afterGetPetInfo
+      // api.Animal.getInfo(petId).then(afterGetPetInfo);
+
+      const dummyData = {
+        id: petId,
+        name: 'Fido',
+        type: 'dog',
+        breed: 'greatDane',
+        age: 'young',
+        gender: 'Male',
+        disposition: [
+          goodWithChildren,
+          goodWithOtherAnimals
+        ],
+        availability: 'pending',
+        bio: 'This is my bio'
+      };
+
+      api.Dummy.returnThisData(dummyData).then(afterGetPetInfo);
     }
-  }, [isNewPet, petId]);
+  }, [afterGetPetInfo, isNewPet, petId]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -86,13 +132,41 @@ const PetModifyProfilePage = (props) => {
 
   const handleSubmit = useCallback(() => {
 
-    if (isNewPet) {
-      // Use create route
+    if (!inputs.name.length) {
+      setInvalidFields({ ...invalidFields, name: true });
+      return;
     }
     else {
-      // Use edit route
+      setInvalidFields(originalInvalidFields);
     }
-  }, [isNewPet]);
+
+    if (isNewPet) {
+      // api.Animal.create(inputs).then(afterSubmit);
+      api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
+    }
+    else {
+      // api.Animal.edit(inputs).then(afterSubmit);
+      api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
+    }
+  }, [
+    afterSubmit,
+    inputs.name,
+    invalidFields,
+    isNewPet,
+    originalInvalidFields
+  ]);
+
+  const handleShowConfirmDeleteDialog =
+    useCallback(() => setShowConfirmDeleteDialog(true), []);
+
+  const handleCloseDeleteDialog =
+    useCallback(() => setShowConfirmDeleteDialog(false), []);
+
+  const handleConfirmDelete = useCallback(() => {
+    
+    setShowConfirmDeleteDialog(false);
+    api.Animal.delete(petId).then(() => navigate('/browse-pets'));
+  }, [navigate, petId]);
 
   const breedSelect = useMemo(() => {
 
@@ -121,7 +195,57 @@ const PetModifyProfilePage = (props) => {
     );
   }, [inputs, handleValueChange]);
 
+  const confirmDeleteModal = useMemo(() => {
+
+    if (isNewPet) {
+      return null;
+    }
+
+    return (
+      <ConfirmDeleteModal
+        bodyText="Really delete this pet?"
+        onClose={handleCloseDeleteDialog}
+        onConfirm={handleConfirmDelete}
+        show={showConfirmDeleteDialog}
+        title="Confirm Delete Pet"
+      />
+    );
+  }, [handleCloseDeleteDialog, handleConfirmDelete, isNewPet, showConfirmDeleteDialog]);
+
   const componentOutput = useMemo(() => {
+
+    if (isLoading) {
+      return (
+        <div>
+            <h1>Loading...</h1>
+        </div>
+      );
+    }
+
+    let deleteButton = null;
+    if (auth.isAdmin) {
+      deleteButton = (
+        <Button
+          className="mt-4 mb-4"
+          size="sm"
+          variant="danger"
+          onClick={handleShowConfirmDeleteDialog}
+        >
+          Delete Pet
+        </Button>
+      );
+    }
+
+    let imageManagement = null;
+    if (petId) {
+      imageManagement = (
+        <ImageManagement
+          allowEdit={true}
+          id={petId}
+          type="animal"
+        />
+      );
+    }
 
     return (
       <div className="d-flex flex-column align-items-center">
@@ -129,6 +253,8 @@ const PetModifyProfilePage = (props) => {
         <div className="fields p-5 d-flex flex-column justify-content-between align-items-right w-75">
           <FloatingLabel controlId="floatingInput" label="Name">
             <Form.Control
+              required
+              isInvalid={invalidFields.name}
               type="text"
               onChange={handleValueChange}
               name="name"
@@ -136,6 +262,9 @@ const PetModifyProfilePage = (props) => {
               placeholder="Name"
               size="lg"
               />
+            <Form.Control.Feedback type="invalid">
+              Name is required
+            </Form.Control.Feedback>
           </FloatingLabel>
 
           <FloatingLabel controlId="floatingSelect" label="Age">
@@ -201,7 +330,7 @@ const PetModifyProfilePage = (props) => {
               type="checkbox"
               id="mustBeLeashed"
               name="mustBeLeashed"
-              label="Animal must be leashed at all times"
+              label="Must be leashed at all times"
               checked={inputs.mustBeLeashed}
               onChange={handleValueChange}
             />
@@ -220,18 +349,48 @@ const PetModifyProfilePage = (props) => {
               <option value="adopted">{AnimalConsts.availabilityToDisplayNameMap.adopted}</option>
             </Form.Select>
           </FloatingLabel>
+
+          <FloatingLabel controlId="floatingTextarea" label="Bio">
+            <Form.Control
+              as="textarea"
+              className="bioTextArea"
+              name="bio"
+              onChange={handleValueChange}
+              placeholder="Leave a comment here"
+              value={inputs.bio}
+            />
+          </FloatingLabel>
+
         </div>
 
-        <ImageManagement
-          allowEdit={true}
-          avatarImageId={2}
-          type="pet"
-        />
+        {deleteButton}
 
-        <Button size="lg" variant="primary" onClick={handleSubmit}>Submit</Button>
+        {imageManagement}
+
+        <Button
+          className="mb-3"
+          size="lg"
+          variant="primary"
+          onClick={handleSubmit}
+        >
+          Save Pet
+        </Button>
+        {confirmDeleteModal}
       </div>
     );
-  }, [breedSelect, handleSubmit, handleValueChange, inputs, isNewPet]);
+  }, [
+    auth.isAdmin,
+    breedSelect,
+    confirmDeleteModal,
+    handleShowConfirmDeleteDialog,
+    handleSubmit,
+    handleValueChange,
+    inputs,
+    invalidFields,
+    isLoading,
+    isNewPet,
+    petId
+  ]);
 
   return componentOutput;
 }

@@ -2,12 +2,12 @@
   margin: 1rem 0;
 }
 
-.searchControls {
+.petSearchControls {
   border: 3px solid black;
   border-radius: 10px;
   margin: 0 2rem;
   max-height: 750px;
-  min-width: 400px;
+  width: 300px;
   overflow-y: auto;
 }
 

@@ -1,16 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import api from '../api/api';
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import ShelterSearchResult from '../components/shelters/ShelterSearchResult';
 
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 import './css/Common.css';
 import './css/BrowseSheltersPage.css';
 
 
 const BrowseSheltersPage = (props) => {
+
+  const {
+    auth
+  } = props;
 
   const getOriginalInputs = useMemo(() => {
 
@@ -22,19 +31,20 @@ const BrowseSheltersPage = (props) => {
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchData, setSearchData] = useState({ results: [] });
+  const [shelterToDelete, setShelterToDelete] = useState(null);
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
 
     else {
       // Set inputs to pet values
-      // setInputs();
+      setSearchData(response.result);
       setIsLoading(false);
     }
 
@@ -42,38 +52,44 @@ const BrowseSheltersPage = (props) => {
 
   const handleSearch = useCallback(() => {
 
-    // TODO: make this actually search when the back end api is ready
-    setSearchData({ results: [
-      {
-        id: 1,
-        name: 'Bob\'s Pets',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 250
-      },
-      {
-        id: 2,
-        name: 'Critters',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 130
-      },
-      {
-        id: 3,
-        name: 'Paw Pals',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 23
-      },
-      {
-        id: 4,
-        name: 'Doug\'s Dogs',
-        avatarUrl: null,
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        availableAnimals: 5
-      }
-    ] });
-  }, []);
+    setIsLoading(true);
+    // api.Shelter.search(inputs).then(afterGetSearchResults);
+
+    const dummyResults = {
+      results: [
+        {
+          id: 1,
+          name: 'Bob\'s Pets',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 250
+        },
+        {
+          id: 2,
+          name: 'Critters',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 130
+        },
+        {
+          id: 3,
+          name: 'Paw Pals',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 23
+        },
+        {
+          id: 4,
+          name: 'Doug\'s Dogs',
+          avatarUrl: null,
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          availableAnimals: 5
+        }
+      ]
+    };
+
+    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
+  }, [afterGetSearchResults, inputs]);
 
   useEffect(() => {
 
@@ -97,14 +113,25 @@ const BrowseSheltersPage = (props) => {
     setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
 
+
+  const handleCloseDeleteShelterDialog = useCallback(() => setShelterToDelete(null), []);
+
+  const handleShowDeleteShelterDialog = useCallback((id, name) => setShelterToDelete({ id, name }), []);
+
+  const handleConfirmDeleteShelter = useCallback(() => {
   
+    api.Shelter.delete(shelterToDelete.id).then(handleSearch);
+    handleCloseDeleteShelterDialog();
+  }, [handleCloseDeleteShelterDialog, handleSearch, shelterToDelete]);
+
+
   const searchControls = useMemo(() => {
 
     return (
       <div
         className={
-          'fields p-5 d-flex flex-column ' +
-          'justify-content-between align-items-right searchControls'
+          'fields p-5 d-flex flex-column justify-content-between ' +
+          'align-items-right shelterSearchControls'
         }
       >
 
@@ -117,7 +144,7 @@ const BrowseSheltersPage = (props) => {
           />
         </FloatingLabel>
 
-        <FloatingLabel controlId="floatingSelect" label="Minimum number of available pets">
+        <FloatingLabel controlId="floatingSelect" label="Minimum available pets">
           <Form.Select
             onChange={handleValueChange}
             name="availableAnimals"
@@ -139,8 +166,11 @@ const BrowseSheltersPage = (props) => {
 
   const searchResults = useMemo(() => {
 
-    if (!searchData?.results?.length) {
-      return 'No matching results found'
+    if (isLoading) {
+      return 'Searching...';
+    }
+    else if (!searchData?.results?.length) {
+      return 'No matching results found';
     }
 
     const resultComponents = searchData.results.map((shelter) => {
@@ -148,10 +178,12 @@ const BrowseSheltersPage = (props) => {
       return (
         <div key={shelter.id}>
           <ShelterSearchResult
+            availableAnimals={shelter.availableAnimals}
             avatarUrl={shelter.avatarUrl}
+            canDelete={auth.isAdmin}
             id={shelter.id}
             name={shelter.name}
-            availableAnimals={shelter.availableAnimals}
+            onDelete={handleShowDeleteShelterDialog}
           />
         </div>
       );
@@ -175,20 +207,58 @@ const BrowseSheltersPage = (props) => {
         </div>
       </div>
     );
-  }, [handleValueChange, inputs, searchData]);
+  }, [
+    auth.isAdmin,
+    handleShowDeleteShelterDialog,
+    handleValueChange,
+    inputs,
+    isLoading,
+    searchData
+  ]);
+
+
+  const confirmDeleteModal = useMemo(() => {
+
+    if (!auth.isAdmin) {
+      return null;
+    }
+
+    return (
+      <ConfirmDeleteModal
+        bodyText={`Really delete "${shelterToDelete?.name}"?`}
+        onClose={handleCloseDeleteShelterDialog}
+        onConfirm={handleConfirmDeleteShelter}
+        show={Boolean(shelterToDelete)}
+        title="Confirm Delete Shelter"
+      />
+    );
+  }, [
+    auth.isAdmin,
+    handleCloseDeleteShelterDialog,
+    handleConfirmDeleteShelter,
+    shelterToDelete
+  ]);
+
 
   const componentOutput = useMemo(() => {
 
     return (
-      <div>
-        <h1 className="display-4 mt-2">Browse Shelters</h1>
-        <div className="d-flex">
-          {searchControls}
-          {searchResults}
-        </div>
-      </div>
+      <Container fluid>
+        <Row>
+          <h1 className="display-4 mt-2">Browse Shelters</h1>
+        </Row>
+        <Row>
+          <Col md="auto">{searchControls}</Col>
+          <Col>{searchResults}</Col>
+        </Row>
+          {confirmDeleteModal}
+      </Container>
     );
-  }, [searchControls, searchResults]);
+  }, [
+    confirmDeleteModal,
+    searchControls,
+    searchResults
+  ]);
 
   return componentOutput;
 }
