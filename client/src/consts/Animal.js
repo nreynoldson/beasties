@@ -14,6 +14,13 @@ const PetConsts = {
     adopted: 'Adopted'
   },
 
+  availabilityTypes: {
+    available: 'available',
+    notAvailable: 'notAvailable',
+    pending: 'pending',
+    adopted: 'adopted'
+  },
+
   catBreedsToDisplayNameMap: {
     ragdoll: 'Ragdoll',
     exoticShorthair: 'Exotic Shorthair',
@@ -38,10 +45,16 @@ const PetConsts = {
     other: 'Other Breed'
   },
 
+  dispositions: {
+    goodWithOtherAnimals: 'goodWithOtherAnimals',
+    goodWithChildren: 'goodWithChildren',
+    mustBeLeashed: 'mustBeLeashed'
+  },
+
   dispositionToDisplayNameMap: {
     goodWithOtherAnimals: 'Good with other animals',
     goodWithChildren: 'Good with children',
-    mustBeLeashed: 'Animal must be leashed at all times'
+    mustBeLeashed: 'Must be leashed at all times'
   },
 
   dogBreedsToDisplayNameMap: {

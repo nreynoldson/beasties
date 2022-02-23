@@ -91,7 +91,7 @@ function RequireAuth(props){
         if (!props.auth.isAuthenticated){
          navigate("/login")   
         }
-    },[])
+    },[navigate, props.auth.isAuthenticated])
 
     return props.children;
 }

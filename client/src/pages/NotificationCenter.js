@@ -37,12 +37,12 @@ export default function NotificationCenter(props) {
     useEffect(() => {
         //var user = await getUser();
         setRequests(testData)
-    });
+    }, []);
 
     var requestEl = [];
     requests.forEach((req) => {
             requestEl.push(
-                <Notification  isShelter = {isShelter} req = {req}/>
+                <Notification key={`${req.user}_${req.name}`} isShelter = {isShelter} req = {req}/>
         )
     });
 

@@ -7,10 +7,21 @@
   margin: 1rem;
   max-width: 425px;
   padding: 0.5rem;
+  position: relative;
   text-decoration: none;
 }
 
 .shelterSearchResult:hover {
   color: black;
   text-decoration: none;
+}
+
+.shelterSearchResult > .deleteButton,
+.shelterSearchResult > .deleteButtonBackground {
+  opacity: 0;
+}
+
+.shelterSearchResult:hover > .deleteButton,
+.shelterSearchResult:hover > .deleteButtonBackground {
+  opacity: 1;
 }

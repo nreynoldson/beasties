@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import {Container, Card, ListGroup, Col, Button} from 'react-bootstrap';
 import LoginButton from '../components/account/LoginButton';
 import AnimalConsts from '../consts/Animal';
-import {useParams} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import './css/PetProfile.css';
 import axios from 'axios';
@@ -25,6 +25,7 @@ const getPetURL = "https://idvmpyv72b.execute-api.us-east-1.amazonaws.com/dev/an
 
 export default function PetProfile(props) {
     const { petName, shelterName } = useParams();
+    const navigate = useNavigate();
     const [petInfo, setPetInfo] = useState({});
 
     useEffect(() => {
@@ -69,6 +70,11 @@ export default function PetProfile(props) {
         // Create request to backend
     }
 
+    const goToEditPage = () => {
+
+        navigate(`/pet/${petId}/edit`);
+    };
+
     var settings = {
         dots: true,
         infinite: true,
@@ -83,11 +89,23 @@ export default function PetProfile(props) {
 
     var profileActions;
     if(props.auth.updateAuthStatus){
+
+        let editButton = null;
+        // TODO: check if user is owner for pet's shelter
+        if (true) {
+            editButton = (
+                <Button onClick={goToEditPage} variant="secondary">
+                    Edit
+                </Button>
+            );
+        }
         profileActions = (
             <div className="profile-actions"> 
                 <Button onClick={requestDate}>Request a Date</Button>
                 <Button onClick={requestToAdopt}>Request to Adopt</Button>
-            </div>);
+                {editButton}
+            </div>
+        );
     } else{
         profileActions = (
             <div className="profile-actions">

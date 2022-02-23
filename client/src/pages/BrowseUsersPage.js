@@ -1,16 +1,26 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import api from '../api/api';
+import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
+import NotFound from './NotFound';
 import UserSearchResult from '../components/users/UserSearchResult';
 
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 import './css/Common.css';
 import './css/BrowseUsersPage.css';
 
 
 const BrowseUsersPage = (props) => {
+
+  const {
+    auth
+  } = props;
 
   const getOriginalInputs = useMemo(() => {
 
@@ -23,19 +33,19 @@ const BrowseUsersPage = (props) => {
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchData, setSearchData] = useState({ results: [] });
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.err) {
+    if (response.error) {
       // Handle error
       return;
     }
 
     else {
-      // Set inputs to pet values
-      // setInputs();
+      setSearchData(response.result);
       setIsLoading(false);
     }
 
@@ -43,53 +53,61 @@ const BrowseUsersPage = (props) => {
 
   const handleSearch = useCallback(() => {
 
-    // TODO: make this actually search when the back end api is ready
-    setSearchData({ results: [
-      {
-        id: 1,
-        name: 'Bob Petman',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: true,
-        shelterName: 'Bob\'s Pets'
-      },
-      {
-        id: 2,
-        name: 'Casey Smith',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: true,
-        shelterName: 'Bob\'s Pets'
-      },
-      {
-        id: 3,
-        name: 'Jackie Smith',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: false,
-        shelterName: null
-      },
-      {
-        id: 4,
-        name: 'Doug Dogman',
-        avatarUrl: null,
-        email: 'test@test.com',
-        dateCreated: '2022-01-23T18:44:20.051Z',
-        isShelterOwner: true,
-        shelterName: 'Doug\'s Dogs'
-      }
-    ] });
-  }, []);
+    setIsLoading(true);
+    // api.User.search(inputs).then(afterGetSearchResults);
+
+    const dummyResults = {
+      results: [
+        {
+          id: 1,
+          name: 'Bob Petman',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: true,
+          shelterName: 'Bob\'s Pets'
+        },
+        {
+          id: 2,
+          name: 'Casey Smith',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: true,
+          shelterName: 'Bob\'s Pets'
+        },
+        {
+          id: 3,
+          name: 'Jackie Smith',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: false,
+          shelterName: null
+        },
+        {
+          id: 4,
+          name: 'Doug Dogman',
+          avatarUrl: null,
+          email: 'test@test.com',
+          dateCreated: '2022-01-23T18:44:20.051Z',
+          isShelterOwner: true,
+          shelterName: 'Doug\'s Dogs'
+        }
+      ]
+    };
+
+    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
+  }, [afterGetSearchResults]);
 
   useEffect(() => {
 
     // Run a search whenever the component loads or inputs.sortOrder changes
-    handleSearch();
+    if (auth.isAdmin) {
+      handleSearch();
+    }
 
-  }, [handleSearch, inputs.sortOrder]);
+  }, [auth.isAdmin, handleSearch, inputs.sortOrder]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -106,14 +124,25 @@ const BrowseUsersPage = (props) => {
     setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
 
+
+  const handleCloseDeleteUserDialog = useCallback(() => setUserToDelete(null), []);
+
+  const handleShowDeleteUserDialog = useCallback((id, name) => setUserToDelete({ id, name }), []);
+
+  const handleConfirmDeleteUser = useCallback(() => {
+  
+    api.User.delete(userToDelete.id).then(handleSearch);
+    handleCloseDeleteUserDialog();
+  }, [handleCloseDeleteUserDialog, handleSearch, userToDelete]);
+
   
   const searchControls = useMemo(() => {
 
     return (
       <div
         className={
-          'fields p-5 d-flex flex-column ' +
-          'justify-content-between align-items-right searchControls'
+          'fields p-5 d-flex flex-column justify-content-between ' +
+          'align-items-right userSearchControls'
         }
       >
 
@@ -155,8 +184,11 @@ const BrowseUsersPage = (props) => {
 
   const searchResults = useMemo(() => {
 
-    if (!searchData?.results?.length) {
-      return 'No matching results found'
+    if (isLoading) {
+      return 'Searching...';
+    }
+    else if (!searchData?.results?.length) {
+      return 'No matching results found';
     }
 
     const resultComponents = searchData.results.map((user) => {
@@ -165,11 +197,13 @@ const BrowseUsersPage = (props) => {
         <div key={user.id}>
           <UserSearchResult
             avatarUrl={user.avatarUrl}
+            canDelete={user.id !== auth.currentUser?.id}
             id={user.id}
             isShelterOwner={user.isShelterOwner}
             shelterName={user.shelterName}
             email={user.email}
             name={user.name}
+            onDelete={handleShowDeleteUserDialog}
             availableAnimals={user.availableAnimals}
           />
         </div>
@@ -195,20 +229,62 @@ const BrowseUsersPage = (props) => {
         </div>
       </div>
     );
-  }, [handleValueChange, inputs, searchData]);
+  }, [
+    auth,
+    handleShowDeleteUserDialog,
+    handleValueChange,
+    inputs,
+    isLoading,
+    searchData
+  ]);
+
+
+  const confirmDeleteModal = useMemo(() => {
+
+    if (!auth.isAdmin) {
+      return null;
+    }
+
+    return (
+      <ConfirmDeleteModal
+        bodyText={`Really delete "${userToDelete?.name}"?`}
+        onClose={handleCloseDeleteUserDialog}
+        onConfirm={handleConfirmDeleteUser}
+        show={Boolean(userToDelete)}
+        title="Confirm Delete User"
+      />
+    );
+  }, [
+    auth.isAdmin,
+    handleCloseDeleteUserDialog,
+    handleConfirmDeleteUser,
+    userToDelete
+  ]);
 
   const componentOutput = useMemo(() => {
 
+    if (!auth.isAdmin) {
+      return <NotFound />;
+    }
+
     return (
-      <div>
-        <h1 className="display-4 mt-2">Browse Users</h1>
-        <div className="d-flex">
-          {searchControls}
-          {searchResults}
-        </div>
-      </div>
+      <Container fluid>
+        <Row>
+          <h1 className="display-4 mt-2">Browse Users</h1>
+        </Row>
+        <Row>
+          <Col md="auto">{searchControls}</Col>
+          <Col>{searchResults}</Col>
+        </Row>
+        {confirmDeleteModal}
+      </Container>
     );
-  }, [searchControls, searchResults]);
+  }, [
+    auth,
+    confirmDeleteModal,
+    searchControls,
+    searchResults
+  ]);
 
   return componentOutput;
 }
