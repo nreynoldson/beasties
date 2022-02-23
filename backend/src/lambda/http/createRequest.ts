@@ -23,7 +23,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return {
       statusCode: 400,
       body: JSON.stringify({
-        error: 'Animal name cannot be empty'
+        error: 'User name cannot be empty'
       })
     }
   }

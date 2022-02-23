@@ -6,11 +6,11 @@ import { CreateRequestAPI } from '../requests/CreateRequestAPI'
 import { createLogger } from '../utils/logger'
 
 const requestTableAccess = new RequestTableAccess()
-const logger = createLogger('Beasties BusinessLogic Execution')
+const logger = createLogger('Beasties Request BusinessLogic Execution')
 
 export async function createRequest(event: APIGatewayProxyEvent, createRequest: CreateRequestAPI) : Promise<CreateRequestAPI> {
     
-    logger.info(`Executing logic for createAnimal API request ${createRequest}`)
+    logger.info(`Executing logic for create request API request ${createRequest}`)
     const eventBody = JSON.parse(event['body']);
     const user_name = eventBody['userName']
     const animal_name = eventBody['animalName']
