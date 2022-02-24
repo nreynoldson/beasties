@@ -48,18 +48,15 @@ export default function EditProfile(props){
 
         if(isShelter)
             userData.shelterName = shelterName;
-
-        console.log(userData);
-
+/* TODO: use api to integrate with backend
         axios.post(createUserURL, userData)
         .then(function (response) {
-            console.log(response);
             props.updateStatus("complete")
             navigate(-1);
         })
         .catch(function (error) {
             console.log(error);
-        });
+        });*/
     }
 
     return(

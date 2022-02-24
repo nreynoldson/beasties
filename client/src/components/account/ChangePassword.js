@@ -35,8 +35,6 @@ export default function ChangePassword(props) {
         if(validateForm())
             return;
         
-        console.log(props)
-        
         try{
             await changePassword(oldPassword, newPassword);
             setSuccess(true);
