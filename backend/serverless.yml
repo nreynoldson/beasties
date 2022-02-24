@@ -20,8 +20,6 @@ provider:
     USER_TABLE: Beasties-user-${self:provider.stage}
     ANIMAL_TABLE: Beasties-animal-${self:provider.stage}
     USER_ANIMAL_REQUESTS_TABLE: Beasties-request-${self:provider.stage}
-    ACCESS_KEY: AKIAZURICRNPLVCMZLPB
-    SECRET_KEY: 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
   
   tracing:
     lambda: true
@@ -109,6 +107,10 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
+      - Effect: "Allow"
+        Action:
+          - "execute-api:Invoke"
+        Resource: "arn:aws:execute-api:*:*:*"
   
   GetUserByUserName:
     handler: src/lambda/http/getUserByUsername.handler

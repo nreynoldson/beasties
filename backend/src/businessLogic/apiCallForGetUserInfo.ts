@@ -5,8 +5,9 @@ const logger = createLogger('Beasties BusinessLogic Execution')
 
 export async function makeGetUserAPICall(userName: string) {
     var apigClient = apigClientFactory.newClient({
-        accessKey: process.env.ACCESS_KEY,
-        secretKey: process.env.SECRET_KEY,
+        accessKey: process.env.AWS_ACCESS_KEY_ID,
+        secretKey: process.env.AWS_SECRET_ACCESS_KEY,
+        sessionToken: process.env.AWS_SESSION_TOKEN,
         invokeUrl: 'https://idvmpyv72b.execute-api.us-east-1.amazonaws.com/dev/'
     });
     var method = 'GET';
