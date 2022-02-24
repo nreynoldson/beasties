@@ -35,7 +35,7 @@ const ShelterDash = (props) => {
                 <EditAccount auth={props.auth}></EditAccount>
               </Tab.Pane>
                 <Tab.Pane eventKey="#link3">
-                  <ManagePets></ManagePets>
+                  <ManagePets auth={props.auth}></ManagePets>
                 </Tab.Pane>
                 <Tab.Pane eventKey="#link4">
                 

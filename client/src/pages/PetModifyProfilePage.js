@@ -6,9 +6,7 @@ import api from '../api/api';
 import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import ImageManagement from '../components/images/ImageManagement';
 
-import Button from 'react-bootstrap/Button';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Form from 'react-bootstrap/Form';
+import {Button, Form, FloatingLabel, Alert} from 'react-bootstrap';
 
 import './css/Common.css';
 import './css/PetModifyProfilePage.css';
@@ -20,7 +18,6 @@ const {
 } = AnimalConsts.dispositions;
 
 const PetModifyProfilePage = (props) => {
-
   const navigate = useNavigate();
 
   const {
@@ -34,7 +31,7 @@ const PetModifyProfilePage = (props) => {
   const originalInputs = useMemo(() => {
 
     return {
-      name: '',
+      animalName: '',
       type: 'other',
       breed: 'other',
       age: 'baby',
@@ -58,6 +55,7 @@ const PetModifyProfilePage = (props) => {
   const [invalidFields, setInvalidFields] = useState(originalInvalidFields);
   const [isLoading, setIsLoading] = useState(!isNewPet);
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const afterGetPetInfo = useCallback((response) => {
 
@@ -73,6 +71,7 @@ const PetModifyProfilePage = (props) => {
     newInputs.goodWithOtherAnimals = dispositions.includes(goodWithOtherAnimals);
     newInputs.goodWithChildren = dispositions.includes(goodWithChildren);
     newInputs.mustBeLeashed = dispositions.includes(mustBeLeashed);
+    newInputs.shelterName = auth.currentUser.shelterName;
 
     setInputs(newInputs);
     setIsLoading(false);
@@ -87,18 +86,19 @@ const PetModifyProfilePage = (props) => {
 
     else {
       // Navigate to pet profile page
-      navigate(`/pet/${response.result.id}`);
+      setSuccess(true);
+      setInputs(originalInputs);
+      //navigate(`/pet/${response.result.id}`);
     }
   }, [navigate]);
 
   useEffect(() => {
-
     if (!isNewPet) {
       // api.Animal.getInfo(petId).then(afterGetPetInfo);
 
       const dummyData = {
         id: petId,
-        name: 'Fido',
+        animalName: 'Fido',
         type: 'dog',
         breed: 'greatDane',
         age: 'young',
@@ -113,10 +113,12 @@ const PetModifyProfilePage = (props) => {
 
       api.Dummy.returnThisData(dummyData).then(afterGetPetInfo);
     }
+    else{
+      setInputs((prevInputs) => ({ ...prevInputs, ['shelterName']: auth.currentUser.shelterName }));
+    }
   }, [afterGetPetInfo, isNewPet, petId]);
 
   const handleValueChange = useCallback((evt) => {
-
     const target = evt.currentTarget;
 
     const field = target.name;
@@ -126,14 +128,13 @@ const PetModifyProfilePage = (props) => {
     if (field === 'type') {
       extraInputs.breed = 'other';
     }
-
+ 
     setInputs((prevInputs) => ({ ...prevInputs, ...extraInputs, [field]: value }));
   }, []);
 
   const handleSubmit = useCallback(() => {
-
-    if (!inputs.name.length) {
-      setInvalidFields({ ...invalidFields, name: true });
+    if (!inputs.animalName.length) {
+      setInvalidFields({ ...invalidFields, animalName: true });
       return;
     }
     else {
@@ -141,8 +142,16 @@ const PetModifyProfilePage = (props) => {
     }
 
     if (isNewPet) {
-      // api.Animal.create(inputs).then(afterSubmit);
-      api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
+      var params = {...inputs};
+      params.disposition = [];
+      for(var disposition in AnimalConsts.dispositions){
+        if(params[disposition])
+          params.disposition.push(disposition);
+        delete params[disposition];
+      }
+
+      api.Animal.create(params).then(afterSubmit);
+      //api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
     }
     else {
       // api.Animal.edit(inputs).then(afterSubmit);
@@ -150,7 +159,7 @@ const PetModifyProfilePage = (props) => {
     }
   }, [
     afterSubmit,
-    inputs.name,
+    inputs.animalName,
     invalidFields,
     isNewPet,
     originalInvalidFields
@@ -249,16 +258,18 @@ const PetModifyProfilePage = (props) => {
 
     return (
       <div className="d-flex flex-column align-items-center">
+        {success ? <Alert variant={'success'}>
+              Pet added successfully! </Alert> : ''}
         <h1 className="display-4 mt-2">{(isNewPet) ? 'Add' : 'Edit'} Pet</h1>
         <div className="fields p-5 d-flex flex-column justify-content-between align-items-right w-75">
           <FloatingLabel controlId="floatingInput" label="Name">
             <Form.Control
               required
-              isInvalid={invalidFields.name}
+              isInvalid={invalidFields.animalName}
               type="text"
               onChange={handleValueChange}
-              name="name"
-              value={inputs.name}
+              name="animalName"
+              value={inputs.animalName}
               placeholder="Name"
               size="lg"
               />

@@ -6,12 +6,7 @@ import {Container, Card, ListGroup, Row, Col, Image} from 'react-bootstrap';
 import {useParams} from 'react-router-dom';
 import './css/ShelterProfile.css';
 import PetSearchResult from '../components/pets/PetSearchResult';
-<<<<<<< HEAD
 import ShelterPets from '../components/shelters/ShelterPets';
-
-export default function ShelterProfile(props) {
-    const { shelterId } = useParams();
-=======
 
 const {
   goodWithChildren,
@@ -122,7 +117,7 @@ var testData = { results: [
 console.log(testData);
 
 export default function ShelterProfile(props) {
-    const { petId } = useParams();
+    const { shelterId } = useParams();
     const [pets, setPets] = useState({});
     const [petToDelete, setPetToDelete] = useState(null);
 
@@ -206,7 +201,6 @@ export default function ShelterProfile(props) {
       petToDelete
     ]);
 
->>>>>>> origin/master
     return(
         <Container className="shelter-container">
             <Row className="shelter-info" xs={1}>

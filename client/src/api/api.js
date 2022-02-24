@@ -6,6 +6,8 @@ const {
   REACT_APP_BACKEND_URL_PREFIX
 } = process.env;
 
+console.log(REACT_APP_API_KEY);
+console.log(REACT_APP_BACKEND_URL_PREFIX);
 const makeBackendUrl =
   (suffix) => `https://${REACT_APP_API_KEY}.${REACT_APP_BACKEND_URL_PREFIX}${suffix}`;
 
@@ -41,10 +43,11 @@ const api = {
   Animal: {
 
     create: async (petParams) => {
-
+      console.log(petParams);
+      console.log(JSON.stringify(petParams));
       const req = request
         .post(makeBackendUrl(`/animal`))
-        .send(petParams);
+        .send(JSON.stringify(petParams));
 
       return await handleRequest(req);
     },
@@ -83,10 +86,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    getInfo: async (id) => {
+    getInfo: async (petName, shelterName) => {
 
       const req = request
-        .get(makeBackendUrl(`/animal/${id}`));
+        .get(makeBackendUrl(`/animals/${petName}/${shelterName}`));
 
       return await handleRequest(req);
     },

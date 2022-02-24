@@ -114,7 +114,7 @@ export default function App() {
           <Navbar.Brand>
             <NavLink className="nav-link" to="/">
               <div className="d-flex align-items-center site-branding">
-                {loadingIndicator}
+                
                 <img
                   alt="Beasties Logo"
                   src="/images/paw_heart.png"
