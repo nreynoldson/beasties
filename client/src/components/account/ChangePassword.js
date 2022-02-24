@@ -8,7 +8,6 @@ export default function ChangePassword(props) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [formErrors, setErrors] = useState('');
     const [success, setSuccess] = useState(false);
-    var user = null;
     
     const validateForm = () => {
         var errors = {};

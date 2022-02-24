@@ -117,6 +117,14 @@ const api = {
         req.attach('image', imageFile);
 
       return await handleRequest(req, { requestTypeIsJson: false });
+    },
+
+    makeRequest: async (requestParams) => {
+      const req = request
+        .post(makeBackendUrl(`/request`))
+        .send(JSON.stringify(requestParams));
+
+      return await handleRequest(req);
     }
   },
 
