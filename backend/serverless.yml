@@ -107,10 +107,10 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
-      - Effect: "Allow"
+      - Effect: Allow
         Action:
-          - "execute-api:Invoke"
-        Resource: "arn:aws:execute-api:*:*:*"
+          - execute-api:Invoke
+        Resource: arn:aws:execute-api:*:*:*
   
   GetUserByUserName:
     handler: src/lambda/http/getUserByUsername.handler
