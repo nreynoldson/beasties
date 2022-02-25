@@ -19,7 +19,7 @@ provider:
   environment:
     USER_TABLE: Beasties-user-${self:provider.stage}
     ANIMAL_TABLE: Beasties-animal-${self:provider.stage}
-    USER_ANIMAL_REQUESTS_TABLE: Beasties-requests-${self:provider.stage}
+    USER_ANIMAL_REQUESTS_TABLE: Beasties-request-${self:provider.stage}
   
   tracing:
     lambda: true
@@ -40,6 +40,9 @@ custom:
       - name: CreateAnimalAPIRequest
         contentType: application/json
         schema: ${file(models/create-animal.json)}
+      - name: CreateRequestAPIRequest
+        contentType: application/json
+        schema: ${file(models/create-request.json)}
 
 functions:
   
@@ -80,6 +83,34 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
+  
+  CreateRequest:
+    handler: src/lambda/http/createRequest.handler
+    events:
+      - http:
+          method: post
+          path: request
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new request
+            description: Create an adoption/date request for an animal
+            requestModels:
+              'application/json': CreateRequestAPIRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_ANIMAL_REQUESTS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
+      - Effect: "Allow"
+        Action:
+          - "execute-api:Invoke"
+        Resource: "arn:aws:execute-api:*:*:*"
   
   GetUserByUserName:
     handler: src/lambda/http/getUserByUsername.handler
@@ -162,9 +193,13 @@ resources:
             AttributeType: S
           - AttributeName: animalName
             AttributeType: S
+          - AttributeName: animalName_shelterName
+            AttributeType: S
         KeySchema:
           - AttributeName: userName
             KeyType: HASH
+          - AttributeName: animalName_shelterName
+            KeyType: RANGE
         GlobalSecondaryIndexes:
           - IndexName: requestsGSI
             KeySchema:
