@@ -32,6 +32,50 @@ export async function createRequest(event: APIGatewayProxyEvent, createRequest: 
 
 }
 
+export async function getAllRequestsForUser(event: APIGatewayProxyEvent) : Promise<CreateRequestAPI[]> {
+    
+    const userName = event.pathParameters.userName
+    logger.info(`Executing logic for getting requests for ${userName}`)
+    logger.info('Getting request items from dynamodb')
+    
+    return await requestTableAccess.getRequestsForUser(userName);
+
+}
+
+export async function getRequestsWithStatus(event: APIGatewayProxyEvent) : Promise<CreateRequestAPI[]> {
+    
+    const userName = event.pathParameters.userName
+    const requestStatus = event.pathParameters.requestStatus
+    logger.info(`Executing logic for getting ${requestStatus} requests for ${userName}`)
+    logger.info('Getting request items from dynamodb')
+    
+    return await requestTableAccess.getRequestsWithStatusForUser(userName, requestStatus);
+
+}
+
+export async function getPendingReqForShelter(event: APIGatewayProxyEvent) : Promise<CreateRequestAPI[]> {
+
+    const shelterName = event.pathParameters.shelterName
+    logger.info(`Executing logic for getting requests for ${shelterName}`)
+    logger.info('Getting request items from dynamodb')
+    
+    return await requestTableAccess.getPendingReqForShelter(shelterName);
+
+}
+
+export async function getRequestsForPet(event: APIGatewayProxyEvent) : Promise<CreateRequestAPI[]> {
+    
+    const animalName = event.pathParameters.animalName
+    const shelterName = event.pathParameters.shelterName
+    const requestStatus = event.pathParameters.requestStatus
+    const animal_shelter = getConcatenatedName(animalName, shelterName)
+    logger.info(`Executing logic for getting requests for ${animal_shelter}`)
+    logger.info('Getting request items from dynamodb')
+    
+    return await requestTableAccess.getRequestsForPet(animal_shelter, requestStatus);
+
+}
+
 function getConcatenatedName(animal_name, shelter_name) {
     return animal_name + "_" + shelter_name
 }
