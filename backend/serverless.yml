@@ -107,10 +107,10 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
-      - Effect: "Allow"
+      - Effect: Allow
         Action:
-          - "execute-api:Invoke"
-        Resource: "arn:aws:execute-api:*:*:*"
+          - execute-api:Invoke
+        Resource: arn:aws:execute-api:*:*:*
   
   GetUserByUserName:
     handler: src/lambda/http/getUserByUsername.handler
@@ -139,6 +139,66 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
+  
+  GetAllRequestsForUser:
+    handler: src/lambda/http/getAllRequestsForUser.handler
+    events:
+      - http:
+          method: get
+          path: request/{userName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_ANIMAL_REQUESTS_TABLE}
+
+  GetRequestsForUser:
+    handler: src/lambda/http/getRequestsForUser.handler
+    events:
+      - http:
+          method: get
+          path: request/{userName}/{requestStatus}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_ANIMAL_REQUESTS_TABLE}
+
+  GetPendingReqForShelter:
+    handler: src/lambda/http/getPendingReqForShelter.handler
+    events:
+      - http:
+          method: get
+          path: requestsForShelterOwner/{shelterName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+
+  GetRequestsForPet:
+    handler: src/lambda/http/getRequestsForPet.handler
+    events:
+      - http:
+          method: get
+          path: requestsForPet/{animalName}/{shelterName}/{requestStatus}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
 
 resources:
   Resources:
