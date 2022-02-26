@@ -6,6 +6,7 @@ import {Container, Card, ListGroup, Row, Col, Image} from 'react-bootstrap';
 import {useParams} from 'react-router-dom';
 import './css/ShelterProfile.css';
 import PetSearchResult from '../components/pets/PetSearchResult';
+import ShelterPets from '../components/shelters/ShelterPets';
 
 const {
   goodWithChildren,
@@ -116,7 +117,7 @@ var testData = { results: [
 console.log(testData);
 
 export default function ShelterProfile(props) {
-    const { petId } = useParams();
+    const { shelterId } = useParams();
     const [pets, setPets] = useState({});
     const [petToDelete, setPetToDelete] = useState(null);
 
@@ -217,10 +218,7 @@ export default function ShelterProfile(props) {
             </Row>
 
             <Row>
-                <div className="shelter pets-container">
-                    <div className="available-pets"><h3>Available Pets</h3></div>
-                    {petCards}
-                </div>
+                <ShelterPets shelter={shelterId}/>
             </Row>
             {confirmDeleteModal}
         </Container>

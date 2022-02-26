@@ -22,8 +22,8 @@ import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
 import PetProfile from './pages/PetProfile'
 import ShelterProfile from './pages/ShelterProfile'
-import {getUser, RequireAuth} from './components/Account.js';
-import UserBox from './components/UserBox';
+import {getUser, RequireAuth} from './components/account/Account.js';
+import UserBox from './components/account/UserBox';
 import Dashboard from './pages/Dashboard';
 
 import Nav from 'react-bootstrap/Nav';
@@ -43,6 +43,7 @@ export default function App() {
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const { promiseInProgress: isLoading } = usePromiseTracker();
 
@@ -53,6 +54,7 @@ export default function App() {
       if (user) {
         updateAuthStatus(true);
         setUser(user);
+        setLoading(false);
 
         // Temporarily setting isAdmin to always be true for development
         // const adminInfo = user.find((info) => info.name === 'is_admin');
@@ -112,7 +114,7 @@ export default function App() {
           <Navbar.Brand>
             <NavLink className="nav-link" to="/">
               <div className="d-flex align-items-center site-branding">
-                {loadingIndicator}
+                
                 <img
                   alt="Beasties Logo"
                   src="/images/paw_heart.png"
@@ -162,7 +164,7 @@ export default function App() {
         <Route path="/contact" element={<ContactPage auth={auth} />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
-        <Route exact path="/pet/:petId" element={<PetProfile auth={auth} />}></Route>
+        <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
         <Route exact path="/" element={isAuthenticated ? <Dashboard auth={auth}/> : <LandingPage auth={auth}/>}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>

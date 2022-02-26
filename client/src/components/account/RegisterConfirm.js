@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
-import {authenticate} from "../components/Account";
+import {authenticate} from "./Account";
 
 export default function RegisterConfirm(props) {
     const [confirmationCode, setConfirmationCode] = useState('');

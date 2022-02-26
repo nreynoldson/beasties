@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import RegisterForm from '../components/RegisterForm';
-import FinishRegistration from '../components/FinishRegistration';
-import RegisterConfirm from '../components/RegisterConfirm';
-import LogoutButton from '../components/LogoutButton';
+import RegisterForm from '../components/account/RegisterForm';
+import FinishRegistration from '../components/account/FinishRegistration';
+import RegisterConfirm from '../components/account/RegisterConfirm';
+import LogoutButton from '../components/account/LogoutButton';
 import './css/Login.css';
 
 

@@ -1,0 +1,77 @@
+.dashboard-container{
+    display: flex;
+}
+
+.dashboard-menu{
+    height: 100%;
+    background: lightgrey;
+}
+
+.dashboard-container .view-content{
+    border: 2px solid rgba(0,0,0,.125);
+    border-radius: 8px;
+    padding: 20px;
+}
+.dashboard-container .menu .list-group{
+    border: 2px solid rgba(0,0,0,.125);
+    border-radius: 8px;
+    height: 100%;
+}
+
+.dashboard-container{
+    min-height: 540px;
+}
+
+.edit-account .form-label, .edit-account .button-label{
+    width: 140px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.edit-account .form-control, .edit-account button.change-pass{
+    width: 70%;
+    display: inline-block;
+}
+
+.edit-account .mb-3, .edit-account .button-wrapper{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+button.change-pass{
+    padding: 10px;
+    
+}
+
+.button-wrapper{
+    margin-bottom: 50px;
+}
+.back-wrapper{
+    width: 100%;
+    text-align: left;
+}
+
+form.change-password{
+    padding: 20px;
+}
+
+.view-content{
+    max-height: 700px;
+    overflow: scroll;
+}
+
+.dashboard-container .align-items-center{
+    align-items: unset;
+}
+
+.dashboard-container .w-75{
+    width: 100% !important;
+}
+.dashboard-container .p-5{
+    padding: unset !important;
+}
+.dashboard-container .fields{
+    border: none !important;
+}

@@ -41,10 +41,9 @@ const api = {
   Animal: {
 
     create: async (petParams) => {
-
       const req = request
         .post(makeBackendUrl(`/animal`))
-        .send(petParams);
+        .send(JSON.stringify(petParams));
 
       return await handleRequest(req);
     },
@@ -83,10 +82,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    getInfo: async (id) => {
+    getInfo: async (petName, shelterName) => {
 
       const req = request
-        .get(makeBackendUrl(`/animal/${id}`));
+        .get(makeBackendUrl(`/animals/${petName}/${shelterName}`));
 
       return await handleRequest(req);
     },
@@ -118,6 +117,14 @@ const api = {
         req.attach('image', imageFile);
 
       return await handleRequest(req, { requestTypeIsJson: false });
+    },
+
+    makeRequest: async (requestParams) => {
+      const req = request
+        .post(makeBackendUrl(`/request`))
+        .send(JSON.stringify(requestParams));
+
+      return await handleRequest(req);
     }
   },
 
