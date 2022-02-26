@@ -1,4 +1,4 @@
-import Button from 'react-bootstrap/Button';
+import {Button, Spinner} from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -7,6 +7,13 @@ import './css/Common.css';
 import './css/LandingPage.css';
 
 const LandingPage = (props) => {
+  if(props.loading){
+    return(
+      <Spinner size="large" animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+    </Spinner>
+    )
+  } else {
 
   const {
     auth
@@ -50,6 +57,7 @@ const LandingPage = (props) => {
       </Row>
     </Container>
   );
+  }
 }
  
 export default LandingPage;

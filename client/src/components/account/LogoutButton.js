@@ -1,4 +1,4 @@
-import Pool from "../UserPool";
+import Pool from "../../UserPool";
 import React from 'react';
 import {Button} from 'react-bootstrap';
 

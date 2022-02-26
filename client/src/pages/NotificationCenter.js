@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Container} from 'react-bootstrap';
-import Notification from '../components/Notification';
+import Notification from '../components/account/Notification';
 import './css/Notification.css'
 
 const testData = [
@@ -48,6 +48,7 @@ export default function NotificationCenter(props) {
 
     return (
         <Container className="notifications">
+            <h3>Your Requests</h3>
             {requestEl}
         </Container>
     );

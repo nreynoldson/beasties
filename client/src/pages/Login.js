@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
-import {authenticate} from "../components/Account";
+import {authenticate} from "../components/account/Account";
 import {Link, useNavigate} from 'react-router-dom';
 
 export default function Login(props){

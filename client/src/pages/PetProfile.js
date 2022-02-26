@@ -1,60 +1,59 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import {Container, Card, ListGroup, Col, Button} from 'react-bootstrap';
-import LoginButton from '../components/LoginButton';
+import LoginButton from '../components/account/LoginButton';
+import {RequestDateButton, RequestAdoptionButton} from '../components/pets/RequestButtons';
 import AnimalConsts from '../consts/Animal';
 import { useNavigate, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import './css/PetProfile.css';
+import api from '../api/api';
 
-var data = {
-    id: 1,
-    name: 'Fido',
-    age: 'young',
-    gender: 'male',
-    type: 'dog',
-    breed: 'englishSpringerSpaniel',
-    availability: 'available',
-    imageUrl: null,
-    dateCreated: '2022-01-23T18:44:20.051Z',
-    shelter: 'Happy Paws',
-    bio: "Fido was rescued from the streets of Fresno where he was running around with a gang of small dogs. He is a sweet boy that loves to give kisses and cuddle. Given his background, he can be slightly skittish when it comes to body handling and does exhibit some resource guarding. He would do well in a house without children, but would fare well with other dogs."
-};
+// TODO: need bio, images from backend
 
 export default function PetProfile(props) {
-    const { petId } = useParams();
+    const { petName, shelterName } = useParams();
     const navigate = useNavigate();
     const [petInfo, setPetInfo] = useState({});
+
+    const processPetInfo = useCallback((response) => {
+        console.log(response)
+        if (response.error) {
+          // Handle error
+          return;
+        }
+    
+        else {
+            var data = response.result.body.items;
+            var pet = {};
+
+            pet.type = AnimalConsts.typeToDisplayNameMap[data.type];
+            if (data.type === 'dog' || data.type === 'cat') {
+                const breedToDisplayNameMap = (data.type === 'dog') ?
+                    AnimalConsts.dogBreedsToDisplayNameMap :
+                    AnimalConsts.catBreedsToDisplayNameMap;
+                    pet.breed = breedToDisplayNameMap[data.breed];
+            }
+            pet.age = AnimalConsts.ageToDisplayNameMap[data.age];
+            pet.gender = AnimalConsts.genderToDisplayNameMap[data.gender];
+            pet.availability = AnimalConsts.availabilityToDisplayNameMap[data.availability];
+            pet.availability = AnimalConsts.availabilityToDisplayNameMap[data.availability];
+            pet.name = data.animalName;
+            pet.shelter = data.shelterName;
+            setPetInfo(pet);
+        }
+    }, []);
 
     useEffect(() => {
         // Request the necessary data from the back end
         // Grab images from S3
-        var petData = {...data};
-        var type = AnimalConsts.typeToDisplayNameMap[data.type];
 
-        if (data.type === 'dog' || data.type === 'cat') {
-        const breedToDisplayNameMap = (data.type === 'dog') ?
-            AnimalConsts.dogBreedsToDisplayNameMap :
-            AnimalConsts.catBreedsToDisplayNameMap;
-            var breed = breedToDisplayNameMap[data.breed];
-        }
+        api.Animal.getInfo(petName, shelterName).then(processPetInfo);
+       
+    }, [petName, shelterName, processPetInfo]);
 
-        petData.type = type;
-        petData.breed = breed;
+   const goToEditPage = () => {
 
-        setPetInfo(petData);
-    }, []);
-
-    const requestDate = () => {
-        // Create request to backend
-    }
-
-    const requestToAdopt = () => {
-        // Create request to backend
-    }
-
-    const goToEditPage = () => {
-
-        navigate(`/pet/${petId}/edit`);
+        navigate(`/pet/edit`);
     };
 
     var settings = {
@@ -81,10 +80,11 @@ export default function PetProfile(props) {
                 </Button>
             );
         }
+        //TODO: make a generalized check for shelter owner and only conditionally show the request buttons
         profileActions = (
             <div className="profile-actions"> 
-                <Button onClick={requestDate}>Request a Date</Button>
-                <Button onClick={requestToAdopt}>Request to Adopt</Button>
+                <RequestDateButton auth={props.auth} shelterName={shelterName} animalName={petName}/>
+                <RequestAdoptionButton auth={props.auth} shelterName={shelterName} animalName={petName}/>
                 {editButton}
             </div>
         );
