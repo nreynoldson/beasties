@@ -23,7 +23,7 @@ export default function PetProfile(props) {
         }
     
         else {
-            var data = response.result.body.items;
+            var data = response.result;
             var pet = {};
 
             pet.type = AnimalConsts.typeToDisplayNameMap[data.type];
@@ -53,7 +53,7 @@ export default function PetProfile(props) {
 
    const goToEditPage = () => {
 
-        navigate(`/pet/edit`);
+        navigate(`/pet/${petName}/${shelterName}/edit`);
     };
 
     var settings = {

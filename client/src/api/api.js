@@ -27,7 +27,8 @@ const handleRequest = async (req, options = {}) => {
    }
 
    try {
-    response.result = await trackPromise(req);
+     const result = await trackPromise(req);
+    response.result = result.body?.items;
    }
    catch (e) {
     response.error = e;

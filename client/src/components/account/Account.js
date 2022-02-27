@@ -76,7 +76,7 @@ const getUser = async() => {
                    return;
                }
 
-               resolve(result.body.items);
+               resolve(result);
            });
        }
        else{

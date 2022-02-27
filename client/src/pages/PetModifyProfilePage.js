@@ -24,9 +24,8 @@ const PetModifyProfilePage = (props) => {
     auth
   } = props;
 
-  const params = useParams();
-  const petId = parseInt(params.petId);
-  const isNewPet = !petId;
+  const { petName, shelterName } = useParams();
+  const isNewPet = !petName;
 
   const originalInputs = useMemo(() => {
 
@@ -75,7 +74,7 @@ const PetModifyProfilePage = (props) => {
 
     setInputs(newInputs);
     setIsLoading(false);
-  }, []);
+  }, [auth.currentUser]);
 
   const afterSubmit = useCallback((response) => {
 
@@ -93,30 +92,28 @@ const PetModifyProfilePage = (props) => {
   }, [navigate]);
 
   useEffect(() => {
-    if (!isNewPet) {
-      // api.Animal.getInfo(petId).then(afterGetPetInfo);
+    if (!isNewPet && auth.currentUser) {
+      api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
 
-      const dummyData = {
-        id: petId,
-        animalName: 'Fido',
-        type: 'dog',
-        breed: 'greatDane',
-        age: 'young',
-        gender: 'Male',
-        disposition: [
-          goodWithChildren,
-          goodWithOtherAnimals
-        ],
-        availability: 'pending',
-        bio: 'This is my bio'
-      };
-
-      api.Dummy.returnThisData(dummyData).then(afterGetPetInfo);
+      // const dummyData = {
+      //   id: petId,
+      //   animalName: 'Fido',
+      //   type: 'dog',
+      //   breed: 'greatDane',
+      //   age: 'young',
+      //   gender: 'Male',
+      //   disposition: [
+      //     goodWithChildren,
+      //     goodWithOtherAnimals
+      //   ],
+      //   availability: 'pending',
+      //   bio: 'This is my bio'
+      // };
     }
     else{
-      setInputs((prevInputs) => ({ ...prevInputs, ['shelterName']: auth.currentUser.shelterName }));
+      setInputs((prevInputs) => ({ ...prevInputs, shelterName: auth.currentUser?.shelterName }));
     }
-  }, [afterGetPetInfo, isNewPet, petId]);
+  }, [afterGetPetInfo, auth.currentUser, isNewPet, petName, shelterName]);
 
   const handleValueChange = useCallback((evt) => {
     const target = evt.currentTarget;
@@ -174,8 +171,8 @@ const PetModifyProfilePage = (props) => {
   const handleConfirmDelete = useCallback(() => {
     
     setShowConfirmDeleteDialog(false);
-    api.Animal.delete(petId).then(() => navigate('/browse-pets'));
-  }, [navigate, petId]);
+    api.Animal.delete(petName, shelterName).then(() => navigate('/browse-pets'));
+  }, [navigate, petName, shelterName]);
 
   const breedSelect = useMemo(() => {
 
@@ -246,11 +243,12 @@ const PetModifyProfilePage = (props) => {
     }
 
     let imageManagement = null;
-    if (petId) {
+    if (!isNewPet) {
       imageManagement = (
         <ImageManagement
           allowEdit={true}
-          id={petId}
+          petName={petName}
+          shelterName={shelterName}
           type="animal"
         />
       );
@@ -400,7 +398,8 @@ const PetModifyProfilePage = (props) => {
     invalidFields,
     isLoading,
     isNewPet,
-    petId
+    petName,
+    shelterName
   ]);
 
   return componentOutput;
