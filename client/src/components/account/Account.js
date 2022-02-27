@@ -3,7 +3,6 @@ import api from '../../api/api'
 import Pool from "../../UserPool";
 import { useNavigate } from "react-router-dom";
 import {useEffect} from 'react';
-import axios from 'axios';
 
 const authenticate = async (Username, Password) => {
     return await new Promise((resolve, reject) => {

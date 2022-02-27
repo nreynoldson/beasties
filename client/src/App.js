@@ -43,11 +43,10 @@ export default function App() {
   const [isAuthenticated, updateAuthStatus] = useState(false);
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const { promiseInProgress: isLoading } = usePromiseTracker();
 
-  useEffect(async () => {
+  useEffect(() => {
 
     getUser().then((user) => {
 
@@ -55,7 +54,6 @@ export default function App() {
       if (user) {
         updateAuthStatus(true);
         setUser(user);
-        setLoading(false);
 
         // Temporarily setting isAdmin to always be true for development
         // setIsAdmin(Boolean(user.isAdmin));

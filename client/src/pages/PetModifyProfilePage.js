@@ -89,26 +89,11 @@ const PetModifyProfilePage = (props) => {
       setInputs(originalInputs);
       //navigate(`/pet/${response.result.id}`);
     }
-  }, [navigate]);
+  }, [originalInputs]);
 
   useEffect(() => {
     if (!isNewPet && auth.currentUser) {
       api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
-
-      // const dummyData = {
-      //   id: petId,
-      //   animalName: 'Fido',
-      //   type: 'dog',
-      //   breed: 'greatDane',
-      //   age: 'young',
-      //   gender: 'Male',
-      //   disposition: [
-      //     goodWithChildren,
-      //     goodWithOtherAnimals
-      //   ],
-      //   availability: 'pending',
-      //   bio: 'This is my bio'
-      // };
     }
     else{
       setInputs((prevInputs) => ({ ...prevInputs, shelterName: auth.currentUser?.shelterName }));
@@ -138,25 +123,24 @@ const PetModifyProfilePage = (props) => {
       setInvalidFields(originalInvalidFields);
     }
 
-    if (isNewPet) {
-      var params = {...inputs};
-      params.disposition = [];
-      for(var disposition in AnimalConsts.dispositions){
-        if(params[disposition])
-          params.disposition.push(disposition);
-        delete params[disposition];
+    const params = {...inputs};
+    params.disposition = [];
+    for(const disposition of Object.values(AnimalConsts.dispositions)){
+      if (params[disposition]) {
+        params.disposition.push(disposition);
       }
+      delete params[disposition];
+    }
 
+    if (isNewPet) {
       api.Animal.create(params).then(afterSubmit);
-      //api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
     }
     else {
-      // api.Animal.edit(inputs).then(afterSubmit);
-      api.Dummy.returnThisData({ id: 1 }).then(afterSubmit);
+      api.Animal.edit(params).then(afterSubmit);
     }
   }, [
     afterSubmit,
-    inputs.animalName,
+    inputs,
     invalidFields,
     isNewPet,
     originalInvalidFields
@@ -399,7 +383,8 @@ const PetModifyProfilePage = (props) => {
     isLoading,
     isNewPet,
     petName,
-    shelterName
+    shelterName,
+    success
   ]);
 
   return componentOutput;

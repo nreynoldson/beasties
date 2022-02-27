@@ -46,8 +46,8 @@ export default function Login(props){
                 <Form.Group className="mb-3" controlId="formGroupEmail">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control 
-                        type="email" 
-                        name="email" 
+                        type="email"
+                        name="email"
                         onChange = {(e) => setEmail(e.target.value)} 
                         isInvalid = {hasError('email')} />
                     <Form.Control.Feedback type='invalid'>
@@ -57,8 +57,8 @@ export default function Login(props){
                 <Form.Group className="mb-3" controlId="formGroupPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control 
-                        type="text" 
-                        name="password" 
+                        type="password"
+                        name="password"
                         onChange = {(e) => setPassword(e.target.value)}
                         isInvalid ={hasError('password')} />
                     <Form.Control.Feedback type='invalid'>
