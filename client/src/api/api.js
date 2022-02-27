@@ -1,4 +1,5 @@
 import request from 'superagent';
+import {getUser} from '../components/account/Account'
 import { trackPromise } from 'react-promise-tracker';
 
 const {
@@ -247,12 +248,22 @@ const api = {
       return await handleRequest(req);
     },
 
-    getInfo: async (id) => {
+    getInfo: async () => {
+      const response = { 
+        result: null,
+        error: null
+       };
 
-      const req = request
-        .get(makeBackendUrl(`/user${id}`));
-
-      return await handleRequest(req);
+      try {
+        var username = await trackPromise(getUser());
+        const req = request
+        .get(makeBackendUrl(`/user/${username}`));
+        return await handleRequest(req);
+      }
+      catch (e) {
+        response.error = e;
+        return response;
+      }
     },
 
     search: async (searchParams) => {

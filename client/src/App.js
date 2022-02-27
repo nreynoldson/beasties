@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   NavLink,
   Route,
@@ -22,39 +22,41 @@ import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
 import PetProfile from './pages/PetProfile'
 import ShelterProfile from './pages/ShelterProfile'
-import {getUser, RequireAuth} from './components/account/Account.js';
+import {RequireAuth} from './components/account/Account.js';
 import UserBox from './components/account/UserBox';
 import Dashboard from './pages/Dashboard';
 
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import Spinner from 'react-bootstrap/Spinner'
+import {Spinner} from 'react-bootstrap';
 
 import { FaUsers } from "react-icons/fa";
 import { MdAdminPanelSettings, MdPets } from "react-icons/md";
 import { RiHomeHeartFill } from "react-icons/ri";
 
 import './App.css';
+import api from './api/api';
 
 export default function App() {
 
   // Temporarily setting isAdmin to true for development
   const [isAdmin, setIsAdmin] = useState(true);
-  const [isAuthenticated, updateAuthStatus] = useState(false);
+  const [isAuthenticated, updateAuthStatus] = useState(null);
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  const { promiseInProgress: isLoading } = usePromiseTracker();
+  const { promiseIsInProgress : isLoading } = usePromiseTracker();
 
-  useEffect(() => {
-
-    getUser().then((user) => {
-
+  const processUser = useCallback((response) => {
+    if (response.error) {
+      // Handle error
+      return;
+    }
+    else {
+      var user = response.result.body.items;
       if (user) {
         updateAuthStatus(true);
         setUser(user);
-        setLoading(false);
 
         // Temporarily setting isAdmin to always be true for development
         // const adminInfo = user.find((info) => info.name === 'is_admin');
@@ -64,8 +66,12 @@ export default function App() {
         const shelterOwnerInfo = user.find((info) => info.name === 'is_shelter_owner');
         setIsShelterOwner(shelterOwnerInfo?.value || false);
       }
-    });
-  }, [isAuthenticated]);
+    }
+  }, []);
+
+  useEffect(() => {
+    api.User.getInfo().then(processUser);
+  }, [processUser]);
 
   let adminPageLink = null;
   let userSearchLink = null;
@@ -97,15 +103,11 @@ export default function App() {
     currentUser: user
   }
 
-  let loadingIndicator = null;
-  if (isLoading) {
-    loadingIndicator = (
-      <Spinner
-        className="site-loading-indicator"
-        animation="border"
-        variant="info"
-      />);
-  }
+  const loadingIndicator =    
+    <Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+  var showIndicator = isLoading || isAuthenticated === null ||(isAuthenticated && !user);
 
   return (
     <div className="App">
@@ -152,7 +154,10 @@ export default function App() {
               <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
             </Nav.Item>
           </Nav>
-          <UserBox auth={auth}/>
+          {isLoading ? 
+              <Spinner className="small" size="sm" animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>  : <UserBox auth={auth}/>}
         </Navbar.Collapse>
       </Navbar>
       <Routes>
@@ -166,7 +171,7 @@ export default function App() {
         <Route path="/pet/:petId/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
-        <Route exact path="/" element={isAuthenticated ? <Dashboard auth={auth}/> : <LandingPage auth={auth}/>}></Route>
+        <Route exact path="/" element={showIndicator ? loadingIndicator : (isAuthenticated ? <Dashboard auth = {auth}/> : <LandingPage auth={auth}/>)}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>

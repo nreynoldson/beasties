@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Col, Row, Button, Card} from 'react-bootstrap';
+import React from 'react';
+import { Button, Card} from 'react-bootstrap';
 
 export default function Notification(props) {
 
@@ -13,7 +13,6 @@ export default function Notification(props) {
     const handleAdoptionRequest = () => {
 
     }
-    console.log(props)
     if(props.isShelter){
         var status, req = props.req;
         if(req.requestStatus === 'pending')
