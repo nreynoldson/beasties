@@ -1,6 +1,5 @@
 import {ListGroup, Col, Container, Tab} from 'react-bootstrap';
 import NotificationCenter from '../../pages/NotificationCenter';
-import {useState, useEffect} from 'react';
 import ManagePets from '../account/ManagePets';
 import EditAccount from '../account/EditAccount';
 
@@ -29,7 +28,7 @@ const ShelterDash = (props) => {
           <Col sm={7} className="view-content">
             <Tab.Content>
               <Tab.Pane eventKey="#link1">
-                <NotificationCenter/>
+                <NotificationCenter auth={props.auth}/>
               </Tab.Pane>
               <Tab.Pane eventKey="#link2">
                 <EditAccount auth={props.auth}></EditAccount>
