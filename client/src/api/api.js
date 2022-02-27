@@ -214,10 +214,10 @@ const api = {
 
   User: {
 
-    delete: async (id) => {
+    delete: async (userName) => {
 
       const req = request
-        .delete(makeBackendUrl(`/user/${id}`));
+        .delete(makeBackendUrl(`/user/${userName}`));
 
       return await handleRequest(req);
     },
@@ -231,18 +231,18 @@ const api = {
       return await handleRequest(req);
     },
 
-    getImages: async (id) => {
+    getImages: async (userName) => {
 
       const req = request
-        .get(makeBackendUrl(`/user/${id}/images`));
+        .get(makeBackendUrl(`/user/${userName}/images`));
 
       return await handleRequest(req);
     },
 
-    getInfo: async (id) => {
+    getInfo: async (userName) => {
 
       const req = request
-        .get(makeBackendUrl(`/user${id}`));
+        .get(makeBackendUrl(`/user/${userName}`));
 
       return await handleRequest(req);
     },
@@ -256,11 +256,11 @@ const api = {
       return await handleRequest(req);
     },
 
-    setAvatar: async (id) => {
+    setAvatar: async (imageId) => {
 
       const req = request
         .patch(makeBackendUrl(`/user/set-avatar-image`))
-        .send({ id });
+        .send({ imageId });
 
       return await handleRequest(req);
     },

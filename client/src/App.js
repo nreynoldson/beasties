@@ -47,7 +47,7 @@ export default function App() {
 
   const { promiseInProgress: isLoading } = usePromiseTracker();
 
-  useEffect(() => {
+  useEffect(async () => {
 
     getUser().then((user) => {
 
@@ -57,12 +57,9 @@ export default function App() {
         setLoading(false);
 
         // Temporarily setting isAdmin to always be true for development
-        // const adminInfo = user.find((info) => info.name === 'is_admin');
-        // setIsAdmin(adminInfo?.value || false);
+        // setIsAdmin(Boolean(user.isAdmin));
         setIsAdmin(true);
-
-        const shelterOwnerInfo = user.find((info) => info.name === 'is_shelter_owner');
-        setIsShelterOwner(shelterOwnerInfo?.value || false);
+        setIsShelterOwner(Boolean(user.isShelterOwner));
       }
     });
   }, [isAuthenticated]);
