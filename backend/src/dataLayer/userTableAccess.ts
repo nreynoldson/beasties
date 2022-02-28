@@ -3,12 +3,12 @@ import * as AWS from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { UserItem } from '../modals/UserItem';
 
-const AWSXRay = require('aws-xray-sdk');
-const XAWS = AWSXRay.captureAWS(AWS)
-
 export class UserTableAccess {
     constructor(
-        private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
+        private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient({
+            maxRetries: 10,
+            logger: console
+        }),
         private readonly userTable = process.env.USER_TABLE) {
     }
 
