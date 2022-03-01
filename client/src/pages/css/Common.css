@@ -6,3 +6,12 @@
     border-right-color: transparent;
     animation: 1s linear infinite spinner-border
   }
+
+  .spinner-border.small{
+    margin: 2rem;
+    width: 2rem;
+    height: 2rem;
+    border: 8px solid #F45474;
+    border-right-color: transparent;
+    animation: 1s linear infinite spinner-border
+  }

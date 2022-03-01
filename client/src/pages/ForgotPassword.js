@@ -57,6 +57,12 @@ export default function ForgotPassword(props) {
     const onSubmit = (e) => {
         if(validatePassword())
             return;
+        console.log(user);
+        var userData = {
+            Username: email,
+            Pool: Pool
+        };
+        user = new CognitoUser(userData);
         
         user.confirmPassword(confirmationCode, password, {
             onSuccess: async () => {

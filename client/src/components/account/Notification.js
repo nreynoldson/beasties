@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Col, Row, Button, Card} from 'react-bootstrap';
+import React from 'react';
+import { Button, Card} from 'react-bootstrap';
 
 export default function Notification(props) {
 
@@ -13,45 +13,44 @@ export default function Notification(props) {
     const handleAdoptionRequest = () => {
 
     }
-
     if(props.isShelter){
-        var status;
-        if(props.req.status === 'pending')
+        var status, req = props.req;
+        if(req.requestStatus === 'pending')
             status = (<><Button className ="adopt-btn"onClick = {acceptRequest}>Accept</Button>
                         <Button className = "adopt-btn" onClick ={rejectRequest}>Reject</Button></>);
         else
-            status = "Status: " + props.req.status;
+            status = "Status: " + req.requestStatus;
 
         return(
             <Card  className="card-horizontal">
-            <Card.Img variant="left" src={props.req.avatar} />
+            <Card.Img variant="left" src={req.avatar} />
             <Card.Body>
     
-                <Card.Title>{props.req.type === 'date' ? 'Date Request from  ' : 'Adoption Request from '}{props.req.user}</Card.Title>
+                <Card.Title>{req.requestType === 'date' ? 'Date Request from  ' : 'Adoption Request from '}{req.userName}</Card.Title>
                 <Card.Text>
-                <span>{props.req.name}</span><span>•</span><span>{props.req.shelter}</span>
+                <span>{req.animalName}</span><span>•</span><span>{req.shelterName}</span>
                 </Card.Text>
-                <Card.Text className={"status " + props.req.status}>{status}</Card.Text>
+                <Card.Text className={"status " + req.requestStatus}>{status}</Card.Text>
             </Card.Body>
             </Card>
         );
     }
     else{
-        if(props.req.type === 'date' && props.req.status === 'fulfilled')
+        if(req.requestType === 'date' && props.reqquestStatus === 'fulfilled')
             status = (<Button className="adopt-btn" onClick = {handleAdoptionRequest}>Request to Adopt</Button>);
         else
-            status = props.req.status;
+            status = req.requestStatus;
 
         return(
             <Card  className="card-horizontal">
             <Card.Img variant="left" src={props.req.avatar} />
             <Card.Body>
 
-                <Card.Title>{props.req.type === 'date' ? 'Date Request' : 'Adoption Request'}</Card.Title>
+                <Card.Title>{req.requestType === 'date' ? 'Date Request' : 'Adoption Request'}</Card.Title>
                 <Card.Text>
-                <span>{props.req.name}</span><span>•</span><span>{props.req.shelter}</span>
+                <span>{req.animalName}</span><span>•</span><span>{req.shelterName}</span>
                 </Card.Text>
-                <Card.Text className={"status " + props.req.status}>{status}</Card.Text>
+                <Card.Text className={"status " + req.requestStatus}>{status}</Card.Text>
             </Card.Body>
             </Card>
         );
