@@ -2,22 +2,24 @@ import * as AWS from 'aws-sdk'
 
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import {RequestItem} from '../modals/RequestItem'
+import { UpdateRequest } from '../requests/UpdateRequest';
 
-const AWSXRay = require('aws-xray-sdk');
-const XAWS = AWSXRay.captureAWS(AWS)
 
 export class RequestTableAccess{
     constructor(
-        private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
+        private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient({
+            maxRetries: 10,
+            logger: console
+        }),
         private readonly requestTable = process.env.USER_ANIMAL_REQUESTS_TABLE) {
     }
 
     async createRequest(requestItem){
 
-        await this.docClient.put({
+        return await this.docClient.put({
             TableName: this.requestTable,
             Item: requestItem
-        }).promise()
+        }).promise();
 
     }
 
@@ -61,7 +63,7 @@ export class RequestTableAccess{
         const items = result.Items
         return items as RequestItem[]
     }
-    
+
     async getRequestsForPet(animal_shelter: string, requestStatus: string){
         
         const params = {
@@ -77,5 +79,52 @@ export class RequestTableAccess{
         
         const items = results.Items
         return items as RequestItem[]
+    }
+
+    async updatePost(updatedRequest:UpdateRequest, userName:string, animal_shelter: string) {
+
+        const updatedItem = await this.docClient.update({
+            TableName: this.requestTable,
+            Key: {
+                "userName": userName,
+                "animalName_shelterName": animal_shelter
+            },
+            UpdateExpression: 'set requestStatus=:requestStatus, responseMessage=:responseMessage',
+            ExpressionAttributeValues: {
+                ':requestStatus': updatedRequest['requestStatus'],
+                ':responseMessage': updatedRequest['responseMessage']
+            },
+            ReturnValues: "UPDATED_NEW"
+            
+        }).promise()
+        return updatedItem
+    }
+
+    async deleteRequest(userName: string, animal_shelter: string) {
+
+        const param = {
+            TableName: this.requestTable,
+            Key: {
+                "userName": userName,
+                "animalName_shelterName": animal_shelter
+            }
+        }
+
+        console.log(param)
+        await this.docClient.delete(param).promise()
+
+    }
+
+    async getRequestDetails(userName:string, animal_shelter:string) {
+
+        const result = await this.docClient.get({
+            TableName: this.requestTable,
+            Key: {
+                "userName": userName,
+                "animalName_shelterName": animal_shelter
+            }
+        }).promise()
+
+        return result.Item as RequestItem
     }
 }

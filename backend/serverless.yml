@@ -43,6 +43,9 @@ custom:
       - name: CreateRequestAPIRequest
         contentType: application/json
         schema: ${file(models/create-request.json)}
+      - name: UpdateRequest
+        contentType: application/json
+        schema: ${file(models/update-requestStatus.json)}
 
 functions:
   
@@ -198,6 +201,60 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Scan
           - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+  
+  GetRequestDetails:
+    handler: src/lambda/http/getRequestDetails.handler
+    events:
+      - http:
+          method: get
+          path: requestDetails/{userName}/{shelterName}/{animalName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+  
+  UpdateRequestByShelter:
+    handler: src/lambda/http/updateRequestByShelter.handler
+    events:
+      - http:
+          method: patch
+          path: requestEditByShelter/{shelterOwnerName}/{customerName}/{shelterName}/{animalName}
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update the requestStatus of a pet by shelter
+            description: Update an existing post item
+            requestModels:
+              'application/json': UpdateRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+      - Effect: Allow
+        Action:
+          - execute-api:Invoke
+        Resource: arn:aws:execute-api:*:*:*
+  
+  DeleteRequest:
+    handler: src/lambda/http/deleteRequest.handler
+    events:
+      - http:
+          method: delete
+          path: requestDelete/{userName}/{shelterName}/{animalName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
 
 resources:
