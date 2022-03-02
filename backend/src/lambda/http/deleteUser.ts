@@ -17,7 +17,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const userName = event.pathParameters.userName
   
   const getUserInfo = await makeGetUserAPICall(userName);
-
+  console.log(getUserInfo);
+  console.log(getUserInfo['data']['items']['isShelterOwner']);
+  console.log('yeyyyyy');
+  
   if(getUserInfo['data']['items']['isShelterOwner'] == true) {
     logger.error(`Shelter users cannot be deleted.`)
     return {

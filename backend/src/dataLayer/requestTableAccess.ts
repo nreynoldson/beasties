@@ -37,17 +37,23 @@ export class RequestTableAccess{
     }
 
     async getRequestsWithStatusForUser(userName: string, requestStatus: string){
-        const result = await this.docClient.scan({
-            TableName: this.requestTable,
-            FilterExpression: "userName = :userName and requestStatus = :requestStatus ",
-            ExpressionAttributeValues: {
-                ":userName": userName,
-                ":requestStatus": requestStatus
-            }
-        }).promise()
+        
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan({
+                TableName: this.requestTable,
+                FilterExpression: "userName = :userName and requestStatus = :requestStatus ",
+                ExpressionAttributeValues: {
+                    ":userName": userName,
+                    ":requestStatus": requestStatus
+                }
+            }).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
+        
+        return scanResults as RequestItem[]
 
-        const items = result.Items
-        return items as RequestItem[]
     }
     
     async getPendingReqForShelter(shelterName: string){
@@ -75,10 +81,14 @@ export class RequestTableAccess{
             }
         };
 
-        const results = await this.docClient.scan(params).promise();
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan(params).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
         
-        const items = results.Items
-        return items as RequestItem[]
+        return scanResults as RequestItem[]
     }
 
     async updatePost(updatedRequest:UpdateRequest, userName:string, animal_shelter: string) {

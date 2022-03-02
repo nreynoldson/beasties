@@ -1,7 +1,0 @@
-{
-    "pathParameters": {
-        "animalName": "testanimal",
-        "shelterName": "petco3",
-        "shelterOwnerName": "aishtest11"
-    }
-}

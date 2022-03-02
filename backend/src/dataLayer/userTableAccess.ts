@@ -34,16 +34,21 @@ export class UserTableAccess {
     }
 
     async getUsersByUserType(isShelterOwner: boolean): Promise<UserItem[]> {
-        const result = await this.docClient.scan({
-            TableName: this.userTable,
-            FilterExpression: "isShelterOwner = :isShelterOwner ",
-            ExpressionAttributeValues: {
-                ":isShelterOwner": isShelterOwner
-            }
-        }).promise()
-
-        const items = result.Items
-        return items as UserItem[]
+        
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan({
+                TableName: this.userTable,
+                FilterExpression: "isShelterOwner = :isShelterOwner ",
+                ExpressionAttributeValues: {
+                    ":isShelterOwner": isShelterOwner
+                }
+            }).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
+        
+        return scanResults as UserItem[]
     }
 
     async updateUser(updatedUser:UpdateUser, userName:string) {

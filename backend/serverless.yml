@@ -164,6 +164,36 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
   
+  GetAnimalsOfShelter:
+    handler: src/lambda/http/getAnimalsOfShelter.handler
+    events:
+      - http:
+          method: get
+          path: animalsGet/{shelterName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
+  
+  GetAllAnimals:
+    handler: src/lambda/http/getAllAnimals.handler
+    events:
+      - http:
+          method: get
+          path: animalsGet
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
+
   GetAllRequestsForUser:
     handler: src/lambda/http/getAllRequestsForUser.handler
     events:

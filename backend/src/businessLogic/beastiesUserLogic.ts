@@ -47,7 +47,15 @@ export async function updateUser(event: APIGatewayProxyEvent, updatedUser: Updat
 
     logger.info('Updating user in dynamodb')
     console.log(`Inside the user business logic: ${userName}`);
-    const result = await userAccess.updateUser(updatedUser, userName)
+    
+    const userItem = await userAccess.getUserByUsername(userName)
+    userItem['bio'] = updatedUser['bio'] ? updatedUser['bio'] : userItem['bio']
+    userItem['avatar'] = updatedUser['avatar'] ? updatedUser['avatar'] : userItem['avatar']
+    userItem['displayName'] = updatedUser['displayName'] ? updatedUser['displayName'] : userItem['displayName']
+    userItem['zipcode'] = updatedUser['zipcode'] ? updatedUser['zipcode'] : userItem['zipcode']
+    
+    const result = await userAccess.createUser(userItem)
+
     console.log(`Updated user ${JSON.stringify(result)}`)
     logger.info('Updated user in dynamodb')
     return true

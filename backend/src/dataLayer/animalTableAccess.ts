@@ -33,6 +33,38 @@ export class AnimalTableAccess {
         return result.Item as AnimalItem
     }
 
+    async getAnimalsByShelter(shelter_name:string): Promise<AnimalItem[]> {
+
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan({
+                TableName: this.animalTable,
+                FilterExpression: "shelterName = :shelterName ",
+                ExpressionAttributeValues: {
+                    ":shelterName": shelter_name
+                }
+            }).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
+        
+        return scanResults as AnimalItem[]
+    }
+
+    async getAllAnimals(): Promise<AnimalItem[]> {
+        
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan({
+                TableName: this.animalTable
+            }).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
+        
+        return scanResults as AnimalItem[]
+    }
+
     async updateAvailability(updatedStatus:string, animalName: string, shelterName: string) {
         
         const animalName_shelterName = animalName + "_" + shelterName;

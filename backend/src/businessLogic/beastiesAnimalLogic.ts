@@ -42,6 +42,25 @@ export async function getAnimalByNameAndShelter(event: APIGatewayProxyEvent) : P
 
 }
 
+export async function getAnimalsByShelter(event: APIGatewayProxyEvent) : Promise<AnimalItem[]> {
+    
+    const shelterName = event.pathParameters.shelterName
+    logger.info(`Executing logic for get animals of ${shelterName}`)
+    logger.info('Getting all animal\'s details of the given shelter from dynamodb')
+    
+    return await animalAccess.getAnimalsByShelter(shelterName);
+
+}
+
+export async function getAllAnimals() : Promise<AnimalItem[]> {
+    
+    logger.info(`Executing logic for get all animals`)
+    logger.info('Getting all animal\'s details from dynamodb')
+    
+    return await animalAccess.getAllAnimals();
+
+}
+
 export async function updateAnimal(event: APIGatewayProxyEvent, updatedAnimal: UpdateAnimal) {
     
     const shelterName = event.pathParameters.shelterName
