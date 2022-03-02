@@ -1,4 +1,5 @@
 import request from 'superagent';
+import {getUser} from '../components/account/Account'
 import { trackPromise } from 'react-promise-tracker';
 
 const {
@@ -210,7 +211,15 @@ const api = {
         req.attach('image', imageFile);
 
       return await handleRequest(req, { requestTypeIsJson: false });
-    }
+    },
+    getRequests: async (shelterName) => {
+      console.log('in shelter get')
+      console.log(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`))
+      const req = request
+        .get(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`));
+
+      return await handleRequest(req);
+  }
   },
 
   User: {
@@ -275,6 +284,14 @@ const api = {
         req.attach('image', imageFile);
 
       return await handleRequest(req, { requestTypeIsJson: false });
+    },
+
+    getRequests: async (username) => {
+      console.log('in user requests');
+        const req = request
+          .get(makeBackendUrl(`/request/${username}`));
+  
+        return await handleRequest(req);
     }
   }
 };

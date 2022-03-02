@@ -3,18 +3,19 @@ import { createLogger } from '../utils/logger'
 
 const logger = createLogger('Beasties BusinessLogic Execution')
 
-export async function makeGetUserAPICall(userName: string) {
+export async function makeGetPendingReqForPet(animalName: string, shelterName: string, requestStatus: string) {
     var apigClient = apigClientFactory.newClient({
         accessKey: process.env.AWS_ACCESS_KEY_ID,
         secretKey: process.env.AWS_SECRET_ACCESS_KEY,
         sessionToken: process.env.AWS_SESSION_TOKEN,
-        region: 'us-east-1',
         invokeUrl: 'https://idvmpyv72b.execute-api.us-east-1.amazonaws.com/dev/'
     });
     var method = 'GET';
-    var pathTemplate = `user/${userName}`
+    var pathTemplate = 'requestsForPet/{animalName}/{shelterName}/{requestStatus}'
     var params = {
-        userName: userName,
+        animalName:animalName,
+        shelterName:shelterName,
+        requestStatus: requestStatus
     };
     var body = {};
     var additionalParams = {
@@ -31,7 +32,7 @@ export async function makeGetUserAPICall(userName: string) {
             additionalParams,
             body
         ).then((result) => {
-            logger.info(`Successfully invoked get user info endpoint`);
+            logger.info(`Successfully invoked get request info endpoint`);
             return resolve(result)
         }).catch((error) => {
             reject(error)

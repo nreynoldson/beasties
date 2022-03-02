@@ -3,12 +3,12 @@ import * as AWS from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { AnimalItem } from '../modals/AnimalItem';
 
-const AWSXRay = require('aws-xray-sdk');
-const XAWS = AWSXRay.captureAWS(AWS)
-
 export class AnimalTableAccess {
     constructor(
-        private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
+        private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient({
+            maxRetries: 10,
+            logger: console
+        }),
         private readonly animalTable = process.env.ANIMAL_TABLE) {
     }
 
@@ -31,5 +31,23 @@ export class AnimalTableAccess {
         }).promise()
 
         return result.Item as AnimalItem
+    }
+
+    async updateAvailability(updatedStatus:string, animalName: string, shelterName: string) {
+        
+        const animalName_shelterName = animalName + "_" + shelterName;
+        const updatedItem = await this.docClient.update({
+            TableName: this.animalTable,
+            Key: {
+                "animalName_shelterName": animalName_shelterName
+            },
+            UpdateExpression: 'set availability=:availability',
+            ExpressionAttributeValues: {
+                ':availability': updatedStatus,
+            },
+            ReturnValues: "UPDATED_NEW"
+            
+        }).promise()
+        return updatedItem
     }
 }

@@ -1,55 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import {Container} from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import {Container, Spinner} from 'react-bootstrap';
 import Notification from '../components/account/Notification';
+import { usePromiseTracker } from 'react-promise-tracker';
 import './css/Notification.css'
-
-const testData = [
-    {
-        avatar: 'https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg',
-        user: 'happyuser01',
-        name: 'Bruce',
-        shelter: 'Pet Rescue',
-        status: 'pending',
-        type: 'adoption'
-    },
-    {
-        avatar: 'https://jaxhumane.org/wp-content/uploads/2021/09/Biggie-Smalls-2019-scaled-e1633539814147.jpg',
-        user: 'bobbyt86',
-        name: 'Clyde',
-        shelter: 'Happy Paws',
-        status: 'fulfilled',
-        type: 'date'
-    },
-    {
-        avatar: 'https://jaxhumane.org/wp-content/uploads/2021/09/Biggie-Smalls-2019-scaled-e1633539814147.jpg',
-        user: 'johnr09',
-        name: 'Delilah',
-        shelter: 'Happy Paws',
-        status: 'accepted',
-        type: 'date'
-    },
-]
+import api from '../api/api';
 
 export default function NotificationCenter(props) {
-    const [isShelter, setShelter] = useState(false);
     const [requests, setRequests] = useState([]);
+    const [isShelter, setShelter] = useState(false);
+    const { promiseInProgress } = usePromiseTracker();
+
+    console.log(props)
+    const processRequests = useCallback((response) => {
+        console.log(response)
+        if (response.error) {
+          // Handle error
+          return;
+        }
+        else {
+            setRequests(response.result.body.items)
+        }
+    }, []);
 
     useEffect(() => {
-        //var user = await getUser();
-        setRequests(testData)
+        const user = props.auth.currentUser;
+        setShelter(user.isShelterOwner);
+        if(!user.isShelterOwner)
+            api.User.getRequests(user.userName).then(processRequests);
+        else
+            api.Shelter.getRequests(user.shelterName).then(processRequests);
     }, []);
 
     var requestEl = [];
     requests.forEach((req) => {
             requestEl.push(
-                <Notification key={`${req.user}_${req.name}`} isShelter = {isShelter} req = {req}/>
+                <Notification key={`${req.animalName_shelterName}`} isShelter = {isShelter} req = {req}/>
         )
     });
 
+    var content;
+    if(promiseInProgress){
+        content = (
+        <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>)
+    }
+    else {
+        content = requestEl.length ? requestEl : "No requests to display.";
+    }
     return (
         <Container className="notifications">
             <h3>Your Requests</h3>
-            {requestEl}
+            {content}
         </Container>
     );
 }

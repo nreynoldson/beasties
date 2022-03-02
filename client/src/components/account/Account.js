@@ -57,10 +57,8 @@ const changePassword = async (oldPassword, newPassword) => {
 }
 
 const getUser = async() => {
-
     return await new Promise((resolve, reject) => {
        var user = Pool.getCurrentUser();
-       console.log(user);
        if(user != null){
            user.getSession(async (err, session) => {
                if (err) {
