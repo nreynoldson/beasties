@@ -45,24 +45,17 @@ export default function App() {
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
 
-  const { promiseIsInProgress : isLoading } = usePromiseTracker();
+  const { promiseInProgress: isLoading } = usePromiseTracker();
 
-  const processUser = useCallback((response) => {
-    if (response.error) {
-      // Handle error
-      return;
-    }
-    else {
-      var user = response.result.body.items;
-      if (user) {
-        updateAuthStatus(true);
-        setUser(user);
+  const processUser = useCallback((user) => {
+    if (user) {
+      updateAuthStatus(true);
+      setUser(user);
 
-        // Temporarily setting isAdmin to always be true for development
-        // setIsAdmin(Boolean(user.isAdmin));
-        setIsAdmin(true);
-        setIsShelterOwner(Boolean(user.isShelterOwner));
-      }
+      // Temporarily setting isAdmin to always be true for development
+      // setIsAdmin(Boolean(user.isAdmin));
+      setIsAdmin(true);
+      setIsShelterOwner(Boolean(user.isShelterOwner));
     }
   }, []);
 
@@ -101,7 +94,19 @@ export default function App() {
     currentUser: user
   }
 
-  const loadingIndicator =    
+  
+  let navLoadingIndicator = null;
+  if (isLoading) {
+    navLoadingIndicator = (
+      <Spinner
+        className="site-loading-indicator"
+        animation="border"
+        variant="info"
+      />
+    );
+  }
+
+  const pageLoadingIndicator =    
     <Spinner animation="border" role="status">
       <span className="visually-hidden">Loading...</span>
     </Spinner>
@@ -114,7 +119,7 @@ export default function App() {
           <Navbar.Brand>
             <NavLink className="nav-link" to="/">
               <div className="d-flex align-items-center site-branding">
-                {loadingIndicator}
+                {navLoadingIndicator}
                 <img
                   alt="Beasties Logo"
                   src="/images/paw_heart.png"
@@ -169,7 +174,7 @@ export default function App() {
         <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
         <Route path="/pet/:petName/:shelterName/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
-        <Route exact path="/" element={showIndicator ? loadingIndicator : (isAuthenticated ? <Dashboard auth = {auth}/> : <LandingPage auth={auth}/>)}></Route>
+        <Route exact path="/" element={showIndicator ? pageLoadingIndicator : (isAuthenticated ? <Dashboard auth = {auth}/> : <LandingPage auth={auth}/>)}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>
