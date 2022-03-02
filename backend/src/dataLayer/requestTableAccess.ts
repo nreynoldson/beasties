@@ -127,4 +127,47 @@ export class RequestTableAccess{
 
         return result.Item as RequestItem
     }
+
+    async deleteAllRequestsForUser(userName: string) {
+        const queryParams = {
+            TableName: this.requestTable,
+            KeyConditionExpression: 'userName = :userName',
+            ExpressionAttributeValues: { ':userName': userName } ,
+        }
+        const queryResults = await this.docClient.query(queryParams).promise()
+        if (queryResults.Items && queryResults.Items.length > 0) {
+            
+            const batchCalls = chunks(queryResults.Items, 25).map( async (chunk) => {
+            const deleteRequests = chunk.map( item => {
+                return {
+                DeleteRequest : {
+                    Key : {
+                    'userName' : item.userName,
+                    'animalName_shelterName' : item.animalName_shelterName,
+                    }
+                }
+                }
+            })
+
+            const batchWriteParams = {
+                RequestItems : {
+                    "Beasties-request-dev" : deleteRequests
+                }
+            }
+            await this.docClient.batchWrite(batchWriteParams).promise()
+            })
+
+            await Promise.all(batchCalls)
+        }
+        // console.log(param)
+        // await this.docClient.delete(param).promise()
+    }
 }
+
+function chunks(inputArray, perChunk) {
+    return inputArray.reduce((all,one,i) => {
+      const ch = Math.floor(i/perChunk); 
+      all[ch] = [].concat((all[ch]||[]),one); 
+      return all
+   }, [])
+  }

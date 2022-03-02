@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "update-user",
+    "type": "object",
+    "properties": {
+      "displayName": {
+        "type": "string"
+      },
+      "bio": {
+        "type": "string"
+      },
+      "zipcode": {
+        "type": "string",
+        "pattern": "[0-9][0-9][0-9][0-9][0-9]"
+      },
+      "avatar": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+}

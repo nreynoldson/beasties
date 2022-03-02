@@ -50,4 +50,18 @@ export class AnimalTableAccess {
         }).promise()
         return updatedItem
     }
+
+    async deleteAnimal(animal_shelter: string) {
+
+        const param = {
+            TableName: this.animalTable,
+            Key: {
+                "animalName_shelterName": animal_shelter,
+            }
+        }
+
+        console.log(param)
+        await this.docClient.delete(param).promise()
+
+    }
 }
