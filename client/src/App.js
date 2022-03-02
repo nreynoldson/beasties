@@ -53,18 +53,12 @@ export default function App() {
       return;
     }
     else {
-      var user = response.result.body.items;
+      var user = response;
       if (user) {
         updateAuthStatus(true);
         setUser(user);
-
-        // Temporarily setting isAdmin to always be true for development
-        // const adminInfo = user.find((info) => info.name === 'is_admin');
-        // setIsAdmin(adminInfo?.value || false);
-        setIsAdmin(true);
-
-        const shelterOwnerInfo = user.find((info) => info.name === 'is_shelter_owner');
-        setIsShelterOwner(shelterOwnerInfo?.value || false);
+        setIsAdmin(user.isAdmin);
+        setIsShelterOwner(user.isShelterOwner);
       }
     }
   }, []);

@@ -1,23 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Button, Card} from 'react-bootstrap';
+import api from '../../api/api';
 
 export default function Notification(props) {
+    const [isDeleted, setDeleted] = useState(false);
+    const cancelRequest = () => {
 
-    const acceptRequest = () =>{
-
-    }
-    const rejectRequest = () => {
-
-    }
-
-    const handleAdoptionRequest = () => {
-
-    }
+        api.User.deleteRequest(req.userName, req.shelterName, req.animalName)
+            .then((response)=>{
+                console.log(response);
+                setDeleted(true);
+            })
+    };
+    var status, req = props.req;
     if(props.isShelter){
-        var status, req = props.req;
         if(req.requestStatus === 'pending')
-            status = (<><Button className ="adopt-btn"onClick = {acceptRequest}>Accept</Button>
-                        <Button className = "adopt-btn" onClick ={rejectRequest}>Reject</Button></>);
+            status = (<Button className ="response-btn" onClick ={() => props.changeView(req)}>Respond</Button>);
         else
             status = "Status: " + req.requestStatus;
 
@@ -36,8 +34,8 @@ export default function Notification(props) {
         );
     }
     else{
-        if(req.requestType === 'date' && props.reqquestStatus === 'fulfilled')
-            status = (<Button className="adopt-btn" onClick = {handleAdoptionRequest}>Request to Adopt</Button>);
+        if(req.requestType === 'date' && req.requestStatus === 'fulfilled')
+            status = (<Button className="adopt-btn" >Request to Adopt</Button>);
         else
             status = req.requestStatus;
 
@@ -50,7 +48,10 @@ export default function Notification(props) {
                 <Card.Text>
                 <span>{req.animalName}</span><span>•</span><span>{req.shelterName}</span>
                 </Card.Text>
+                <div className="options-container">
                 <Card.Text className={"status " + req.requestStatus}>{status}</Card.Text>
+                {req.requestStatus == 'pending' || req.requestStatus == 'accepted' ? <Button onClick={cancelRequest}>Cancel Request</Button> : ''}
+                </div>
             </Card.Body>
             </Card>
         );

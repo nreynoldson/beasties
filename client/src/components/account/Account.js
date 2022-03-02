@@ -44,7 +44,6 @@ const changePassword = async (oldPassword, newPassword) => {
                         console.log(err);
                         reject(err)
                     } else {
-                        console.log(result);
                         resolve(result)
                     }
                 });
@@ -64,7 +63,19 @@ const getUser = async() => {
                    resolve(null)
                    return;
                }
-               resolve( user.username);
+               user.getUserAttributes(function(err, result) {
+                if (err) {
+                    alert(err.message || JSON.stringify(err));
+                    return;
+                }
+                    var userInfo = {username: user.username, admin: false};
+                    for (var i = 0; i < result.length; i++) {
+                        if(result[i].getName() === "custom:isAdmin"){
+                            userInfo.admin = result[i].getValue() ? true : false;
+                        }
+                    }
+                    resolve(userInfo);
+                });
            });
        }
        else{

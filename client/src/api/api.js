@@ -212,13 +212,19 @@ const api = {
       return await handleRequest(req, { requestTypeIsJson: false });
     },
     getRequests: async (shelterName) => {
-      console.log('in shelter get')
-      console.log(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`))
       const req = request
         .get(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`));
 
       return await handleRequest(req);
-  }
+    },
+    updateRequest: async (shelterOwner, username, shelterName, animalName, editParams) => {
+
+      const req = request
+        .patch(makeBackendUrl(`/requestEditByShelter/${shelterOwner}/${username}/${shelterName}/${animalName}/`))
+        .send(JSON.stringify(editParams));
+      
+      return await handleRequest(req);
+    },
   },
 
   User: {
@@ -255,10 +261,13 @@ const api = {
        };
 
       try {
-        var username = await trackPromise(getUser());
+        var attributes = await trackPromise(getUser());
         const req = request
-        .get(makeBackendUrl(`/user/${username}`));
-        return await handleRequest(req);
+        .get(makeBackendUrl(`/user/${attributes.username}`));
+        var result = await handleRequest(req);
+        var userInfo = result.result.body.items;
+        userInfo.isAdmin = attributes.admin;
+        return userInfo;
       }
       catch (e) {
         response.error = e;
@@ -296,12 +305,18 @@ const api = {
     },
 
     getRequests: async (username) => {
-      console.log('in user requests');
         const req = request
           .get(makeBackendUrl(`/request/${username}`));
   
         return await handleRequest(req);
-    }
+    },
+
+    deleteRequest: async (username, shelterName, animalName) => {
+      const req = request
+        .delete(makeBackendUrl(`/requestDelete/${username}/${shelterName}/${animalName}`));
+
+      return await handleRequest(req);
+  }
   }
 };
 
