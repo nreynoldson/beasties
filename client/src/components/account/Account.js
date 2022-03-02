@@ -1,4 +1,5 @@
 import {CognitoUser, AuthenticationDetails} from "amazon-cognito-identity-js";
+import api from '../../api/api'
 import Pool from "../../UserPool";
 import { useNavigate } from "react-router-dom";
 import {useEffect} from 'react';
@@ -59,12 +60,20 @@ const getUser = async() => {
     return await new Promise((resolve, reject) => {
        var user = Pool.getCurrentUser();
        if(user != null){
-           user.getSession(function(err, session) {
-               if(err){
+           user.getSession(async (err, session) => {
+               if (err) {
                    resolve(null)
                    return;
                }
-               resolve( user.username);
+
+               const { error, result } = await api.User.getInfo(user.username);
+
+               if (error) {
+                   console.log(error);
+                   return;
+               }
+
+               resolve(result);
            });
        }
        else{

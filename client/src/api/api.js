@@ -28,7 +28,8 @@ const handleRequest = async (req, options = {}) => {
    }
 
    try {
-    response.result = await trackPromise(req);
+     const result = await trackPromise(req);
+    response.result = result.body?.items;
    }
    catch (e) {
     response.error = e;
@@ -86,7 +87,7 @@ const api = {
     getInfo: async (petName, shelterName) => {
 
       const req = request
-        .get(makeBackendUrl(`/animals/${petName}/${shelterName}`));
+        .get(makeBackendUrl(`/animal/${petName}/${shelterName}`));
 
       return await handleRequest(req);
     },
@@ -223,10 +224,10 @@ const api = {
 
   User: {
 
-    delete: async (id) => {
+    delete: async (userName) => {
 
       const req = request
-        .delete(makeBackendUrl(`/user/${id}`));
+        .delete(makeBackendUrl(`/user/${userName}`));
 
       return await handleRequest(req);
     },
@@ -240,30 +241,20 @@ const api = {
       return await handleRequest(req);
     },
 
-    getImages: async (id) => {
+    getImages: async (userName) => {
 
       const req = request
-        .get(makeBackendUrl(`/user/${id}/images`));
+        .get(makeBackendUrl(`/user/${userName}/images`));
 
       return await handleRequest(req);
     },
 
-    getInfo: async () => {
-      const response = { 
-        result: null,
-        error: null
-       };
+    getInfo: async (userName) => {
 
-      try {
-        var username = await trackPromise(getUser());
-        const req = request
-        .get(makeBackendUrl(`/user/${username}`));
-        return await handleRequest(req);
-      }
-      catch (e) {
-        response.error = e;
-        return response;
-      }
+      const req = request
+        .get(makeBackendUrl(`/user/${userName}`));
+
+      return await handleRequest(req);
     },
 
     search: async (searchParams) => {
@@ -275,11 +266,11 @@ const api = {
       return await handleRequest(req);
     },
 
-    setAvatar: async (id) => {
+    setAvatar: async (imageId) => {
 
       const req = request
         .patch(makeBackendUrl(`/user/set-avatar-image`))
-        .send({ id });
+        .send({ imageId });
 
       return await handleRequest(req);
     },
