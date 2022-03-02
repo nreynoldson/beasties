@@ -106,8 +106,8 @@ export default function RegisterForm(props){
             <Form.Group className="mb-3">
                 <Form.Label>Password</Form.Label>
                 <Form.Control 
-                    type="text" 
-                    name="password" 
+                    type="password"
+                    name="password"
                     value={password} 
                     onChange= {(e) => {setPassword(e.target.value)}}
                     isInvalid= {hasError("password")} />
@@ -119,7 +119,7 @@ export default function RegisterForm(props){
             <Form.Group className="mb-3">
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control 
-                    type="text" 
+                    type="password"
                     name="confirmPassword" 
                     value={confirmPassword} 
                     onChange= {(e) => {setConfirmPassword(e.target.value)}}

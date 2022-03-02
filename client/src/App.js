@@ -45,7 +45,7 @@ export default function App() {
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
 
-  const { promiseIsInProgress : isLoading } = usePromiseTracker();
+  const { promiseInProgress: isLoading } = usePromiseTracker();
 
   const processUser = useCallback((response) => {
     if (response.error) {
@@ -162,7 +162,7 @@ export default function App() {
         <Route path="/browse-users" element={<BrowseUsersPage auth={auth} />}></Route>
         <Route path="/contact" element={<ContactPage auth={auth} />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage auth={auth} />}></Route>
-        <Route path="/pet/:petId/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
+        <Route path="/pet/:petName/:shelterName/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
         <Route exact path="/" element={showIndicator ? loadingIndicator : (isAuthenticated ? <Dashboard auth = {auth}/> : <LandingPage auth={auth}/>)}></Route>

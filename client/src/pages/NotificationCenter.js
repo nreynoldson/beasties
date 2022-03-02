@@ -20,7 +20,7 @@ export default function NotificationCenter(props) {
           return;
         }
         else {
-            setRequests(response.result.body.items)
+            setRequests(response.result)
         }
     }, []);
 

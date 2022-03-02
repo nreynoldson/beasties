@@ -132,9 +132,10 @@ img.notification-icon{
 
 .site-loading-indicator {
   position: absolute;
-  top: -1px;
-  left: 4px;
-  height: 3.6rem;
-  width: 3.6rem;
+  top: -155px;
+  right: -10px;
+  height: 65px;
+  width: 65px;
   z-index: 0;
+  border-width: 20px;
 }

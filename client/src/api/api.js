@@ -28,7 +28,9 @@ const handleRequest = async (req, options = {}) => {
    }
 
    try {
-    response.result = await trackPromise(req);
+    const result = await trackPromise(req);
+    response.result = result.body?.items;
+
    }
    catch (e) {
     response.error = e;
@@ -86,7 +88,7 @@ const api = {
     getInfo: async (petName, shelterName) => {
 
       const req = request
-        .get(makeBackendUrl(`/animals/${petName}/${shelterName}`));
+        .get(makeBackendUrl(`/animal/${petName}/${shelterName}`));
 
       return await handleRequest(req);
     },
@@ -229,10 +231,10 @@ const api = {
 
   User: {
 
-    delete: async (id) => {
+    delete: async (userName) => {
 
       const req = request
-        .delete(makeBackendUrl(`/user/${id}`));
+        .delete(makeBackendUrl(`/user/${userName}`));
 
       return await handleRequest(req);
     },
@@ -246,10 +248,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    getImages: async (id) => {
+    getImages: async (userName) => {
 
       const req = request
-        .get(makeBackendUrl(`/user/${id}/images`));
+        .get(makeBackendUrl(`/user/${userName}/images`));
 
       return await handleRequest(req);
     },
@@ -265,7 +267,7 @@ const api = {
         const req = request
         .get(makeBackendUrl(`/user/${attributes.username}`));
         var result = await handleRequest(req);
-        var userInfo = result.result.body.items;
+        var userInfo = result.result;
         userInfo.isAdmin = attributes.admin;
         return userInfo;
       }
@@ -284,11 +286,11 @@ const api = {
       return await handleRequest(req);
     },
 
-    setAvatar: async (id) => {
+    setAvatar: async (imageId) => {
 
       const req = request
         .patch(makeBackendUrl(`/user/set-avatar-image`))
-        .send({ id });
+        .send({ imageId });
 
       return await handleRequest(req);
     },

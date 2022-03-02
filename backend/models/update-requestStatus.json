@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "update-requestStatus",
+    "type": "object",
+    "properties": {
+      "requestStatus": {
+        "type": "string"
+      },
+      "responseMessage": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "requestStatus",
+      "responseMessage"
+    ],
+    "additionalProperties": false
+}
