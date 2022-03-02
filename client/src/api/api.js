@@ -87,7 +87,7 @@ const api = {
     getInfo: async (petName, shelterName) => {
 
       const req = request
-        .get(makeBackendUrl(`/animals/${petName}/${shelterName}`));
+        .get(makeBackendUrl(`/animal/${petName}/${shelterName}`));
 
       return await handleRequest(req);
     },
