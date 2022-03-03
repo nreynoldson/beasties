@@ -283,6 +283,15 @@ const api = {
       }
     },
 
+    updateUser: async (username, updateParams) => {
+
+      const req = request
+        .patch(makeBackendUrl(`/userEdit/${username}`))
+        .send(JSON.stringify(updateParams));
+
+      return await handleRequest(req);
+    },
+
     search: async (searchParams) => {
 
       const req = request

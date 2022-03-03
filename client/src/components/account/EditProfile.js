@@ -1,26 +1,21 @@
-import axios from 'axios';
 import React, { useState } from 'react';
-import {Form, Button} from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import {Form, Button, Alert} from 'react-bootstrap';
+import api from '../../api/api';
 
 export default function EditProfile(props){
-    const [name, setName]  = useState('');
-    const [location, setLocation] = useState('');
-    const [isShelter, setShelter] = useState(false);
-    const [shelterName, setShelterName] = useState('');
-    const [bio, setBio] = useState('');
-    const navigate = useNavigate();
+    const user = props.auth.currentUser;
+    const [name, setName]  = useState(user.name);
+    const [success, setSuccess]  = useState(false);
+    const [location, setLocation] = useState(user.zipcode);
+    const [bio, setBio] = useState(user.bio ? user.bio : '');
     const [formErrors, setErrors] = useState({});
-    const createUserURL = 'https://idvmpyv72b.execute-api.us-east-1.amazonaws.com/dev/user';
 
     const validateForm = () => {     
         var errors = {};
         if(name === "")
             errors['name'] = "Name cannot be blank.";
         if(location === "")
-            errors['location'] = "Please set a password";
-        if(isShelter && shelterName === "")
-            errors['shelterName'] = "Please provide your shelter's name.";
+            errors['location'] = "Zipcode cannot be blank";
         
         if(!errors.hasOwnProperty('zipcode')){
             const expression = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
@@ -39,28 +34,29 @@ export default function EditProfile(props){
             return;
         
         var userData = {
-            userName: props.user.username,
-            name: name,
+            displayName: name,
             zipcode: location,
-            isShelterOwner: isShelter,
-            email: props.user.email,
+            bio: bio
         }
 
-        if(isShelter)
-            userData.shelterName = shelterName;
-/* TODO: use api to integrate with backend
-        axios.post(createUserURL, userData)
-        .then(function (response) {
-            props.updateStatus("complete")
-            navigate(-1);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });*/
+        api.User.updateUser(user.userName, userData).then((response) => {
+            if (response.error) {
+                // Handle error
+                return;
+              }
+              else {
+                  setSuccess(true);
+              }
+        });
     }
 
+    var alertBanner = success ? <Alert variant={'success'}>
+        Successfully updated profile!
+    </Alert> : '';
     return(
+        
         <div>
+            {alertBanner}
                 <Form>
                     <div className="button-wrapper">
                         <span className="button-label">Change Password: </span>
@@ -104,34 +100,13 @@ export default function EditProfile(props){
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    <Form.Check 
-                        type="switch"
-                        id="custom-switch"
-                        label="I am a shelter owner/worker"
-                        onChange = {(e) => {setShelter(e.target.checked)}}
-                    />
-
-                    {isShelter ? 
-                        <><Form.Group className="mb-3">
-                            <Form.Label>Shelter Name</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                name="shelterName" 
-                                value={shelterName} 
-                                onChange= {(e) => {setShelterName(e.target.value)}}
-                            />
-                            <Form.Control.Feedback type='invalid'>
-                                {formErrors.shelterName}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                            </> : ""}
-                        <div className="button-wrapper">
-                            <span className="button-label"></span>
-                            <Button variant="primary" className="pink-btn" type="button" onClick={onSubmit}>
-                                Submit
-                            </Button>
-                        </div>
-                </Form>
-            </div>
+                    <div className="button-wrapper">
+                        <span className="button-label"></span>
+                        <Button variant="primary" className="pink-btn" type="button" onClick={onSubmit}>
+                            Submit
+                        </Button>
+                    </div>
+            </Form>
+        </div>
     );
 }
