@@ -14,7 +14,6 @@ export default function NotificationCenter(props) {
     const { promiseInProgress } = usePromiseTracker();
 
     const processRequests = useCallback((response) => {
-        console.log(response)
         if (response.error) {
           // Handle error
           return;

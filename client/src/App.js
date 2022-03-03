@@ -45,7 +45,7 @@ export default function App() {
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
 
-  const { promiseInProgress: isLoading } = usePromiseTracker();
+  const { promiseInProgress : isLoading } = usePromiseTracker();
 
   const processUser = useCallback((response) => {
     if (response.error) {
@@ -101,7 +101,7 @@ export default function App() {
     <Spinner animation="border" role="status">
       <span className="visually-hidden">Loading...</span>
     </Spinner>
-  var showIndicator = isLoading || isAuthenticated === null ||(isAuthenticated && !user);
+  var showIndicator = isAuthenticated === null || (isAuthenticated && !user);
 
   return (
     <div className="App">
