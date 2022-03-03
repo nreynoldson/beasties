@@ -264,12 +264,18 @@ const api = {
 
       try {
         var attributes = await trackPromise(getUser());
-        const req = request
-        .get(makeBackendUrl(`/user/${attributes.username}`));
-        var result = await handleRequest(req);
-        var userInfo = result.result;
-        userInfo.isAdmin = attributes.admin;
-        return userInfo;
+        if(attributes){ 
+          const req = request
+          .get(makeBackendUrl(`/user/${attributes.username}`));
+          var result = await handleRequest(req);
+          var userInfo = result.result;
+          userInfo.isAdmin = attributes.admin;
+          response.result = userInfo;
+        }
+        else{
+          response.result = null;
+        }
+        return response;
       }
       catch (e) {
         response.error = e;

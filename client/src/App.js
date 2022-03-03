@@ -50,22 +50,25 @@ export default function App() {
   const processUser = useCallback((response) => {
     if (response.error) {
       // Handle error
+      updateAuthStatus(false);
       return;
     }
     else {
-      var user = response;
+      var user = response.result;
       if (user) {
         updateAuthStatus(true);
         setUser(user);
         setIsAdmin(user.isAdmin);
         setIsShelterOwner(user.isShelterOwner);
       }
+      else
+        updateAuthStatus(false);
     }
   }, []);
 
   useEffect(() => {
     api.User.getInfo().then(processUser);
-  }, [processUser]);
+  }, [processUser, isAuthenticated]);
 
   let adminPageLink = null;
   let userSearchLink = null;
