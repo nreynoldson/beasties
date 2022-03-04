@@ -1,163 +1,113 @@
-import React, { useEffect, useState, useMemo} from 'react';
-import {Container, Card, ListGroup, Row, Col, Image} from 'react-bootstrap';
-import {useParams} from 'react-router-dom';
+import React, { useCallback, useEffect, useState, useMemo} from 'react';
+import {Row} from 'react-bootstrap';
+import AnimalConsts from '../../consts/Animal';
+import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 import PetSearchResult from '../pets/PetSearchResult';
-
-var testData = { results: [
-    {
-      id: 1,
-      name: 'Fido',
-      age: 'young',
-      gender: 'male',
-      type: 'dog',
-      breed: 'englishSpringerSpaniel',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: true,
-      goodWithOtherAnimals: true,
-      mustBeLeashed: true,
-      images: []
-    },
-    {
-      id: 2,
-      name: 'Rex',
-      age: 'young',
-      gender: 'male',
-      type: 'dog',
-      breed: 'akita',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    },
-    {
-      id: 3,
-      name: 'Milly',
-      age: 'senior',
-      gender: 'female',
-      type: 'dog',
-      breed: 'cavalierKingCharlesSpaniel',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: true,
-      images: [
-        {
-          id: 1,
-          url: '/images/no_image.svg',
-          displayName: 'fido.jpg'
-        },
-        {
-          id: 2,
-          url: '/images/no_image.svg',
-          displayName: 'fido.jpg'
-        },
-        {
-          id: 3,
-          url: '/images/no_image.svg',
-          displayName: 'fido.jpg'
-        }
-      ]
-    },
-    {
-      id: 4,
-      name: 'Sam',
-      age: 'adult',
-      gender: 'male',
-      type: 'cat',
-      breed: 'norwegianForestCat',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    },
-    {
-      id: 5,
-      name: 'Lizzy',
-      age: 'young',
-      gender: 'female',
-      type: 'other',
-      breed: null,
-      availability: 'pending',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    },
-    {
-      id: 6,
-      name: 'Benny',
-      age: 'baby',
-      gender: 'male',
-      type: 'cat',
-      breed: 'other',
-      availability: 'available',
-      avatarUrl: null,
-      dateCreated: '2022-01-23T18:44:20.051Z',
-      goodWithChildren: false,
-      goodWithOtherAnimals: false,
-      mustBeLeashed: false,
-      images: []
-    }
-  ] };
+import api from '../../api/api';
+import { usePromiseTracker } from 'react-promise-tracker';
 
 export default function ShelterPets(props) {
-    const [pets, setPets] = useState({});
-    const [canEdit, setCanEdit] = useState(false);
+    const [pets, setPets] = useState([]);
+    const [petToDelete, setPetToDelete] = useState(null);
+    const promiseInProgress = usePromiseTracker();
+
+    const {
+      auth
+    } = props;
     
 
-    useEffect(async () => {
-        // Request the necessary data from the back en
-        //var user = props.auth.currentUser;
-       // var petData = {...testData};
-       // setPets(petData);
-        /*if(user.isShelter && user.shelterName == props.shelterName){
-          setCanEdit(true);
-        }*/
-    }, []);
-
-    const petCards = useMemo(()=>{
-        if (!pets?.results?.length) {
-            return 'No matching results found'
+    useEffect(() => {
+      // Request the necessary data from the back end
+      // Grab images from S3
+      api.Animal.getAnimalsByShelter(props.shelterName).then((response) => {
+        console.log(response);
+        if(response.error){
+          return;
         }
-        var results = pets.results.map((pet) => {
-    
-            return (
-              <div key={pet.id}>
-                <PetSearchResult
-                  id={pet.id}
-                  name={pet.name}
-                  age={pet.age}
-                  breed={pet.breed}
-                  type={pet.type}
-                  avatarUrl={pet.avatarUrl}
-                  images={pet.images}
-                  availability={pet.availability}
-                  gender={pet.gender}
-                  goodWithChildren={pet.goodWithChildren}
-                  goodWithOtherAnimals={pet.goodWithOtherAnimals}
-                  mustBeLeashed={pet.mustBeLeashed}
-                />
-              </div>
-            );
-        })
-        return results;
-    }, [pets]);
+        else{
+          setPets(response.result)
+        }
+      })
+  }, []);
+
+  const handleCloseDeletePetDialog = useCallback(() => setPetToDelete(null), []);
+
+  const handleShowDeletePetDialog = useCallback((id, name) => setPetToDelete({ id, name }), []);
+
+  const handleConfirmDeletePet = useCallback(() => {
+  
+    handleCloseDeletePetDialog();
+  }, [handleCloseDeletePetDialog]);
+
+  const petCards = useMemo(()=>{
+    console.log(pets);
+      if (!pets.length) {
+          return 'No matching results found'
+      }
+      var results = pets.map((pet) => {
+  
+        const canDate = (
+          auth.currentUser &&
+          !auth.isShelterOwner &&
+          pet.availability === AnimalConsts.availabilityTypes.available
+        );
+
+          return (
+            <div key={pet.id}>
+              <PetSearchResult
+                id={pet.id}
+                name={pet.name}
+                age={pet.age}
+                breed={pet.breed}
+                canDate={canDate}
+                canDelete={auth.isAdmin}
+                dateInfo={(auth.currentUser) ? pet.dateInfo : null}
+                type={pet.type}
+                avatarUrl={pet.avatarUrl}
+                images={pet.images}
+                availability={pet.availability}
+                gender={pet.gender}
+                disposition={pet.disposition}
+                onDelete={handleShowDeletePetDialog}
+                usePopover ={false}
+              />
+            </div>
+          );
+      })
+      return results;
+  }, [auth, handleShowDeletePetDialog, pets]);
+
+  
+  const confirmDeleteModal = useMemo(() => {
+
+      if (!auth.isAdmin) {
+        return null;
+      }
+
+      return (
+        <ConfirmDeleteModal
+          bodyText={`Really delete "${petToDelete?.name}"?`}
+          onClose={handleCloseDeletePetDialog}
+          onConfirm={handleConfirmDeletePet}
+          show={Boolean(petToDelete)}
+          title="Confirm Delete Pet"
+        />
+      );
+    }, [
+      auth.isAdmin,
+      handleCloseDeletePetDialog,
+      handleConfirmDeletePet,
+      petToDelete
+    ]);
 
     return(
-        <div className="shelter pets-container">
+      <div>
+        <Row>
+          <div className="shelter pets-container">
             {petCards}
-        </div>
+          </div>
+        </Row>
+        {confirmDeleteModal}
+      </div>
     );
 }

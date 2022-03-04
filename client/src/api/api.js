@@ -93,6 +93,14 @@ const api = {
       return await handleRequest(req);
     },
 
+    getAnimalsByShelter: async (shelterName) => {
+
+      const req = request
+        .get(makeBackendUrl(`/animalsGet/${shelterName}`));
+
+      return await handleRequest(req);
+    },
+
     search: async (searchParams) => {
 
       const req = request
@@ -183,6 +191,32 @@ const api = {
         .get(makeBackendUrl(`/shelter${id}`));
 
       return await handleRequest(req);
+    },
+
+    getAllShelters: async () => { 
+      const req = request
+      .get(makeBackendUrl(`/users/shelterUsers`));
+
+      return await handleRequest(req);
+    },
+
+    ///Temporary bandaid since I'm not sure we have a way to getshelters by shelterName 
+    // at present moment - definitely not scalable lol :) 
+    getInfo: async (shelterName) => { 
+      const req = request
+      .get(makeBackendUrl(`/users/shelterUsers`));
+
+      var response = await handleRequest(req);
+      if(response.error){
+        return response;
+      } else{
+        for(var shelter of response.result){
+          if(shelter.shelterName == shelterName)
+            return shelter;
+        }
+        delete response.result;
+        response.error = "No such shelter with that name";
+      }
     },
 
     search: async (searchParams) => {
@@ -281,6 +315,13 @@ const api = {
         response.error = e;
         return response;
       }
+    },
+
+    getAllUsers: async () => { 
+      const req = request
+      .get(makeBackendUrl(`/users/regularUsers`));
+
+      return await handleRequest(req);
     },
 
     updateUser: async (username, updateParams) => {
