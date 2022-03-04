@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useState, useMemo} from 'react';
-import {Row} from 'react-bootstrap';
+import {Row, Spinner} from 'react-bootstrap';
 import AnimalConsts from '../../consts/Animal';
 import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 import PetSearchResult from '../pets/PetSearchResult';
 import api from '../../api/api';
-import { usePromiseTracker } from 'react-promise-tracker';
 
 export default function ShelterPets(props) {
     const [pets, setPets] = useState([]);
     const [petToDelete, setPetToDelete] = useState(null);
-    const promiseInProgress = usePromiseTracker();
+    const [loading, setLoading] = useState(true);
 
     const {
       auth
@@ -25,7 +24,17 @@ export default function ShelterPets(props) {
           return;
         }
         else{
-          setPets(response.result)
+          setPets(response.result);
+          
+          if(props.setCount) {
+            var count = 0;
+            for(var pet of response.result){
+              if(pet.availability == "available")
+                count++;
+            }
+            props.setCount(count);
+          }
+          setLoading(false)
         }
       })
   }, []);
@@ -100,14 +109,23 @@ export default function ShelterPets(props) {
       petToDelete
     ]);
 
-    return(
-      <div>
-        <Row>
-          <div className="shelter pets-container">
-            {petCards}
-          </div>
-        </Row>
-        {confirmDeleteModal}
-      </div>
-    );
+    if(loading){
+      return(
+      <Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>);
+    }
+    else{
+      return(
+        <div>
+          <Row>
+            <div className="shelter pets-container">
+              <h2>Available Pets</h2>
+              {petCards}
+            </div>
+          </Row>
+          {confirmDeleteModal}
+        </div>
+      );
+    }
 }

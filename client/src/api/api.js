@@ -185,14 +185,6 @@ const api = {
       return await handleRequest(req);
     },
 
-    getInfo: async (id) => {
-
-      const req = request
-        .get(makeBackendUrl(`/shelter${id}`));
-
-      return await handleRequest(req);
-    },
-
     getAllShelters: async () => { 
       const req = request
       .get(makeBackendUrl(`/users/shelterUsers`));
@@ -211,11 +203,14 @@ const api = {
         return response;
       } else{
         for(var shelter of response.result){
-          if(shelter.shelterName == shelterName)
-            return shelter;
+          if(shelter.shelterName == shelterName){
+            return response.result = shelter;
+          }
         }
+
         delete response.result;
         response.error = "No such shelter with that name";
+        return response;
       }
     },
 
