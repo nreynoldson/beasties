@@ -13,7 +13,7 @@ const ManagePets = (props) => {
             return (
                 <Container className='manage-pets'>
                     <Button onClick={() => {setView('new')}}>Add a New Pet</Button>
-                    <ShelterPets></ShelterPets>
+                    <ShelterPets shelterName={props.auth.currentUser.shelterName} auth={props.auth}/>
                 </Container>
               );
         case 'new':

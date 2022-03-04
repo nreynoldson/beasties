@@ -1,19 +1,10 @@
 import React, {useEffect, useState} from 'react';
-
-import AnimalConsts from '../consts/Animal';
-import {Container, Card, ListGroup, Row, Col, Image, Spinner} from 'react-bootstrap';
+import {Container, Card, ListGroup, Row, Col, Image} from 'react-bootstrap';
 import {useParams} from 'react-router-dom';
 import './css/ShelterProfile.css';
 import ShelterPets from '../components/shelters/ShelterPets';
 import NotFound from './NotFound';
 import api from '../api/api';
-import { usePromiseTracker } from 'react-promise-tracker';
-
-const {
-  goodWithChildren,
-  goodWithOtherAnimals,
-  mustBeLeashed
-} = AnimalConsts.dispositions;
 
 export default function ShelterProfile(props) {
     const { shelterName } = useParams();
@@ -40,10 +31,10 @@ export default function ShelterProfile(props) {
       })
   }, []);
 
-    if(notFound){
-      return <NotFound />
-    }
-    else{
+  if(notFound){
+    return <NotFound />
+  }
+  else{
     return(
         <Container className="shelter-container">
             <Row className="shelter-info" xs={1}>
@@ -62,5 +53,6 @@ export default function ShelterProfile(props) {
             </Row>
             <ShelterPets setCount={setCount} shelterName={shelterName} auth={props.auth}/>
         </Container>
-    );}
+    );
+  }
 }

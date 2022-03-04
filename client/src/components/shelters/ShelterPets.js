@@ -16,10 +16,8 @@ export default function ShelterPets(props) {
     
 
     useEffect(() => {
-      // Request the necessary data from the back end
       // Grab images from S3
       api.Animal.getAnimalsByShelter(props.shelterName).then((response) => {
-        console.log(response);
         if(response.error){
           return;
         }
@@ -49,7 +47,6 @@ export default function ShelterPets(props) {
   }, [handleCloseDeletePetDialog]);
 
   const petCards = useMemo(()=>{
-    console.log(pets);
       if (!pets.length) {
           return 'No matching results found'
       }
@@ -109,23 +106,23 @@ export default function ShelterPets(props) {
       petToDelete
     ]);
 
-    if(loading){
-      return(
+  if(loading){
+    return(
       <Spinner animation="border" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>);
-    }
-    else{
-      return(
-        <div>
-          <Row>
-            <div className="shelter pets-container">
-              <h2>Available Pets</h2>
-              {petCards}
-            </div>
-          </Row>
-          {confirmDeleteModal}
-        </div>
-      );
-    }
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>);
+  }
+  else{
+    return(
+      <div>
+        <Row>
+          <div className="shelter pets-container">
+            <h2>Available Pets</h2>
+            {petCards}
+          </div>
+        </Row>
+        {confirmDeleteModal}
+      </div>
+    );
+  }
 }
