@@ -37,17 +37,23 @@ export class RequestTableAccess{
     }
 
     async getRequestsWithStatusForUser(userName: string, requestStatus: string){
-        const result = await this.docClient.scan({
-            TableName: this.requestTable,
-            FilterExpression: "userName = :userName and requestStatus = :requestStatus ",
-            ExpressionAttributeValues: {
-                ":userName": userName,
-                ":requestStatus": requestStatus
-            }
-        }).promise()
+        
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan({
+                TableName: this.requestTable,
+                FilterExpression: "userName = :userName and requestStatus = :requestStatus ",
+                ExpressionAttributeValues: {
+                    ":userName": userName,
+                    ":requestStatus": requestStatus
+                }
+            }).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
+        
+        return scanResults as RequestItem[]
 
-        const items = result.Items
-        return items as RequestItem[]
     }
     
     async getPendingReqForShelter(shelterName: string){
@@ -75,10 +81,14 @@ export class RequestTableAccess{
             }
         };
 
-        const results = await this.docClient.scan(params).promise();
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan(params).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
         
-        const items = results.Items
-        return items as RequestItem[]
+        return scanResults as RequestItem[]
     }
 
     async updatePost(updatedRequest:UpdateRequest, userName:string, animal_shelter: string) {
@@ -127,4 +137,47 @@ export class RequestTableAccess{
 
         return result.Item as RequestItem
     }
+
+    async deleteAllRequestsForUser(userName: string) {
+        const queryParams = {
+            TableName: this.requestTable,
+            KeyConditionExpression: 'userName = :userName',
+            ExpressionAttributeValues: { ':userName': userName } ,
+        }
+        const queryResults = await this.docClient.query(queryParams).promise()
+        if (queryResults.Items && queryResults.Items.length > 0) {
+            
+            const batchCalls = chunks(queryResults.Items, 25).map( async (chunk) => {
+            const deleteRequests = chunk.map( item => {
+                return {
+                DeleteRequest : {
+                    Key : {
+                    'userName' : item.userName,
+                    'animalName_shelterName' : item.animalName_shelterName,
+                    }
+                }
+                }
+            })
+
+            const batchWriteParams = {
+                RequestItems : {
+                    "Beasties-request-dev" : deleteRequests
+                }
+            }
+            await this.docClient.batchWrite(batchWriteParams).promise()
+            })
+
+            await Promise.all(batchCalls)
+        }
+        // console.log(param)
+        // await this.docClient.delete(param).promise()
+    }
 }
+
+function chunks(inputArray, perChunk) {
+    return inputArray.reduce((all,one,i) => {
+      const ch = Math.floor(i/perChunk); 
+      all[ch] = [].concat((all[ch]||[]),one); 
+      return all
+   }, [])
+  }

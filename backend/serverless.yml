@@ -46,6 +46,12 @@ custom:
       - name: UpdateRequest
         contentType: application/json
         schema: ${file(models/update-requestStatus.json)}
+      - name: UpdateUser
+        contentType: application/json
+        schema: ${file(models/update-user.json)}
+      - name: UpdateAnimal
+        contentType: application/json
+        schema: ${file(models/update-animal.json)}
 
 functions:
   
@@ -129,6 +135,21 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
   
+  GetAllUsersByFilter:
+    handler: src/lambda/http/getUsersByFilter.handler
+    events:
+      - http:
+          method: get
+          path: users/{userType}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+
   GetAnimalByNameAndShelter:
     handler: src/lambda/http/getAnimalByNameAndShelter.handler
     events:
@@ -143,6 +164,36 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
   
+  GetAnimalsOfShelter:
+    handler: src/lambda/http/getAnimalsOfShelter.handler
+    events:
+      - http:
+          method: get
+          path: animalsGet/{shelterName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
+  
+  GetAllAnimals:
+    handler: src/lambda/http/getAllAnimals.handler
+    events:
+      - http:
+          method: get
+          path: animalsGet
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ANIMAL_TABLE}
+
   GetAllRequestsForUser:
     handler: src/lambda/http/getAllRequestsForUser.handler
     events:
@@ -243,6 +294,58 @@ functions:
           - execute-api:Invoke
         Resource: arn:aws:execute-api:*:*:*
   
+  UpdateUser:
+    handler: src/lambda/http/updateUser.handler
+    events:
+      - http:
+          method: patch
+          path: userEdit/{userName}
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update user
+            description: Update bio, name, location and avatar of a user
+            requestModels:
+              'application/json': UpdateUser
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:PutItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+      - Effect: Allow
+        Action:
+          - execute-api:Invoke
+        Resource: arn:aws:execute-api:*:*:*
+
+  UpdateAnimal:
+    handler: src/lambda/http/updateAnimal.handler
+    events:
+      - http:
+          method: patch
+          path: animalEdit/{animalName}/{shelterName}
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update animal
+            description: Update bio, age and availability, disposition of a pet animal
+            requestModels:
+              'application/json': UpdateAnimal
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:PutItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+      - Effect: Allow
+        Action:
+          - execute-api:Invoke
+        Resource: arn:aws:execute-api:*:*:*
+
   DeleteRequest:
     handler: src/lambda/http/deleteRequest.handler
     events:
@@ -256,6 +359,48 @@ functions:
           - dynamodb:GetItem
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+  
+  DeleteUser:
+    handler: src/lambda/http/deleteUser.handler
+    events:
+      - http:
+          method: delete
+          path: userDelete/{userName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          - dynamodb:PutItem
+          - dynamodb:BatchWriteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+      - Effect: Allow
+        Action:
+          - execute-api:Invoke
+        Resource: arn:aws:execute-api:*:*:*
+  
+  DeleteAnimal:
+    handler: src/lambda/http/deleteAnimal.handler
+    events:
+      - http:
+          method: delete
+          path: animalDelete/{animalName}/{shelterName}/{shelterOwnerName}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          - dynamodb:PutItem
+          - dynamodb:BatchWriteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/*
+      - Effect: Allow
+        Action:
+          - execute-api:Invoke
+        Resource: arn:aws:execute-api:*:*:*
 
 resources:
   Resources:

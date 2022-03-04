@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk'
-
+import { UpdateUser } from '../requests/UpdateUser';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { UserItem } from '../modals/UserItem';
 
@@ -31,5 +31,57 @@ export class UserTableAccess {
         }).promise()
 
         return result.Item as UserItem
+    }
+
+    async getUsersByUserType(isShelterOwner: boolean): Promise<UserItem[]> {
+        
+        const scanResults = [];
+        let items
+        do{
+            items = await this.docClient.scan({
+                TableName: this.userTable,
+                FilterExpression: "isShelterOwner = :isShelterOwner ",
+                ExpressionAttributeValues: {
+                    ":isShelterOwner": isShelterOwner
+                }
+            }).promise()
+            items.Items.forEach((item) => scanResults.push(item))
+        } while(typeof items.LastEvaluatedKey !== "undefined");
+        
+        return scanResults as UserItem[]
+    }
+
+    async updateUser(updatedUser:UpdateUser, userName:string) {
+
+        const updatedItem = await this.docClient.update({
+            TableName: this.userTable,
+            Key: {
+                "userName": userName,
+            },
+            UpdateExpression: 'set displayName=:name, bio=:bio, zipcode=:zipcode, avatar=:avatar',
+            ExpressionAttributeValues: {
+                ':name': updatedUser['displayName'],
+                ':bio': updatedUser['bio'],
+                ':zipcode': updatedUser['zipcode'],
+                ':avatar': updatedUser['avatar']
+            },
+            ReturnValues: "UPDATED_NEW"
+            
+        }).promise()
+        return updatedItem
+    }
+
+    async deleteUser(userName: string) {
+
+        const param = {
+            TableName: this.userTable,
+            Key: {
+                "userName": userName,
+            }
+        }
+
+        console.log(param)
+        await this.docClient.delete(param).promise()
+
     }
 }

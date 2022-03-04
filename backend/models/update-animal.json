@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "update-animal",
+    "type": "object",
+    "properties": {
+      "bio": {
+        "type": "string"
+      },
+      "age": {
+        "type": "string"
+      },
+      "availability": {
+        "type": "string"
+      },
+      "avatar": {
+        "type": "string"
+      },
+      "disposition": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "additionalProperties": false
+}
