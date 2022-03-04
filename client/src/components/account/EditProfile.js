@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Form, Button, Alert} from 'react-bootstrap';
+import {Form, Button, Alert, Modal} from 'react-bootstrap';
 import api from '../../api/api';
 
 export default function EditProfile(props){
@@ -9,6 +9,13 @@ export default function EditProfile(props){
     const [location, setLocation] = useState(user.zipcode);
     const [bio, setBio] = useState(user.bio ? user.bio : '');
     const [formErrors, setErrors] = useState({});
+    const [show, setShow] = useState(false);
+
+    const handleDelete = () => {
+        setShow(false);
+        api.User.delete(user.userName)
+    }
+    const handleShow = () => setShow(true);
 
     const validateForm = () => {     
         var errors = {};
@@ -99,13 +106,31 @@ export default function EditProfile(props){
                             {formErrors.bio}
                         </Form.Control.Feedback>
                     </Form.Group>
-
-                    <div className="button-wrapper">
-                        <span className="button-label"></span>
-                        <Button variant="primary" className="pink-btn" type="button" onClick={onSubmit}>
-                            Submit
+                    <Modal show={show} onHide={()=>{setShow(false)}}>
+                        <Modal.Header closeButton>
+                        <Modal.Title>DELETE ACCOUNT</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Are you sure you want to delete your account? This cannot be undone and all pending requests will be cancelled.</Modal.Body>
+                        <Modal.Footer>
+                        <Button variant="secondary" onClick={handleDelete}>
+                            Confirm
                         </Button>
-                    </div>
+                        <Button variant="danger" onClick={() =>{setShow(false)}}>
+                            Cancel
+                        </Button>
+                        </Modal.Footer>
+                    </Modal>
+
+                    <Button variant="secondary" type="button" onClick={onSubmit}>
+                        Submit
+                    </Button>
+                    {user.isShelterOwner ? 
+                        (
+                            <Button variant="danger" type="button" onClick={handleShow}>
+                                Delete account
+                            </Button>
+                        ) : ""
+                    }
             </Form>
         </div>
     );

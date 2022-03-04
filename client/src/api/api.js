@@ -159,15 +159,6 @@ const api = {
 
   Shelter: {
 
-
-    delete: async (id) => {
-
-      const req = request
-        .delete(makeBackendUrl(`/shelter/${id}`));
-
-      return await handleRequest(req);
-    },
-
     deleteImage: async (id) => {
 
       const req = request
@@ -263,7 +254,7 @@ const api = {
     delete: async (userName) => {
 
       const req = request
-        .delete(makeBackendUrl(`/user/${userName}`));
+        .delete(makeBackendUrl(`/userDelete/${userName}`));
 
       return await handleRequest(req);
     },

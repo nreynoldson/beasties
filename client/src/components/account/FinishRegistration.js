@@ -42,7 +42,7 @@ export default function RegistrationForm(props){
         
         var userData = {
             userName: props.user.username,
-            name: name,
+            displayName: name,
             zipcode: location,
             isShelterOwner: isShelter,
             email: props.user.email,
