@@ -96,7 +96,8 @@ export default function PetProfile(props) {
             <div className="profile-actions">
                 <span>Login to make a request!</span>
                 <LoginButton></LoginButton>
-            </div>);
+            </div>
+        );
     }
     if(notFound){
         return <NotFound/>

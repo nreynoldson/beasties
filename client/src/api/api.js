@@ -355,6 +355,14 @@ const api = {
         return await handleRequest(req);
     },
 
+    create: async(params) => {
+      const req = request
+        .post(makeBackendUrl(`/user`))
+        .send(JSON.stringify(params));
+
+      return await handleRequest(req);
+    },
+
     deleteRequest: async (username, shelterName, animalName) => {
       const req = request
         .delete(makeBackendUrl(`/requestDelete/${username}/${shelterName}/${animalName}`));
