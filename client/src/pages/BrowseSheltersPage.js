@@ -32,61 +32,90 @@ const BrowseSheltersPage = (props) => {
 
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchData, setSearchData] = useState({ results: [] });
+  const [searchData, setSearchData] = useState([]);
   const [shelterToDelete, setShelterToDelete] = useState(null);
+
+  const filterAndSortResults = useCallback((newSearchData) => {
+
+    newSearchData = newSearchData.filter((shelter) => {
+
+      if (inputs.name?.length && !shelter.shelterName.toLowerCase().includes(inputs.name.toLowerCase())) {
+        return false;
+      }
+
+      if (inputs.availableAnimals !== 'any' && shelter.availableAnimals < parseInt(inputs.availableAnimals)) {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (inputs.sortOrder === 'name') {
+      newSearchData.sort(
+        (a, b) => a.shelterName.toLowerCase().localeCompare(b.shelterName.toLowerCase())
+      );
+    }
+
+    if (inputs.sortOrder === 'availableAnimals') {
+      newSearchData.sort((a, b) => b.availableAnimals - a.availableAnimals);
+    }
+
+    return newSearchData;
+  }, [inputs]);
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.error) {
+    setIsLoading(false);
+    const { error, result } = response;
+
+    if (error) {
       // Handle error
       return;
     }
 
     else {
       // Set inputs to pet values
-      setSearchData(response.result);
-      setIsLoading(false);
+      const newSearchData = filterAndSortResults(result);
+      setSearchData(newSearchData);
     }
 
-  }, []);
+  }, [filterAndSortResults]);
 
   const handleSearch = useCallback(() => {
 
     setIsLoading(true);
     // api.Shelter.search(inputs).then(afterGetSearchResults);
 
-    const dummyResults = {
-      results: [
+    const dummyResults = [
         {
           id: 1,
-          name: 'Bob\'s Pets',
+          shelterName: 'Bob\'s Pets',
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
           availableAnimals: 250
         },
         {
           id: 2,
-          name: 'Critters',
+          shelterName: 'Critters',
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
           availableAnimals: 130
         },
         {
           id: 3,
-          name: 'Paw Pals',
+          shelterName: 'Paw Pals',
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
           availableAnimals: 23
         },
         {
           id: 4,
-          name: 'Doug\'s Dogs',
+          shelterName: 'Doug\'s Dogs',
           avatarUrl: null,
           dateCreated: '2022-01-23T18:44:20.051Z',
           availableAnimals: 5
         }
-      ]
-    };
+      ];
 
     api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
   }, [afterGetSearchResults, inputs]);
@@ -169,20 +198,20 @@ const BrowseSheltersPage = (props) => {
     if (isLoading) {
       return 'Searching...';
     }
-    else if (!searchData?.results?.length) {
+    else if (!searchData?.length) {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.results.map((shelter) => {
+    const resultComponents = searchData.map((shelter, index) => {
 
       return (
-        <div key={shelter.id}>
+        <div key={index}>
           <ShelterSearchResult
             availableAnimals={shelter.availableAnimals}
             avatarUrl={shelter.avatarUrl}
             canDelete={auth.isAdmin}
             id={shelter.id}
-            name={shelter.name}
+            name={shelter.shelterName}
             onDelete={handleShowDeleteShelterDialog}
           />
         </div>
@@ -200,7 +229,7 @@ const BrowseSheltersPage = (props) => {
         >
           <option value="availableAnimals">Available Pets</option>
           <option value="dateCreated">Newest First</option>
-          <option value="name">Name First</option>
+          <option value="name">Name</option>
         </Form.Select>
         <div className="d-flex flex-wrap">
           {resultComponents}

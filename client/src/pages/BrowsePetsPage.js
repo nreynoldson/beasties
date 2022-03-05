@@ -134,7 +134,6 @@ const BrowsePetsPage = (props) => {
       });
 
       newSearchData = filterAndSortResults(newSearchData);
-
       setSearchData(newSearchData);
     }
   }, [filterAndSortResults]);
@@ -314,7 +313,7 @@ const BrowsePetsPage = (props) => {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.map((pet, index) => {
+    const resultComponents = searchData.map((pet) => {
 
       const canDate = (
         auth.currentUser &&
@@ -323,15 +322,16 @@ const BrowsePetsPage = (props) => {
       );
 
       return (
-        <div key={index}>
+        <div key={pet.animalName_shelterName}>
           <PetSearchResult
-            id={pet.id}
+            id={pet.animalName_shelterName}
             name={pet.animalName}
             age={pet.age}
             breed={pet.breed}
             canDate={canDate}
             canDelete={auth.isAdmin}
             dateInfo={(auth.currentUser) ? pet.dateInfo : null}
+            shelterName={pet.shelterName}
             type={pet.type}
             avatarUrl={pet.avatarUrl}
             images={pet.images || []}

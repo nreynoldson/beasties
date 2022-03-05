@@ -41,11 +41,11 @@ const BrowseUsersPage = (props) => {
 
     newSearchData = newSearchData.filter((user) => {
 
-      if (inputs.name?.length && !user.userName.toLowerCase().includes(inputs.name)) {
+      if (inputs.name?.length && !user.userName.toLowerCase().includes(inputs.name.toLowerCase())) {
         return false;
       }
 
-      if (inputs.email?.length && !user.email.toLowerCase().includes(inputs.email)) {
+      if (inputs.email?.length && !user.email.toLowerCase().includes(inputs.email.toLowerCase())) {
         return false;
       }
 
@@ -186,7 +186,7 @@ const BrowseUsersPage = (props) => {
         <div key={index}>
           <UserSearchResult
             avatarUrl={user.avatarUrl}
-            canDelete={user.id !== auth.currentUser?.id}
+            canDelete={user.userName !== auth.currentUser?.userName}
             id={user.id}
             isShelterOwner={user.isShelterOwner}
             shelterName={user.shelterName}

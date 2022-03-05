@@ -32,6 +32,7 @@ const PetSearchResult = (props) => {
     images,
     name,
     onDelete,
+    shelterName,
     type
   } = props;
 
@@ -203,7 +204,7 @@ const PetSearchResult = (props) => {
 
     return (
       <OverlayTrigger placement="auto" overlay={popover}>
-        <Link className="d-flex flex-column petSearchResult" to={`/pet/${id}/`}>
+        <Link className="d-flex flex-column petSearchResult" to={`/pet/${name}/${shelterName}`}>
           <Image rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
           <div className="flex-column align-items-center justify-content-between">
             <h3 className="petName">{name}</h3>
@@ -228,7 +229,8 @@ const PetSearchResult = (props) => {
     id,
     name,
     onDelete,
-    popover
+    popover,
+    shelterName
   ]);
 
   return componentOutput;
