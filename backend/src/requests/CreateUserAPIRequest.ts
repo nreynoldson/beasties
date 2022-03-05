@@ -8,5 +8,5 @@
     zipcode: string
     isShelterOwner: boolean
     shelterName: string
-    avatar: string
+    // avatar: string
   }
