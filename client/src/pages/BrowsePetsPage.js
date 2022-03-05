@@ -42,6 +42,54 @@ const BrowsePetsPage = (props) => {
   const [petToDelete, setPetToDelete] = useState(null);
   const [searchData, setSearchData] = useState([]);
 
+  const filterAndSortResults = useCallback((newSearchData) => {
+
+    newSearchData = newSearchData.filter((pet) => {
+
+      const searchFields = ['age', 'gender', 'type', 'availability'];
+      for (const searchField of searchFields) {
+        if (inputs[searchField] !== 'any' && pet[searchField] !== inputs[searchField]) {
+          return false;
+        }
+      }
+
+      if (
+        (inputs.goodWithOtherAnimals && !pet.disposition.includes('goodWithOtherAnimals')) ||
+        (inputs.goodWithChildren && !pet.disposition.includes('goodWithChildren')) ||
+        (inputs.mustBeLeashed && !pet.disposition.includes('mustBeLeashed'))
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (inputs.sortOrder === 'name') {
+      newSearchData.sort(
+        (a, b) => a.animalName.toLowerCase().localeCompare(b.animalName.toLowerCase())
+      );
+    }
+
+    else if (inputs.sortOrder === 'type') {
+      newSearchData.sort((a, b) => {
+
+        if (a.type === b.type) {
+          return a.breed.toLowerCase().localeCompare(b.breed.toLowerCase());
+        }
+
+        return a.type.toLowerCase().localeCompare(b.type.toLowerCase());
+      });
+    }
+
+    else if (inputs.sortOrder === 'age') {
+      const petAges = ['baby', 'young', 'adunt', 'senior'];
+
+      newSearchData.sort((a, b) => petAges.indexOf(a.age) - petAges.indexOf(b.age));
+    }
+
+    return newSearchData;
+  }, [inputs]);
+
   const afterGetSearchResults = useCallback((response) => {
 
     setIsLoading(false);
@@ -86,33 +134,11 @@ const BrowsePetsPage = (props) => {
         return rslt;
       });
 
-      if (inputs.sortOrder === 'name') {
-        newSearchData.sort(
-          (a, b) => a.animalName.toLowerCase().localeCompare(b.animalName.toLowerCase())
-        );
-      }
+      newSearchData = filterAndSortResults(newSearchData);
 
-      else if (inputs.sortOrder === 'type') {
-        newSearchData.sort((a, b) => {
-
-          if (a.type === b.type) {
-            return a.breed.toLowerCase().localeCompare(b.breed.toLowerCase());
-          }
-
-          return a.type.toLowerCase().localeCompare(b.type.toLowerCase());
-        });
-      }
-
-      else if (inputs.sortOrder === 'age') {
-        const petAges = ['baby', 'young', 'adunt', 'senior'];
-
-        newSearchData.sort((a, b) => petAges.indexOf(a.age) - petAges.indexOf(b.age));
-      }
-
-      console.log(newSearchData);
       setSearchData(newSearchData);
     }
-  }, [inputs]);
+  }, [filterAndSortResults]);
 
   const handleSearch = useCallback(() => {
 
@@ -276,8 +302,6 @@ const BrowsePetsPage = (props) => {
             <option value="adopted">{AnimalConsts.availabilityToDisplayNameMap.adopted}</option>
           </Form.Select>
         </FloatingLabel>
-
-        <Button size="md" variant="primary" onClick={handleSearch}>Search</Button>
       </div>
     );
   }, [breedSelect, handleSearch, handleValueChange, inputs]);
