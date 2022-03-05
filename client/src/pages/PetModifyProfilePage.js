@@ -46,7 +46,7 @@ const PetModifyProfilePage = (props) => {
   const originalInvalidFields = useMemo(() => {
 
     return {
-      name: false
+      animalName: false
     };
   }, []);
 
@@ -58,6 +58,7 @@ const PetModifyProfilePage = (props) => {
 
   const afterGetPetInfo = useCallback((response) => {
 
+    setIsLoading(false);
     if (response.error) {
       // Handle error
       return;
@@ -73,7 +74,6 @@ const PetModifyProfilePage = (props) => {
     newInputs.shelterName = auth.currentUser.shelterName;
 
     setInputs(newInputs);
-    setIsLoading(false);
   }, [auth.currentUser]);
 
   const afterSubmit = useCallback((response) => {
@@ -136,14 +136,16 @@ const PetModifyProfilePage = (props) => {
       api.Animal.create(params).then(afterSubmit);
     }
     else {
-      api.Animal.edit(params).then(afterSubmit);
+      api.Animal.edit(petName, shelterName, params).then(afterSubmit);
     }
   }, [
     afterSubmit,
     inputs,
     invalidFields,
     isNewPet,
-    originalInvalidFields
+    originalInvalidFields,
+    petName,
+    shelterName
   ]);
 
   const handleShowConfirmDeleteDialog =

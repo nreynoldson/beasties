@@ -175,7 +175,7 @@ const BrowsePetsPage = (props) => {
     api.Animal.delete(petToDelete.name, petToDelete.shelterName, auth.currentUser?.userName)
       .then(handleSearch);
     handleCloseDeletePetDialog();
-  }, [handleCloseDeletePetDialog, handleSearch, petToDelete]);
+  }, [auth.currentUser, handleCloseDeletePetDialog, handleSearch, petToDelete]);
 
   const breedSelect = useMemo(() => {
 

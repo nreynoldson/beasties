@@ -66,10 +66,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    edit: async (id, petParams) => {
+    edit: async (animalName, shelterName, petParams) => {
 
       const req = request
-        .patch(makeBackendUrl(`/animal/${id}`))
+        .patch(makeBackendUrl(`/animalEdit/${animalName}/${shelterName}`))
         .send(petParams);
 
       return await handleRequest(req);
