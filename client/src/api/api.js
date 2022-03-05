@@ -1,5 +1,4 @@
 import request from 'superagent';
-import {getUser} from '../components/account/Account'
 import { trackPromise } from 'react-promise-tracker';
 
 const {
@@ -256,11 +255,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    search: async (searchParams) => {
+    search: async (userType) => {
 
       const req = request
-        .get(makeBackendUrl(`/user/search`))
-        .query(searchParams);
+        .get(makeBackendUrl(`/users/${userType}`));
 
       return await handleRequest(req);
     },
@@ -273,7 +271,6 @@ const api = {
 
       return await handleRequest(req);
     },
-
     uploadImage: async (userId, imageFile) => {
 
       const req = request

@@ -27,78 +27,68 @@ const BrowseUsersPage = (props) => {
     return {
       name: '',
       email: '',
-      isShelterOwner: 'any',
+      isShelterOwner: 'false',
       sortOrder: 'name'
     };
   }, []);
 
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchData, setSearchData] = useState({ results: [] });
+  const [searchData, setSearchData] = useState([]);
   const [userToDelete, setUserToDelete] = useState(null);
+
+  const filterAndSortResults = useCallback((newSearchData) => {
+
+    newSearchData = newSearchData.filter((user) => {
+
+      if (inputs.name?.length && !user.userName.toLowerCase().includes(inputs.name)) {
+        return false;
+      }
+
+      if (inputs.email?.length && !user.email.toLowerCase().includes(inputs.email)) {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (inputs.sortOrder === 'name') {
+      newSearchData.sort(
+        (a, b) => a.userName.toLowerCase().localeCompare(b.userName.toLowerCase())
+      );
+    }
+
+    else if (inputs.sortOrder === 'email') {
+      newSearchData.sort(
+        (a, b) => a.email.toLowerCase().localeCompare(b.email.toLowerCase())
+      );
+    }
+
+    return newSearchData;
+  }, [inputs]);
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.error) {
+    setIsLoading(false);
+    const { error, result } = response;
+    if (error) {
       // Handle error
       return;
     }
 
     else {
-      setSearchData(response.result);
-      setIsLoading(false);
+      const newSearchData = filterAndSortResults(result);
+      setSearchData(newSearchData);
     }
 
-  }, []);
+  }, [filterAndSortResults]);
 
   const handleSearch = useCallback(() => {
 
     setIsLoading(true);
-    // api.User.search(inputs).then(afterGetSearchResults);
-
-    const dummyResults = {
-      results: [
-        {
-          id: 1,
-          name: 'Bob Petman',
-          avatarUrl: null,
-          email: 'test@test.com',
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          isShelterOwner: true,
-          shelterName: 'Bob\'s Pets'
-        },
-        {
-          id: 2,
-          name: 'Casey Smith',
-          avatarUrl: null,
-          email: 'test@test.com',
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          isShelterOwner: true,
-          shelterName: 'Bob\'s Pets'
-        },
-        {
-          id: 3,
-          name: 'Jackie Smith',
-          avatarUrl: null,
-          email: 'test@test.com',
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          isShelterOwner: false,
-          shelterName: null
-        },
-        {
-          id: 4,
-          name: 'Doug Dogman',
-          avatarUrl: null,
-          email: 'test@test.com',
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          isShelterOwner: true,
-          shelterName: 'Doug\'s Dogs'
-        }
-      ]
-    };
-
-    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
-  }, [afterGetSearchResults]);
+    const userType = (inputs.isShelterOwner === 'true') ? 'shelterUsers' : 'regularUsers'
+    api.User.search(userType).then(afterGetSearchResults);
+  }, [afterGetSearchResults, inputs]);
 
   useEffect(() => {
 
@@ -107,7 +97,7 @@ const BrowseUsersPage = (props) => {
       handleSearch();
     }
 
-  }, [auth.isAdmin, handleSearch, inputs.sortOrder]);
+  }, [auth.isAdmin, inputs.sortOrder]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -171,7 +161,6 @@ const BrowseUsersPage = (props) => {
             defaultValue={inputs.isShelterOwner}
             size="sm"
           >
-            <option value="any">Any</option>
             <option value="true">Yes</option>
             <option value="false">No</option>
           </Form.Select>
@@ -187,14 +176,14 @@ const BrowseUsersPage = (props) => {
     if (isLoading) {
       return 'Searching...';
     }
-    else if (!searchData?.results?.length) {
+    else if (!searchData?.length) {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.results.map((user) => {
+    const resultComponents = searchData.map((user, index) => {
 
       return (
-        <div key={user.id}>
+        <div key={index}>
           <UserSearchResult
             avatarUrl={user.avatarUrl}
             canDelete={user.id !== auth.currentUser?.id}
@@ -221,7 +210,6 @@ const BrowseUsersPage = (props) => {
         >
           <option value="name">Name</option>
           <option value="email">Email</option>
-          <option value="isShelterOwner">Is a shelter owner</option>
           <option value="dateCreated">Newest First</option>
         </Form.Select>
         <div className="d-flex flex-wrap">

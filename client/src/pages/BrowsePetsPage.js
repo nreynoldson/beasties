@@ -5,7 +5,6 @@ import api from '../api/api';
 import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import PetSearchResult from '../components/pets/PetSearchResult';
 
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
@@ -304,7 +303,7 @@ const BrowsePetsPage = (props) => {
         </FloatingLabel>
       </div>
     );
-  }, [breedSelect, handleSearch, handleValueChange, inputs]);
+  }, [breedSelect, handleValueChange, inputs]);
 
   const searchResults = useMemo(() => {
 
@@ -315,7 +314,7 @@ const BrowsePetsPage = (props) => {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.map((pet) => {
+    const resultComponents = searchData.map((pet, index) => {
 
       const canDate = (
         auth.currentUser &&
@@ -324,7 +323,7 @@ const BrowsePetsPage = (props) => {
       );
 
       return (
-        <div key={pet.id}>
+        <div key={index}>
           <PetSearchResult
             id={pet.id}
             name={pet.animalName}
