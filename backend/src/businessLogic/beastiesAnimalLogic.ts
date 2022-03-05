@@ -1,5 +1,6 @@
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { AnimalTableAccess } from '../dataLayer/animalTableAccess'
+import { BeastiesS3Access } from '../dataLayer/beastiesS3Access'
 import { AnimalItem } from '../modals/AnimalItem'
 
 import { CreateAnimalAPIRequest } from '../requests/CreateAnimalAPIRequest'
@@ -7,6 +8,8 @@ import { UpdateAnimal } from '../requests/UpdateAnimal'
 import { createLogger } from '../utils/logger'
 
 const animalAccess = new AnimalTableAccess()
+const beastiesS3Access = new BeastiesS3Access()
+
 const logger = createLogger('Beasties BusinessLogic Execution')
 
 export async function createAnimal(event: APIGatewayProxyEvent, createAnimalRequest: CreateAnimalAPIRequest) : Promise<CreateAnimalAPIRequest> {
@@ -21,6 +24,7 @@ export async function createAnimal(event: APIGatewayProxyEvent, createAnimalRequ
 
     const animalItem = {
         animalName_shelterName: animal_shelter,
+        avatar: `http://${beastiesS3Access.getBucketName()}.s3.amazonaws.com/animal/${animal_shelter}`,
         ...createAnimalRequest
     }
     logger.info('Adding a pet animal to dynamodb')

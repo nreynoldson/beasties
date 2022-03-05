@@ -5,14 +5,19 @@ import { CreateUserAPIRequest } from '../requests/CreateUserAPIRequest'
 import { UserItem } from '../modals/UserItem'
 import { createLogger } from '../utils/logger'
 import { UpdateUser } from '../requests/UpdateUser'
+import { BeastiesS3Access } from '../dataLayer/beastiesS3Access'
 
 const userAccess = new UserTableAccess()
+const beastiesS3Access = new BeastiesS3Access()
+
 const logger = createLogger('Beasties BusinessLogic Execution')
 
 export async function createUser(createUserRequest: CreateUserAPIRequest) : Promise<CreateUserAPIRequest> {
     
     logger.info(`Executing logic for createUser API request ${createUserRequest}`)
+    const userName = createUserRequest['userName']
     const userItem = {
+        avatar: `http://${beastiesS3Access.getBucketName()}.s3.amazonaws.com/user/${userName}`,  
         ...createUserRequest
     }
     logger.info('Adding a user to dynamodb')

@@ -8,6 +8,5 @@ export interface CreateAnimalAPIRequest {
     gender: string
     shelterName: string
     animalName_shelterName: string
-    avatar: string
     imageCollections: string[]
 }
