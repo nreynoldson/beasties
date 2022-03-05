@@ -92,11 +92,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    search: async (searchParams) => {
+    search: async () => {
 
       const req = request
-        .get(makeBackendUrl(`/animal/search`))
-        .query(searchParams);
+        .get(makeBackendUrl(`/animalsGet`));
 
       return await handleRequest(req);
     },
