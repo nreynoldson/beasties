@@ -121,7 +121,7 @@ const BrowseUsersPage = (props) => {
 
   const handleConfirmDeleteUser = useCallback(() => {
   
-    api.User.delete(userToDelete.id).then(handleSearch);
+    api.User.delete(userToDelete.name).then(handleSearch);
     handleCloseDeleteUserDialog();
   }, [handleCloseDeleteUserDialog, handleSearch, userToDelete]);
 
@@ -180,18 +180,18 @@ const BrowseUsersPage = (props) => {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.map((user, index) => {
+    const resultComponents = searchData.map((user) => {
 
       return (
-        <div key={index}>
+        <div key={user.userName}>
           <UserSearchResult
             avatarUrl={user.avatarUrl}
             canDelete={user.userName !== auth.currentUser?.userName}
-            id={user.id}
+            id={user.userName}
             isShelterOwner={user.isShelterOwner}
             shelterName={user.shelterName}
             email={user.email}
-            name={user.name}
+            name={user.userName}
             onDelete={handleShowDeleteUserDialog}
             availableAnimals={user.availableAnimals}
           />

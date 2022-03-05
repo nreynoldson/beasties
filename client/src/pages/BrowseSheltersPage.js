@@ -118,7 +118,7 @@ const BrowseSheltersPage = (props) => {
       ];
 
     api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
-  }, [afterGetSearchResults, inputs]);
+  }, [afterGetSearchResults]);
 
   useEffect(() => {
 

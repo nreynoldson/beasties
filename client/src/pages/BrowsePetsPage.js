@@ -167,11 +167,13 @@ const BrowsePetsPage = (props) => {
 
   const handleCloseDeletePetDialog = useCallback(() => setPetToDelete(null), []);
 
-  const handleShowDeletePetDialog = useCallback((id, name) => setPetToDelete({ id, name }), []);
+  const handleShowDeletePetDialog =
+    useCallback((id, name, shelterName) => setPetToDelete({ id, name, shelterName }), []);
 
   const handleConfirmDeletePet = useCallback(() => {
-  
-    api.Animal.delete(petToDelete.id).then(handleSearch);
+
+    api.Animal.delete(petToDelete.name, petToDelete.shelterName, auth.currentUser?.userName)
+      .then(handleSearch);
     handleCloseDeletePetDialog();
   }, [handleCloseDeletePetDialog, handleSearch, petToDelete]);
 
@@ -189,7 +191,7 @@ const BrowsePetsPage = (props) => {
       return <option key={breed} value={breed}>{displayName}</option>;
     });
 
-    options.unshift(<option key="any" value="any">Any</option>)
+    options.unshift(<option key="any" value="any">Any</option>);
 
     return (
       <FloatingLabel controlId="floatingSelect" label="Breed">

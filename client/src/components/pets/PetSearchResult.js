@@ -40,8 +40,8 @@ const PetSearchResult = (props) => {
 
     evt.preventDefault();
     evt.stopPropagation();
-    onDelete(id, name);
-  }, [id, name, onDelete]);
+    onDelete(id, name, shelterName);
+  }, [id, name, onDelete, shelterName]);
 
   const breedDisplay = useMemo(() => {
   

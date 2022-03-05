@@ -49,10 +49,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    delete: async (id) => {
+    delete: async (name, shelterName, shelterOwnerName) => {
 
       const req = request
-        .delete(makeBackendUrl(`/animal/${id}`));
+        .delete(makeBackendUrl(`/animalDelete/${name}/${shelterName}/${shelterOwnerName}`));
 
       return await handleRequest(req);
     },
@@ -225,7 +225,7 @@ const api = {
     delete: async (userName) => {
 
       const req = request
-        .delete(makeBackendUrl(`/user/${userName}`));
+        .delete(makeBackendUrl(`/userDelete/${userName}`));
 
       return await handleRequest(req);
     },
