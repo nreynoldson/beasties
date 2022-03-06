@@ -1,5 +1,4 @@
 import {CognitoUser, AuthenticationDetails} from "amazon-cognito-identity-js";
-import api from '../../api/api'
 import Pool from "../../UserPool";
 import { useNavigate } from "react-router-dom";
 import {useEffect} from 'react';
