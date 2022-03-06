@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback} from 'react';
 import {Container, Card, ListGroup, Col, Button} from 'react-bootstrap';
 import LoginButton from '../components/account/LoginButton';
-import {RequestDateButton, RequestAdoptionButton} from '../components/pets/RequestButtons';
+import {RequestButton} from '../components/pets/RequestButtons';
 import AnimalConsts from '../consts/Animal';
 import { useNavigate, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
@@ -16,7 +16,6 @@ export default function PetProfile(props) {
     const [petInfo, setPetInfo] = useState({});
 
     const processPetInfo = useCallback((response) => {
-        console.log(response)
         if (response.error) {
           // Handle error
           return;
@@ -83,8 +82,8 @@ export default function PetProfile(props) {
         //TODO: make a generalized check for shelter owner and only conditionally show the request buttons
         profileActions = (
             <div className="profile-actions"> 
-                <RequestDateButton auth={props.auth} shelterName={shelterName} animalName={petName}/>
-                <RequestAdoptionButton auth={props.auth} shelterName={shelterName} animalName={petName}/>
+                <RequestButton auth={props.auth} requestType={'date'} shelterName={shelterName} animalName={petName}/>
+                <RequestButton auth={props.auth} requestType={'adoption'} shelterName={shelterName} animalName={petName}/>
                 {editButton}
             </div>
         );

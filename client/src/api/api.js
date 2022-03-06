@@ -28,8 +28,9 @@ const handleRequest = async (req, options = {}) => {
    }
 
    try {
-     const result = await trackPromise(req);
+    const result = await trackPromise(req);
     response.result = result.body?.items;
+
    }
    catch (e) {
     response.error = e;
@@ -213,13 +214,19 @@ const api = {
       return await handleRequest(req, { requestTypeIsJson: false });
     },
     getRequests: async (shelterName) => {
-      console.log('in shelter get')
-      console.log(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`))
       const req = request
         .get(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`));
 
       return await handleRequest(req);
-  }
+    },
+    updateRequest: async (shelterOwner, username, shelterName, animalName, editParams) => {
+
+      const req = request
+        .patch(makeBackendUrl(`/requestEditByShelter/${shelterOwner}/${username}/${shelterName}/${animalName}/`))
+        .send(JSON.stringify(editParams));
+      
+      return await handleRequest(req);
+    },
   },
 
   User: {
@@ -249,12 +256,31 @@ const api = {
       return await handleRequest(req);
     },
 
-    getInfo: async (userName) => {
+    getInfo: async () => {
+      const response = { 
+        result: null,
+        error: null
+       };
 
-      const req = request
-        .get(makeBackendUrl(`/user/${userName}`));
-
-      return await handleRequest(req);
+      try {
+        var attributes = await trackPromise(getUser());
+        if(attributes){ 
+          const req = request
+          .get(makeBackendUrl(`/user/${attributes.username}`));
+          var result = await handleRequest(req);
+          var userInfo = result.result;
+          userInfo.isAdmin = attributes.admin;
+          response.result = userInfo;
+        }
+        else{
+          response.result = null;
+        }
+        return response;
+      }
+      catch (e) {
+        response.error = e;
+        return response;
+      }
     },
 
     search: async (searchParams) => {
@@ -287,12 +313,18 @@ const api = {
     },
 
     getRequests: async (username) => {
-      console.log('in user requests');
         const req = request
           .get(makeBackendUrl(`/request/${username}`));
   
         return await handleRequest(req);
-    }
+    },
+
+    deleteRequest: async (username, shelterName, animalName) => {
+      const req = request
+        .delete(makeBackendUrl(`/requestDelete/${username}/${shelterName}/${animalName}`));
+
+      return await handleRequest(req);
+  }
   }
 };
 

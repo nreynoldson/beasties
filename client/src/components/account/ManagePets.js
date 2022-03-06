@@ -7,8 +7,7 @@ import ShelterPets from '../shelters/ShelterPets';
 const ManagePets = (props) => {
     const [loading, setLoading] = useState('true');
     const [view, setView] = useState('overview');
-    console.log(props);
-  
+
     switch(view){
         case 'overview':
             return (

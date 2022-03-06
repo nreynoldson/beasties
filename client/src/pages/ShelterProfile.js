@@ -114,7 +114,6 @@ var testData = { results: [
       images: []
     }
   ] };
-console.log(testData);
 
 export default function ShelterProfile(props) {
     const { shelterId } = useParams();

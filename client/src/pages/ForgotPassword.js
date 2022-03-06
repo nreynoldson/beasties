@@ -57,7 +57,6 @@ export default function ForgotPassword(props) {
     const onSubmit = (e) => {
         if(validatePassword())
             return;
-        console.log(user);
         var userData = {
             Username: email,
             Pool: Pool

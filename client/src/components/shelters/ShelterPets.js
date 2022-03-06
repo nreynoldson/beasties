@@ -111,7 +111,6 @@ var testData = { results: [
       images: []
     }
   ] };
-console.log(testData);
 
 export default function ShelterPets(props) {
     const [pets, setPets] = useState({});
@@ -120,7 +119,6 @@ export default function ShelterPets(props) {
 
     useEffect(async () => {
         // Request the necessary data from the back en
-        console.log(props);
         //var user = props.auth.currentUser;
        // var petData = {...testData};
        // setPets(petData);

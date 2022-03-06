@@ -51,16 +51,12 @@ export default function RegistrationForm(props){
         if(isShelter)
             userData.shelterName = shelterName;
 
-        console.log(userData);
-
         axios.post(createUserURL, userData)
         .then(function (response) {
-            console.log(response);
             props.updateStatus("complete")
             navigate(-1);
         })
         .catch(function (error) {
-            console.log(error);
         });
     }
 

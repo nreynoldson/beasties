@@ -37,3 +37,13 @@
 .card-text.status{
     text-transform: uppercase;
 }
+
+.options-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center
+}
+
+.options-container p{
+    margin-bottom: 0;
+}

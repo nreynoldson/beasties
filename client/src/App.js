@@ -22,7 +22,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import NotificationCenter from './pages/NotificationCenter'
 import PetProfile from './pages/PetProfile'
 import ShelterProfile from './pages/ShelterProfile'
-import { getUser, RequireAuth } from './components/account/Account.js';
+import {RequireAuth} from './components/account/Account.js';
 import UserBox from './components/account/UserBox';
 import Dashboard from './pages/Dashboard';
 
@@ -45,24 +45,30 @@ export default function App() {
   const [isShelterOwner, setIsShelterOwner] = useState(false);
   const [user, setUser] = useState(null);
 
-  const { promiseInProgress: isLoading } = usePromiseTracker();
+  const { promiseInProgress : isLoading } = usePromiseTracker();
 
-  const processUser = useCallback((user) => {
-    if (user) {
-      updateAuthStatus(true);
-      setUser(user);
-
-      // Temporarily setting isAdmin to always be true for development
-      // setIsAdmin(Boolean(user.isAdmin));
-      setIsAdmin(true);
-      setIsShelterOwner(Boolean(user.isShelterOwner));
+  const processUser = useCallback((response) => {
+    if (response.error) {
+      // Handle error
+      updateAuthStatus(false);
+      return;
+    }
+    else {
+      var user = response.result;
+      if (user) {
+        updateAuthStatus(true);
+        setUser(user);
+        setIsAdmin(user.isAdmin);
+        setIsShelterOwner(user.isShelterOwner);
+      }
+      else
+        updateAuthStatus(false);
     }
   }, []);
 
   useEffect(() => {
-
-    getUser().then(processUser);
-  }, [processUser]);
+    api.User.getInfo().then(processUser);
+  }, [processUser, isAuthenticated]);
 
   let adminPageLink = null;
   let userSearchLink = null;
@@ -94,23 +100,11 @@ export default function App() {
     currentUser: user
   }
 
-  
-  let navLoadingIndicator = null;
-  if (isLoading) {
-    navLoadingIndicator = (
-      <Spinner
-        className="site-loading-indicator"
-        animation="border"
-        variant="info"
-      />
-    );
-  }
-
-  const pageLoadingIndicator =    
+  const loadingIndicator =    
     <Spinner animation="border" role="status">
       <span className="visually-hidden">Loading...</span>
     </Spinner>
-  var showIndicator = isLoading || isAuthenticated === null ||(isAuthenticated && !user);
+  var showIndicator = isAuthenticated === null || (isAuthenticated && !user);
 
   return (
     <div className="App">
@@ -119,7 +113,7 @@ export default function App() {
           <Navbar.Brand>
             <NavLink className="nav-link" to="/">
               <div className="d-flex align-items-center site-branding">
-                {navLoadingIndicator}
+                
                 <img
                   alt="Beasties Logo"
                   src="/images/paw_heart.png"
@@ -171,10 +165,10 @@ export default function App() {
         <Route path="/browse-users" element={<BrowseUsersPage auth={auth} />}></Route>
         <Route path="/contact" element={<ContactPage auth={auth} />}></Route>
         <Route path="/pet/new" element={<PetModifyProfilePage auth={auth} />}></Route>
-        <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
         <Route path="/pet/:petName/:shelterName/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
+        <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
         <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
-        <Route exact path="/" element={showIndicator ? pageLoadingIndicator : (isAuthenticated ? <Dashboard auth = {auth}/> : <LandingPage auth={auth}/>)}></Route>
+        <Route exact path="/" element={showIndicator ? loadingIndicator : (isAuthenticated ? <Dashboard auth = {auth}/> : <LandingPage auth={auth}/>)}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>
         <Route exact path="/reset-password" element={<ForgotPassword auth={auth}/>}></Route>
