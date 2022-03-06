@@ -60,19 +60,20 @@ const PetSearchResult = (props) => {
 
   const popover = useMemo(() => {
 
-    const imageElements = images.map(({ displayName, id, url }) => {
+    const imageElements = null;
+    // const imageElements = images.map(({ displayName, id, url }) => {
 
-      return (
-        <Image
-          rounded
-          className="m-2"
-          key={id}
-          src={url}
-          title={displayName}
-          height="100"
-        />
-      );
-    });
+    //   return (
+    //     <Image
+    //       rounded
+    //       className="m-2"
+    //       key={id}
+    //       src={url}
+    //       title={displayName}
+    //       height="100"
+    //     />
+    //   );
+    // });
 
     const { dispositions } = AnimalConsts;
     const goodWithOtherAnimals = disposition.includes(dispositions.goodWithOtherAnimals);

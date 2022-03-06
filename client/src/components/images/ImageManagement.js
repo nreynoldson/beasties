@@ -17,8 +17,6 @@ const ImageManagement = (props) => {
   const {
     allowEdit,
     avatarImageUrl = '/images/no_image.svg',
-    petName,
-    shelterName,
     onUploadImage,
     type
   } = props;

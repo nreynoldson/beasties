@@ -335,7 +335,7 @@ const BrowsePetsPage = (props) => {
             dateInfo={(auth.currentUser) ? pet.dateInfo : null}
             shelterName={pet.shelterName}
             type={pet.type}
-            avatarUrl={pet.avatarUrl}
+            avatarUrl={pet.avatar}
             images={pet.images || []}
             availability={pet.availability}
             gender={pet.gender}

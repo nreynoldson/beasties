@@ -63,6 +63,7 @@ export default function ShelterPets(props) {
               <PetSearchResult
                 id={pet.animalName_shelterName}
                 name={pet.animalName}
+                avatarUrl={pet.avatar}
                 age={pet.age}
                 breed={pet.breed}
                 canDate={canDate}
@@ -70,7 +71,6 @@ export default function ShelterPets(props) {
                 dateInfo={(auth.currentUser) ? pet.dateInfo : null}
                 shelterName={pet.shelterName}
                 type={pet.type}
-                avatarUrl={pet.avatarUrl}
                 images={pet.images || []}
                 availability={pet.availability}
                 gender={pet.gender}

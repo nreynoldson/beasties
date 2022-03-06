@@ -265,8 +265,6 @@ const PetModifyProfilePage = (props) => {
           allowEdit={true}
           avatarImageUrl={inputs.avatar}
           onUploadImage={handleUploadAvatar}
-          petName={petName}
-          shelterName={shelterName}
           type="animal"
         />
       );

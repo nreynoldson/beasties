@@ -58,8 +58,7 @@ export default function App() {
       if (user) {
         updateAuthStatus(true);
         setUser(user);
-        // setIsAdmin(user.isAdmin);
-        setIsAdmin(true);
+        setIsAdmin(user.isAdmin);
         setIsShelterOwner(user.isShelterOwner);
       }
       else

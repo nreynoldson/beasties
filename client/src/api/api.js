@@ -342,15 +342,13 @@ const api = {
 
       return await handleRequest(req);
     },
-    uploadImage: async (userId, imageFile) => {
+    
+    uploadImage: async (imageKey) => {
 
       const req = request
-        .post(makeBackendUrl(`/user/upload-image`));
+        .post(makeBackendUrl(`/images/user/${imageKey}`));
 
-        req.field('userId', userId);
-        req.attach('image', imageFile);
-
-      return await handleRequest(req, { requestTypeIsJson: false });
+      return await handleRequest(req);
     },
 
     getRequests: async (username) => {

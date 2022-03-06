@@ -185,7 +185,7 @@ const BrowseUsersPage = (props) => {
       return (
         <div key={user.userName}>
           <UserSearchResult
-            avatarUrl={user.avatarUrl}
+            avatarUrl={user.avatar}
             canDelete={user.userName !== auth.currentUser?.userName}
             id={user.userName}
             isShelterOwner={user.isShelterOwner}
