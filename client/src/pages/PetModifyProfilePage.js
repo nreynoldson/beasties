@@ -181,7 +181,11 @@ const PetModifyProfilePage = (props) => {
     api.Animal.uploadImage(inputs.animalName_shelterName).then(({ error, result }) => {
 
       if (!error) {
-        api.Image.uploadImage(result.uploadUrl, imageFile).then(getPetInfo);
+        api.Image.uploadImage(result.uploadUrl, imageFile).then(() => {
+
+          // Put a random number after the avatar url to force the image to reload
+          setInputs((prevInputs) => ({ ...prevInputs, avatar: `${prevInputs.avatar}?${Math.random()}` }))
+        });
       }
     });
   }, [getPetInfo, inputs]);
