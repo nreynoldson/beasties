@@ -18,7 +18,7 @@ const ShelterSearchResult = (props) => {
     id,
     name,
     onDelete,
-    availableAnimals
+    // availableAnimals
   } = props;
 
   const handleDeleteClick = useCallback((evt) => {
@@ -52,13 +52,13 @@ const ShelterSearchResult = (props) => {
         <Image rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
         <div className="flex-column align-items-center justify-content-between">
           <h3 className="shelterName">{name}</h3>
-          <span>{availableAnimals} pets available</span>
+          {/* <span>{availableAnimals} pets available</span> */}
         </div>
         {deleteButton}
       </Link>
     );
   }, [
-    availableAnimals,
+    // availableAnimals,
     avatarUrl,
     canDelete,
     handleDeleteClick,

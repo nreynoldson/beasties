@@ -5,7 +5,6 @@ import api from '../api/api';
 import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 import PetSearchResult from '../components/pets/PetSearchResult';
 
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
@@ -40,148 +39,110 @@ const BrowsePetsPage = (props) => {
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(true);
   const [petToDelete, setPetToDelete] = useState(null);
-  const [searchData, setSearchData] = useState({ results: [] });
+  const [searchData, setSearchData] = useState([]);
+
+  const filterAndSortResults = useCallback((newSearchData) => {
+
+    newSearchData = newSearchData.filter((pet) => {
+
+      const searchFields = ['age', 'breed', 'gender', 'type', 'availability'];
+      for (const searchField of searchFields) {
+        if (inputs[searchField] !== 'any' && pet[searchField] !== inputs[searchField]) {
+          return false;
+        }
+      }
+
+      if (
+        (inputs.goodWithOtherAnimals && !pet.disposition.includes('goodWithOtherAnimals')) ||
+        (inputs.goodWithChildren && !pet.disposition.includes('goodWithChildren')) ||
+        (inputs.mustBeLeashed && !pet.disposition.includes('mustBeLeashed'))
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (inputs.sortOrder === 'name') {
+      newSearchData.sort(
+        (a, b) => a.animalName.toLowerCase().localeCompare(b.animalName.toLowerCase())
+      );
+    }
+
+    else if (inputs.sortOrder === 'type') {
+      newSearchData.sort((a, b) => {
+
+        if (a.type === b.type) {
+          return a.breed.toLowerCase().localeCompare(b.breed.toLowerCase());
+        }
+
+        return a.type.toLowerCase().localeCompare(b.type.toLowerCase());
+      });
+    }
+
+    else if (inputs.sortOrder === 'age') {
+      const petAges = ['baby', 'young', 'adunt', 'senior'];
+
+      newSearchData.sort((a, b) => petAges.indexOf(a.age) - petAges.indexOf(b.age));
+    }
+
+    return newSearchData;
+  }, [inputs]);
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.error) {
+    setIsLoading(false);
+    const { error, result } = response;
+
+    if (error) {
       // Handle error
       return;
     }
 
     else {
       // Set inputs to pet values
-      setSearchData(response.result);
-      setIsLoading(false);
+      let newSearchData = result.map((rslt) => {
+
+        if (!rslt.disposition) {
+          rslt.disposition = [];
+        }
+        else if (typeof rslt.disposition === 'string') {
+          rslt.disposition = [rslt.disposition];
+        }
+
+        if (!rslt.images) {
+          rslt.images = [];
+        }
+
+        if (!rslt.breed) {
+          rslt.breed = 'other';
+        }
+
+        if (!rslt.type) {
+          rslt.type = 'other';
+        }
+
+        if (!rslt.age) {
+          rslt.age = 'adult';
+        }
+
+        if (!rslt.gender) {
+          rslt.gender = 'n/a';
+        }
+
+        return rslt;
+      });
+
+      newSearchData = filterAndSortResults(newSearchData);
+      setSearchData(newSearchData);
     }
-  }, []);
+  }, [filterAndSortResults]);
 
   const handleSearch = useCallback(() => {
 
     setIsLoading(true);
-    // api.Animal.search(inputs).then(afterGetSearchResults);
-
-    const {
-      goodWithChildren,
-      goodWithOtherAnimals,
-      mustBeLeashed
-    } = AnimalConsts.dispositions;
-
-    const dummyResults = {
-      results: [
-        {
-          id: 1,
-          name: 'Fido',
-          age: 'young',
-          gender: 'male',
-          type: 'dog',
-          breed: 'englishSpringerSpaniel',
-          availability: 'available',
-          dateInfo: null,
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          disposition: [
-            goodWithChildren,
-            goodWithOtherAnimals,
-            mustBeLeashed,
-          ],
-          images: []
-        },
-        {
-          id: 2,
-          name: 'Rex',
-          age: 'young',
-          gender: 'male',
-          type: 'dog',
-          breed: 'akita',
-          availability: 'available',
-          dateInfo: null,
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          disposition: [],
-          images: []
-        },
-        {
-          id: 3,
-          name: 'Milly',
-          age: 'senior',
-          gender: 'female',
-          type: 'dog',
-          breed: 'cavalierKingCharlesSpaniel',
-          availability: 'available',
-          dateInfo: null,
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          disposition: [mustBeLeashed],
-          images: [
-            {
-              id: 1,
-              url: '/images/no_image.svg',
-              displayName: 'fido.jpg'
-            },
-            {
-              id: 2,
-              url: '/images/no_image.svg',
-              displayName: 'fido.jpg'
-            },
-            {
-              id: 3,
-              url: '/images/no_image.svg',
-              displayName: 'fido.jpg'
-            }
-          ]
-        },
-        {
-          id: 4,
-          name: 'Sam',
-          age: 'adult',
-          gender: 'male',
-          type: 'cat',
-          breed: 'norwegianForestCat',
-          dateInfo: {
-            id: 1,
-            startDate: '2022-03-23T18:44:20.051Z',
-            endDate: '2022-03-25T18:44:20.051Z'
-          },
-          availability: 'notAvailable',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          disposition: [],
-          images: []
-        },
-        {
-          id: 5,
-          name: 'Lizzy',
-          age: 'young',
-          gender: 'female',
-          type: 'other',
-          breed: null,
-          availability: 'pending',
-          dateInfo: null,
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          disposition: [],
-          images: []
-        },
-        {
-          id: 6,
-          name: 'Benny',
-          age: 'baby',
-          gender: 'male',
-          type: 'cat',
-          breed: 'other',
-          availability: 'available',
-          dateInfo: null,
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          disposition: [],
-          images: []
-        }
-      ]
-    };
-
-    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
-  }, [afterGetSearchResults, inputs]);
+    api.Animal.search().then(afterGetSearchResults);
+  }, [afterGetSearchResults]);
 
   useEffect(() => {
 
@@ -206,13 +167,15 @@ const BrowsePetsPage = (props) => {
 
   const handleCloseDeletePetDialog = useCallback(() => setPetToDelete(null), []);
 
-  const handleShowDeletePetDialog = useCallback((id, name) => setPetToDelete({ id, name }), []);
+  const handleShowDeletePetDialog =
+    useCallback((id, name, shelterName) => setPetToDelete({ id, name, shelterName }), []);
 
   const handleConfirmDeletePet = useCallback(() => {
-  
-    api.Animal.delete(petToDelete.id).then(handleSearch);
+
+    api.Animal.delete(petToDelete.name, petToDelete.shelterName, auth.currentUser?.userName)
+      .then(handleSearch);
     handleCloseDeletePetDialog();
-  }, [handleCloseDeletePetDialog, handleSearch, petToDelete]);
+  }, [auth.currentUser, handleCloseDeletePetDialog, handleSearch, petToDelete]);
 
   const breedSelect = useMemo(() => {
 
@@ -228,7 +191,7 @@ const BrowsePetsPage = (props) => {
       return <option key={breed} value={breed}>{displayName}</option>;
     });
 
-    options.unshift(<option key="any" value="any">Any</option>)
+    options.unshift(<option key="any" value="any">Any</option>);
 
     return (
       <FloatingLabel controlId="floatingSelect" label="Breed">
@@ -339,22 +302,20 @@ const BrowsePetsPage = (props) => {
             <option value="adopted">{AnimalConsts.availabilityToDisplayNameMap.adopted}</option>
           </Form.Select>
         </FloatingLabel>
-
-        <Button size="md" variant="primary" onClick={handleSearch}>Search</Button>
       </div>
     );
-  }, [breedSelect, handleSearch, handleValueChange, inputs]);
+  }, [breedSelect, handleValueChange, inputs]);
 
   const searchResults = useMemo(() => {
 
     if (isLoading) {
       return 'Searching...';
     }
-    else if (!searchData?.results?.length) {
+    else if (!searchData?.length) {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.results.map((pet) => {
+    const resultComponents = searchData.map((pet) => {
 
       const canDate = (
         auth.currentUser &&
@@ -363,21 +324,22 @@ const BrowsePetsPage = (props) => {
       );
 
       return (
-        <div key={pet.id}>
+        <div key={pet.animalName_shelterName}>
           <PetSearchResult
-            id={pet.id}
-            name={pet.name}
+            id={pet.animalName_shelterName}
+            name={pet.animalName}
             age={pet.age}
             breed={pet.breed}
             canDate={canDate}
             canDelete={auth.isAdmin}
             dateInfo={(auth.currentUser) ? pet.dateInfo : null}
+            shelterName={pet.shelterName}
             type={pet.type}
-            avatarUrl={pet.avatarUrl}
-            images={pet.images}
+            avatarUrl={pet.avatar}
+            images={pet.images || []}
             availability={pet.availability}
             gender={pet.gender}
-            disposition={pet.disposition}
+            disposition={pet.disposition || []}
             onDelete={handleShowDeletePetDialog}
             usePopover={true}
           />

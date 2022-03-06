@@ -32,71 +32,64 @@ const BrowseSheltersPage = (props) => {
 
   const [inputs, setInputs] = useState(getOriginalInputs);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchData, setSearchData] = useState({ results: [] });
+  const [searchData, setSearchData] = useState([]);
   const [shelterToDelete, setShelterToDelete] = useState(null);
+
+  const filterAndSortResults = useCallback((newSearchData) => {
+
+    newSearchData = newSearchData.map((shelterUser) => {
+
+      return { shelterName: shelterUser.shelterName };
+    });
+
+    newSearchData = newSearchData.filter((shelter) => {
+
+      if (inputs.name?.length && !shelter.shelterName.toLowerCase().includes(inputs.name.toLowerCase())) {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (inputs.sortOrder === 'name') {
+      newSearchData.sort(
+        (a, b) => a.shelterName.toLowerCase().localeCompare(b.shelterName.toLowerCase())
+      );
+    }
+
+    return newSearchData;
+  }, [inputs]);
 
   const afterGetSearchResults = useCallback((response) => {
 
-    if (response.error) {
+    setIsLoading(false);
+    const { error, result } = response;
+
+    if (error) {
       // Handle error
       return;
     }
 
     else {
       // Set inputs to pet values
-      setSearchData(response.result);
-      setIsLoading(false);
+      const newSearchData = filterAndSortResults(result);
+      setSearchData(newSearchData);
     }
 
-  }, []);
+  }, [filterAndSortResults]);
 
   const handleSearch = useCallback(() => {
 
     setIsLoading(true);
-    // api.Shelter.search(inputs).then(afterGetSearchResults);
-
-    const dummyResults = {
-      results: [
-        {
-          id: 1,
-          name: 'Bob\'s Pets',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 250
-        },
-        {
-          id: 2,
-          name: 'Critters',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 130
-        },
-        {
-          id: 3,
-          name: 'Paw Pals',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 23
-        },
-        {
-          id: 4,
-          name: 'Doug\'s Dogs',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 5
-        }
-      ]
-    };
-
-    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
-  }, [afterGetSearchResults, inputs]);
+    api.Shelter.getAllShelters().then(afterGetSearchResults);
+  }, [afterGetSearchResults]);
 
   useEffect(() => {
 
     // Run a search whenever the component loads or inputs.sortOrder changes
     handleSearch();
 
-  }, [handleSearch, inputs.sortOrder]);
+  }, [inputs.sortOrder]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -144,7 +137,7 @@ const BrowseSheltersPage = (props) => {
           />
         </FloatingLabel>
 
-        <FloatingLabel controlId="floatingSelect" label="Minimum available pets">
+        {/* <FloatingLabel controlId="floatingSelect" label="Minimum available pets">
           <Form.Select
             onChange={handleValueChange}
             name="availableAnimals"
@@ -157,7 +150,7 @@ const BrowseSheltersPage = (props) => {
             <option value="75">75</option>
             <option value="100+">100+</option>
           </Form.Select>
-        </FloatingLabel>
+        </FloatingLabel> */}
 
         <Button size="md" variant="primary" onClick={handleSearch}>Search</Button>
       </div>
@@ -169,20 +162,19 @@ const BrowseSheltersPage = (props) => {
     if (isLoading) {
       return 'Searching...';
     }
-    else if (!searchData?.results?.length) {
+    else if (!searchData?.length) {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.results.map((shelter) => {
+    const resultComponents = searchData.map((shelter) => {
 
       return (
-        <div key={shelter.id}>
+        <div key={shelter.shelterName}>
           <ShelterSearchResult
-            availableAnimals={shelter.availableAnimals}
             avatarUrl={shelter.avatarUrl}
             canDelete={auth.isAdmin}
-            id={shelter.id}
-            name={shelter.name}
+            id={shelter.shelterName}
+            name={shelter.shelterName}
             onDelete={handleShowDeleteShelterDialog}
           />
         </div>
@@ -198,9 +190,8 @@ const BrowseSheltersPage = (props) => {
           defaultValue={inputs.sortOrder}
           size="sm"
         >
-          <option value="availableAnimals">Available Pets</option>
           <option value="dateCreated">Newest First</option>
-          <option value="name">Name First</option>
+          <option value="name">Name</option>
         </Form.Select>
         <div className="d-flex flex-wrap">
           {resultComponents}
