@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {Form, Button, Alert, Modal} from 'react-bootstrap';
 import api from '../../api/api';
+import ImageManagement from '../images/ImageManagement';
 
 export default function EditProfile(props){
     const user = props.auth.currentUser;
@@ -37,6 +38,7 @@ export default function EditProfile(props){
     }
 
     const onSubmit = () => {
+
         if(validateForm())
             return;
         
@@ -54,6 +56,20 @@ export default function EditProfile(props){
               else {
                   setSuccess(true);
               }
+        });
+    }
+
+    const handleUploadAvatar = (imageFile) => {
+
+        api.User.uploadImage(user.userName).then(({ error, result }) => {
+
+            if (!error) {
+              api.Image.uploadImage(result.uploadUrl, imageFile).then(() => {
+      
+                // Put a random number after the avatar url to force the image to reload
+                user.avatar = `${user.avatar}?${Math.random()}`;
+              });
+            }
         });
     }
 
@@ -120,6 +136,13 @@ export default function EditProfile(props){
                         </Button>
                         </Modal.Footer>
                     </Modal>
+
+                    <ImageManagement
+                        allowEdit={true}
+                        avatarImageUrl={user.avatar}
+                        onUploadImage={handleUploadAvatar}
+                        type="user"
+                    />
 
                     <Button variant="secondary" type="button" onClick={onSubmit}>
                         Submit

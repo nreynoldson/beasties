@@ -1,6 +1,6 @@
 import request from 'superagent';
-import {getUser} from '../components/account/Account'
 import { trackPromise } from 'react-promise-tracker';
+import { getUser } from '../components/account/Account';
 
 const {
   REACT_APP_API_KEY,
@@ -29,7 +29,7 @@ const handleRequest = async (req, options = {}) => {
 
    try {
     const result = await trackPromise(req);
-    response.result = result.body?.items;
+    response.result = result.body?.items || result.body;
 
    }
    catch (e) {
@@ -51,10 +51,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    delete: async (id) => {
+    delete: async (name, shelterName, shelterOwnerName) => {
 
       const req = request
-        .delete(makeBackendUrl(`/animal/${id}`));
+        .delete(makeBackendUrl(`/animalDelete/${name}/${shelterName}/${shelterOwnerName}`));
 
       return await handleRequest(req);
     },
@@ -68,10 +68,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    edit: async (id, petParams) => {
+    edit: async (animalName, shelterName, petParams) => {
 
       const req = request
-        .patch(makeBackendUrl(`/animal/${id}`))
+        .patch(makeBackendUrl(`/animalEdit/${animalName}/${shelterName}`))
         .send(petParams);
 
       return await handleRequest(req);
@@ -101,11 +101,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    search: async (searchParams) => {
+    search: async () => {
 
       const req = request
-        .get(makeBackendUrl(`/animal/search`))
-        .query(searchParams);
+        .get(makeBackendUrl(`/animalsGet`));
 
       return await handleRequest(req);
     },
@@ -119,15 +118,12 @@ const api = {
       return await handleRequest(req);
     },
 
-    uploadImage: async (petId, imageFile) => {
+    uploadImage: async (imageKey) => {
 
       const req = request
-        .post(makeBackendUrl(`/animal/upload-image`));
+        .post(makeBackendUrl(`/images/animal/${imageKey}`));
 
-        req.field('petId', petId);
-        req.attach('image', imageFile);
-
-      return await handleRequest(req, { requestTypeIsJson: false });
+      return await handleRequest(req);
     },
 
     makeRequest: async (requestParams) => {
@@ -137,6 +133,17 @@ const api = {
 
       return await handleRequest(req);
     }
+  },
+
+  Image: {
+    uploadImage: async (bucketUrl, imageFile) => {
+
+      const req = request
+        .put(bucketUrl)
+        .send(imageFile);
+
+      return await handleRequest(req, { requestTypeIsJson: false });
+    },
   },
 
   Dummy: {
@@ -194,7 +201,7 @@ const api = {
         return response;
       } else{
         for(var shelter of response.result){
-          if(shelter.shelterName == shelterName){
+          if(shelter.shelterName === shelterName){
             return response.result = shelter;
           }
         }
@@ -319,11 +326,10 @@ const api = {
       return await handleRequest(req);
     },
 
-    search: async (searchParams) => {
+    search: async (userType) => {
 
       const req = request
-        .get(makeBackendUrl(`/user/search`))
-        .query(searchParams);
+        .get(makeBackendUrl(`/users/${userType}`));
 
       return await handleRequest(req);
     },
@@ -336,16 +342,13 @@ const api = {
 
       return await handleRequest(req);
     },
-
-    uploadImage: async (userId, imageFile) => {
+    
+    uploadImage: async (imageKey) => {
 
       const req = request
-        .post(makeBackendUrl(`/user/upload-image`));
+        .post(makeBackendUrl(`/images/user/${imageKey}`));
 
-        req.field('userId', userId);
-        req.attach('image', imageFile);
-
-      return await handleRequest(req, { requestTypeIsJson: false });
+      return await handleRequest(req);
     },
 
     getRequests: async (username) => {

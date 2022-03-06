@@ -31,6 +31,7 @@ const PetModifyProfilePage = (props) => {
 
     return {
       animalName: '',
+      avatar: '',
       type: 'other',
       breed: 'other',
       age: 'baby',
@@ -46,7 +47,7 @@ const PetModifyProfilePage = (props) => {
   const originalInvalidFields = useMemo(() => {
 
     return {
-      name: false
+      animalName: false
     };
   }, []);
 
@@ -58,6 +59,7 @@ const PetModifyProfilePage = (props) => {
 
   const afterGetPetInfo = useCallback((response) => {
 
+    setIsLoading(false);
     if (response.error) {
       // Handle error
       return;
@@ -70,11 +72,15 @@ const PetModifyProfilePage = (props) => {
     newInputs.goodWithOtherAnimals = dispositions.includes(goodWithOtherAnimals);
     newInputs.goodWithChildren = dispositions.includes(goodWithChildren);
     newInputs.mustBeLeashed = dispositions.includes(mustBeLeashed);
-    newInputs.shelterName = auth.currentUser.shelterName;
+    newInputs.shelterName = auth.currentUser?.shelterName;
 
     setInputs(newInputs);
-    setIsLoading(false);
   }, [auth.currentUser]);
+
+  const getPetInfo = useCallback(() => {
+  
+    api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
+  }, [afterGetPetInfo, petName, shelterName]);
 
   const afterSubmit = useCallback((response) => {
 
@@ -83,22 +89,26 @@ const PetModifyProfilePage = (props) => {
       return;
     }
 
+    if (!isNewPet) {
+      getPetInfo();
+    }
+
     else {
       // Navigate to pet profile page
       setSuccess(true);
       setInputs(originalInputs);
       //navigate(`/pet/${response.result.id}`);
     }
-  }, [originalInputs]);
+  }, [getPetInfo, isNewPet, originalInputs]);
 
   useEffect(() => {
     if (!isNewPet && auth.currentUser) {
-      api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
+      getPetInfo();
     }
     else{
       setInputs((prevInputs) => ({ ...prevInputs, shelterName: auth.currentUser?.shelterName }));
     }
-  }, [afterGetPetInfo, auth.currentUser, isNewPet, petName, shelterName]);
+  }, [afterGetPetInfo, auth.currentUser, isNewPet, getPetInfo]);
 
   const handleValueChange = useCallback((evt) => {
     const target = evt.currentTarget;
@@ -136,14 +146,22 @@ const PetModifyProfilePage = (props) => {
       api.Animal.create(params).then(afterSubmit);
     }
     else {
-      api.Animal.edit(params).then(afterSubmit);
+      delete params.animalName;
+      delete params.animalName_shelterName;
+      delete params.shelterName;
+      delete params.breed;
+      delete params.type;
+      delete params.gender;
+      api.Animal.edit(petName, shelterName, params).then(afterSubmit);
     }
   }, [
     afterSubmit,
     inputs,
     invalidFields,
     isNewPet,
-    originalInvalidFields
+    originalInvalidFields,
+    petName,
+    shelterName
   ]);
 
   const handleShowConfirmDeleteDialog =
@@ -157,6 +175,20 @@ const PetModifyProfilePage = (props) => {
     setShowConfirmDeleteDialog(false);
     api.Animal.delete(petName, shelterName).then(() => navigate('/browse-pets'));
   }, [navigate, petName, shelterName]);
+
+  const handleUploadAvatar = useCallback((imageFile) => {
+  
+    api.Animal.uploadImage(inputs.animalName_shelterName).then(({ error, result }) => {
+
+      if (!error) {
+        api.Image.uploadImage(result.uploadUrl, imageFile).then(() => {
+
+          // Put a random number after the avatar url to force the image to reload
+          setInputs((prevInputs) => ({ ...prevInputs, avatar: `${prevInputs.avatar}?${Math.random()}` }))
+        });
+      }
+    });
+  }, [getPetInfo, inputs]);
 
   const breedSelect = useMemo(() => {
 
@@ -177,7 +209,7 @@ const PetModifyProfilePage = (props) => {
         <Form.Select
           onChange={handleValueChange}
           name="breed"
-          defaultValue={inputs.breed}
+          value={inputs.breed}
         >
           {options}
         </Form.Select>
@@ -213,7 +245,7 @@ const PetModifyProfilePage = (props) => {
     }
 
     let deleteButton = null;
-    if (auth.isAdmin) {
+    if (!isNewPet && auth.isAdmin) {
       deleteButton = (
         <Button
           className="mt-4 mb-4"
@@ -231,8 +263,8 @@ const PetModifyProfilePage = (props) => {
       imageManagement = (
         <ImageManagement
           allowEdit={true}
-          petName={petName}
-          shelterName={shelterName}
+          avatarImageUrl={inputs.avatar}
+          onUploadImage={handleUploadAvatar}
           type="animal"
         />
       );
@@ -264,7 +296,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="age"
-              defaultValue={inputs.age}
+              value={inputs.age}
               size="lg"
             >
               <option value="baby">{AnimalConsts.ageToDisplayNameMap.baby}</option>
@@ -278,7 +310,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="gender"
-              defaultValue={inputs.gender}
+              value={inputs.gender}
               size="lg"
             >
               <option value="n/a">{AnimalConsts.genderToDisplayNameMap['n/a']}</option>
@@ -291,7 +323,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="type"
-              defaultValue={inputs.type}
+              value={inputs.type}
               size="lg"
             >
               <option value="dog">{AnimalConsts.typeToDisplayNameMap.dog}</option>
@@ -333,7 +365,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="availability"
-              defaultValue={inputs.availability}
+              value={inputs.availability}
               size="lg"
             >
               <option value="available">{AnimalConsts.availabilityToDisplayNameMap.available}</option>
@@ -377,6 +409,7 @@ const PetModifyProfilePage = (props) => {
     confirmDeleteModal,
     handleShowConfirmDeleteDialog,
     handleSubmit,
+    handleUploadAvatar,
     handleValueChange,
     inputs,
     invalidFields,
