@@ -20,7 +20,7 @@ const EditAccount = (props) => {
         return (
             <Container className='edit-account'>
                 <h1>Edit Profile</h1>
-                <EditProfile setView={setView}></EditProfile>
+                <EditProfile setView={setView} auth={props.auth}></EditProfile>
             </Container>
         );
 

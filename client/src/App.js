@@ -167,7 +167,7 @@ export default function App() {
         <Route path="/pet/new" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route path="/pet/:petName/:shelterName/edit" element={<PetModifyProfilePage auth={auth} />}></Route>
         <Route exact path="/pet/:petName/:shelterName" element={<PetProfile auth={auth} />}></Route>
-        <Route exact path="/shelter/:shelterId" element={<ShelterProfile auth={auth} />}></Route>
+        <Route exact path="/shelter/:shelterName" element={<ShelterProfile auth={auth} />}></Route>
         <Route exact path="/" element={showIndicator ? loadingIndicator : (isAuthenticated ? <Dashboard auth = {auth}/> : <LandingPage auth={auth}/>)}></Route>
         <Route exact path="/login" element={<Login auth={auth}/>}></Route>
         <Route exact path="/register" element={<Register auth={auth}/>}></Route>

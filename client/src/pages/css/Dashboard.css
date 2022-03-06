@@ -75,3 +75,7 @@ form.change-password{
 .dashboard-container .fields{
     border: none !important;
 }
+
+.btn-danger, .btn-success{
+    margin: 20px;
+}

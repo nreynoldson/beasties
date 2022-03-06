@@ -379,6 +379,7 @@ const BrowsePetsPage = (props) => {
             gender={pet.gender}
             disposition={pet.disposition}
             onDelete={handleShowDeletePetDialog}
+            usePopover={true}
           />
         </div>
       );
