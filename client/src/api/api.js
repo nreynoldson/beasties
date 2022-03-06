@@ -27,8 +27,9 @@ const handleRequest = async (req, options = {}) => {
    }
 
    try {
-     const result = await trackPromise(req);
+    const result = await trackPromise(req);
     response.result = result.body?.items;
+
    }
    catch (e) {
     response.error = e;
@@ -91,6 +92,14 @@ const api = {
       return await handleRequest(req);
     },
 
+    getAnimalsByShelter: async (shelterName) => {
+
+      const req = request
+        .get(makeBackendUrl(`/animalsGet/${shelterName}`));
+
+      return await handleRequest(req);
+    },
+
     search: async () => {
 
       const req = request
@@ -148,15 +157,6 @@ const api = {
 
   Shelter: {
 
-
-    delete: async (id) => {
-
-      const req = request
-        .delete(makeBackendUrl(`/shelter/${id}`));
-
-      return await handleRequest(req);
-    },
-
     deleteImage: async (id) => {
 
       const req = request
@@ -174,12 +174,33 @@ const api = {
       return await handleRequest(req);
     },
 
-    getInfo: async (id) => {
-
+    getAllShelters: async () => { 
       const req = request
-        .get(makeBackendUrl(`/shelter${id}`));
+      .get(makeBackendUrl(`/users/shelterUsers`));
 
       return await handleRequest(req);
+    },
+
+    ///Temporary bandaid since I'm not sure we have a way to getshelters by shelterName 
+    // at present moment - definitely not scalable lol :) 
+    getInfo: async (shelterName) => { 
+      const req = request
+      .get(makeBackendUrl(`/users/shelterUsers`));
+
+      var response = await handleRequest(req);
+      if(response.error){
+        return response;
+      } else{
+        for(var shelter of response.result){
+          if(shelter.shelterName == shelterName){
+            return response.result = shelter;
+          }
+        }
+
+        delete response.result;
+        response.error = "No such shelter with that name";
+        return response;
+      }
     },
 
     search: async (searchParams) => {
@@ -211,13 +232,19 @@ const api = {
       return await handleRequest(req, { requestTypeIsJson: false });
     },
     getRequests: async (shelterName) => {
-      console.log('in shelter get')
-      console.log(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`))
       const req = request
         .get(makeBackendUrl(`/requestsForShelterOwner/${shelterName}`));
 
       return await handleRequest(req);
-  }
+    },
+    updateRequest: async (shelterOwner, username, shelterName, animalName, editParams) => {
+
+      const req = request
+        .patch(makeBackendUrl(`/requestEditByShelter/${shelterOwner}/${username}/${shelterName}/${animalName}/`))
+        .send(JSON.stringify(editParams));
+      
+      return await handleRequest(req);
+    },
   },
 
   User: {
@@ -247,10 +274,45 @@ const api = {
       return await handleRequest(req);
     },
 
-    getInfo: async (userName) => {
+    getInfo: async () => {
+      const response = { 
+        result: null,
+        error: null
+       };
+
+      try {
+        var attributes = await trackPromise(getUser());
+        if(attributes){ 
+          const req = request
+          .get(makeBackendUrl(`/user/${attributes.username}`));
+          var result = await handleRequest(req);
+          var userInfo = result.result;
+          userInfo.isAdmin = attributes.admin;
+          response.result = userInfo;
+        }
+        else{
+          response.result = null;
+        }
+        return response;
+      }
+      catch (e) {
+        response.error = e;
+        return response;
+      }
+    },
+
+    getAllUsers: async () => { 
+      const req = request
+      .get(makeBackendUrl(`/users/regularUsers`));
+
+      return await handleRequest(req);
+    },
+
+    updateUser: async (username, updateParams) => {
 
       const req = request
-        .get(makeBackendUrl(`/user/${userName}`));
+        .patch(makeBackendUrl(`/userEdit/${username}`))
+        .send(JSON.stringify(updateParams));
 
       return await handleRequest(req);
     },
@@ -283,12 +345,26 @@ const api = {
     },
 
     getRequests: async (username) => {
-      console.log('in user requests');
         const req = request
           .get(makeBackendUrl(`/request/${username}`));
   
         return await handleRequest(req);
-    }
+    },
+
+    create: async(params) => {
+      const req = request
+        .post(makeBackendUrl(`/user`))
+        .send(JSON.stringify(params));
+
+      return await handleRequest(req);
+    },
+
+    deleteRequest: async (username, shelterName, animalName) => {
+      const req = request
+        .delete(makeBackendUrl(`/requestDelete/${username}/${shelterName}/${animalName}`));
+
+      return await handleRequest(req);
+  }
   }
 };
 

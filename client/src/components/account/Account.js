@@ -45,7 +45,6 @@ const changePassword = async (oldPassword, newPassword) => {
                         console.log(err);
                         reject(err)
                     } else {
-                        console.log(result);
                         resolve(result)
                     }
                 });
@@ -59,24 +58,30 @@ const changePassword = async (oldPassword, newPassword) => {
 const getUser = async() => {
     return await new Promise((resolve, reject) => {
        var user = Pool.getCurrentUser();
+       console.log(user);
        if(user != null){
            user.getSession(async (err, session) => {
                if (err) {
                    resolve(null)
                    return;
                }
-
-               const { error, result } = await api.User.getInfo(user.username);
-
-               if (error) {
-                   console.log(error);
-                   return;
-               }
-
-               resolve(result);
+               user.getUserAttributes(function(err, result) {
+                if (err) {
+                    alert(err.message || JSON.stringify(err));
+                    return;
+                }
+                    var userInfo = {username: user.username, admin: false};
+                    for (var i = 0; i < result.length; i++) {
+                        if(result[i].getName() === "custom:isAdmin"){
+                            userInfo.admin = result[i].getValue() ? true : false;
+                        }
+                    }
+                    resolve(userInfo);
+                });
            });
        }
        else{
+           console.log('in else')
             resolve(null);
        }
        

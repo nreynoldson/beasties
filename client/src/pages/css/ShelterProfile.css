@@ -3,8 +3,14 @@
     justify-content: center;
     border-radius: 5px;
     margin: 10px 0px 40px 0px;
+    padding:20px
 }
 
+.shelter.pets-container h2{
+    display: block;
+    width: 100%;
+    padding:10px;
+}
 .shelter-info{
     padding: 50px 0px;
     justify-content: space-between;

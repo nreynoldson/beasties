@@ -33,7 +33,8 @@ const PetSearchResult = (props) => {
     name,
     onDelete,
     shelterName,
-    type
+    type,
+    usePopover
   } = props;
 
   const handleDeleteClick = useCallback((evt) => {
@@ -58,91 +59,94 @@ const PetSearchResult = (props) => {
   }, [breed, type]);
 
   const popover = useMemo(() => {
+    if(usePopover){
+      const imageElements = images.map(({ displayName, id, url }) => {
 
-    const imageElements = images.map(({ displayName, id, url }) => {
+        return (
+          <Image
+            rounded
+            className="m-2"
+            key={id}
+            src={url}
+            title={displayName}
+            height="100"
+          />
+        );
+      });
+
+      const { dispositions } = AnimalConsts;
+      const goodWithOtherAnimals = disposition.includes(dispositions.goodWithOtherAnimals);
+      const goodWithChildren = disposition.includes(dispositions.goodWithChildren);
+      const mustBeLeashed = disposition.includes(dispositions.mustBeLeashed);
+      let goodWithOtherAnimalsRow = null;
+      let goodWithChildrenRow = null;
+      let mustBeLeashedRow = null;
+
+      if (goodWithOtherAnimals) {
+        goodWithOtherAnimalsRow = (
+          <tr>
+            <td><b>{AnimalConsts.dispositionToDisplayNameMap.goodWithOtherAnimals}</b></td>
+            <td><Check size={25} color="green" /></td>
+          </tr>
+        );
+      }
+
+      if (goodWithChildren) {
+        goodWithChildrenRow = (
+          <tr>
+            <td><b>{AnimalConsts.dispositionToDisplayNameMap.goodWithChildren}</b></td>
+            <td><Check size={25} color="green" /></td>
+          </tr>
+        );
+      }
+
+      if (mustBeLeashed) {
+        mustBeLeashedRow = (
+          <tr>
+            <td><b>{AnimalConsts.dispositionToDisplayNameMap.mustBeLeashed}</b></td>
+            <td><Check size={25} color="red" /></td>
+          </tr>
+        );
+      }
 
       return (
-        <Image
-          rounded
-          className="m-2"
-          key={id}
-          src={url}
-          title={displayName}
-          height="100"
-        />
-      );
-    });
-
-    const { dispositions } = AnimalConsts;
-    const goodWithOtherAnimals = disposition.includes(dispositions.goodWithOtherAnimals);
-    const goodWithChildren = disposition.includes(dispositions.goodWithChildren);
-    const mustBeLeashed = disposition.includes(dispositions.mustBeLeashed);
-    let goodWithOtherAnimalsRow = null;
-    let goodWithChildrenRow = null;
-    let mustBeLeashedRow = null;
-
-    if (goodWithOtherAnimals) {
-      goodWithOtherAnimalsRow = (
-        <tr>
-          <td><b>{AnimalConsts.dispositionToDisplayNameMap.goodWithOtherAnimals}</b></td>
-          <td><Check size={25} color="green" /></td>
-        </tr>
-      );
-    }
-
-    if (goodWithChildren) {
-      goodWithChildrenRow = (
-        <tr>
-          <td><b>{AnimalConsts.dispositionToDisplayNameMap.goodWithChildren}</b></td>
-          <td><Check size={25} color="green" /></td>
-        </tr>
-      );
-    }
-
-    if (mustBeLeashed) {
-      mustBeLeashedRow = (
-        <tr>
-          <td><b>{AnimalConsts.dispositionToDisplayNameMap.mustBeLeashed}</b></td>
-          <td><Check size={25} color="red" /></td>
-        </tr>
+        <Popover id={`petProfileQuickView${id}`} className="petProfileQuickView">
+          <Popover.Header as="h3" className="text-center">
+            <b>{name}</b>
+          </Popover.Header>
+          <Popover.Body>
+            <div className="d-flex flex-wrap flex-row mr-auto">
+              {imageElements}
+            </div>
+            <Table className="petProfileQuickViewTable">
+              <tbody>
+                <tr>
+                  <td><b>Type</b></td>
+                  <td>{breedDisplay}</td>
+                </tr>
+                <tr>
+                  <td><b>Age</b></td>
+                  <td>{AnimalConsts.ageToDisplayNameMap[age]}</td>
+                </tr>
+                <tr>
+                  <td><b>Gender</b></td>
+                  <td>{AnimalConsts.genderToDisplayNameMap[gender]}</td>
+                </tr>
+                <tr>
+                  <td><b>Availability</b></td>
+                  <td>{AnimalConsts.availabilityToDisplayNameMap[availability]}</td>
+                </tr>
+                {goodWithOtherAnimalsRow}
+                {goodWithChildrenRow}
+                {mustBeLeashedRow}
+              </tbody>
+            </Table>
+          </Popover.Body>
+        </Popover>
       );
     }
-
-    return (
-      <Popover id={`petProfileQuickView${id}`} className="petProfileQuickView">
-        <Popover.Header as="h3" className="text-center">
-          <b>{name}</b>
-        </Popover.Header>
-        <Popover.Body>
-          <div className="d-flex flex-wrap flex-row mr-auto">
-            {imageElements}
-          </div>
-          <Table className="petProfileQuickViewTable">
-            <tbody>
-              <tr>
-                <td><b>Type</b></td>
-                <td>{breedDisplay}</td>
-              </tr>
-              <tr>
-                <td><b>Age</b></td>
-                <td>{AnimalConsts.ageToDisplayNameMap[age]}</td>
-              </tr>
-              <tr>
-                <td><b>Gender</b></td>
-                <td>{AnimalConsts.genderToDisplayNameMap[gender]}</td>
-              </tr>
-              <tr>
-                <td><b>Availability</b></td>
-                <td>{AnimalConsts.availabilityToDisplayNameMap[availability]}</td>
-              </tr>
-              {goodWithOtherAnimalsRow}
-              {goodWithChildrenRow}
-              {mustBeLeashedRow}
-            </tbody>
-          </Table>
-        </Popover.Body>
-      </Popover>
-    );
+    else
+      return "";
   }, [
     age,
     availability,
@@ -233,7 +237,10 @@ const PetSearchResult = (props) => {
     shelterName
   ]);
 
-  return componentOutput;
+  if(usePopover)
+    return (<OverlayTrigger placement="auto" overlay={popover}>{componentOutput}</OverlayTrigger>);
+  else
+    return componentOutput;
 }
 
 export default PetSearchResult;

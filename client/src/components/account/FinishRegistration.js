@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api/api';
 
 export default function RegistrationForm(props){
     const [name, setName]  = useState('');
@@ -11,7 +11,6 @@ export default function RegistrationForm(props){
     const [shelterName, setShelterName] = useState('');
     const navigate = useNavigate();
     const [formErrors, setErrors] = useState({});
-    const createUserURL = 'https://idvmpyv72b.execute-api.us-east-1.amazonaws.com/dev/user';
 
     const validateForm = () => {     
         var errors = {};
@@ -42,7 +41,7 @@ export default function RegistrationForm(props){
         
         var userData = {
             userName: props.user.username,
-            name: name,
+            displayName: name,
             zipcode: location,
             isShelterOwner: isShelter,
             email: props.user.email,
@@ -51,16 +50,12 @@ export default function RegistrationForm(props){
         if(isShelter)
             userData.shelterName = shelterName;
 
-        console.log(userData);
-
-        axios.post(createUserURL, userData)
-        .then(function (response) {
-            console.log(response);
+        api.User.create(userData).then((response) => {
+            if(response.error){
+                return;
+            }
             props.updateStatus("complete")
             navigate(-1);
-        })
-        .catch(function (error) {
-            console.log(error);
         });
     }
 

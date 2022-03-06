@@ -7,14 +7,13 @@ import ShelterPets from '../shelters/ShelterPets';
 const ManagePets = (props) => {
     const [loading, setLoading] = useState('true');
     const [view, setView] = useState('overview');
-    console.log(props);
-  
+
     switch(view){
         case 'overview':
             return (
                 <Container className='manage-pets'>
                     <Button onClick={() => {setView('new')}}>Add a New Pet</Button>
-                    <ShelterPets></ShelterPets>
+                    <ShelterPets shelterName={props.auth.currentUser.shelterName} auth={props.auth}/>
                 </Container>
               );
         case 'new':
