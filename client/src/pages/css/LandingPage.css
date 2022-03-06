@@ -18,6 +18,10 @@
   height: calc(100vh - 11vh);
 }
 
+.landingContainer .row{
+  padding: 0 40px;
+}
+
 .pinkLink {
   color: #F45474;
   text-decoration: none;
@@ -31,7 +35,9 @@
 }
 
 .titleText {
-  font-family: 'Teko', sans-serif;
+  font-family: 'Noto Sans', sans-serif;
   text-transform: uppercase;
+  font-weight: 700;
+  font-size: 70px;
 }
 
