@@ -29,7 +29,7 @@ const handleRequest = async (req, options = {}) => {
 
    try {
     const result = await trackPromise(req);
-    response.result = result.body?.items;
+    response.result = result.body?.items || result.body;
 
    }
    catch (e) {
@@ -118,15 +118,12 @@ const api = {
       return await handleRequest(req);
     },
 
-    uploadImage: async (petId, imageFile) => {
+    uploadImage: async (imageKey) => {
 
       const req = request
-        .post(makeBackendUrl(`/animal/upload-image`));
+        .post(makeBackendUrl(`/images/animal/${imageKey}`));
 
-        req.field('petId', petId);
-        req.attach('image', imageFile);
-
-      return await handleRequest(req, { requestTypeIsJson: false });
+      return await handleRequest(req);
     },
 
     makeRequest: async (requestParams) => {
@@ -136,6 +133,17 @@ const api = {
 
       return await handleRequest(req);
     }
+  },
+
+  Image: {
+    uploadImage: async (bucketUrl, imageFile) => {
+
+      const req = request
+        .put(bucketUrl)
+        .send(imageFile);
+
+      return await handleRequest(req, { requestTypeIsJson: false });
+    },
   },
 
   Dummy: {

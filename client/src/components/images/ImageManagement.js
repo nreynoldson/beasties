@@ -1,36 +1,27 @@
 import {
-  Fragment,
   useCallback,
-  useEffect,
-  useMemo,
-  useState
+  useMemo
 } from 'react';
 
 import api from '../../api/api';
-import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
-
-import { CircleFill } from 'react-bootstrap-icons';
-import { XCircleFill } from 'react-bootstrap-icons';
 
 import './css/ImageManagement.css';
 
 
 const ImageManagement = (props) => {
 
-  // type can be 'animal', 'shelter', or 'user'
+  // type can be 'animal' or 'user'
   const {
     allowEdit,
-    id,
+    avatarImageUrl = '/images/no_image.svg',
+    petName,
+    shelterName,
+    onUploadImage,
     type
   } = props;
-
-  const [images, setImages] = useState([]);
-  const [imageToDelete, setImageToDelete] = useState(null);
 
   const apiLibrary = useMemo(() => {
   
@@ -38,94 +29,12 @@ const ImageManagement = (props) => {
       return api.Animal;
     }
 
-    if (type === 'shelter') {
-      return api.Shelter;
-    }
-
     if (type === 'user') {
       return api.User;
     }
   }, [type]);
 
-  const afterGetImages = useCallback((response) => {
-
-    if (response?.err) {
-      // Handle error
-      return;
-    }
-
-    else {
-      setImages(response.result);
-    }
-
-  }, []);
-
-  const getImages = useCallback(() => {
-
-    // apiLibrary.getImages(id).then(afterGetImages);
-
-    const dummyData = [
-      {
-        id: 1,
-        displayName: 'Fido.jpg',
-        url: '/images/no_image.svg',
-        isAvatar: false
-      },
-      {
-        id: 2,
-        displayName: 'Fido.jpg',
-        url: '/images/no_image.svg',
-        isAvatar: true
-      },
-      {
-        id: 3,
-        displayName: 'Fido.jpg',
-        url: '/images/no_image.svg',
-        isAvatar: false
-      },
-      {
-        id: 4,
-        displayName: 'Fido.jpg',
-        url: '/images/no_image.svg',
-        isAvatar: false
-      }
-    ];
-
-    api.Dummy.returnThisData(dummyData).then(afterGetImages);
-  }, [afterGetImages]);
-
-  useEffect(() => {
-
-    // Fetch the images whenever the component loads
-    getImages();
-  }, [getImages]);
-
-  const handleDeleteImageClick = useCallback((evt) => {
-
-    if (!allowEdit) {
-      return;
-    }
-
-    const { id, displayName, url } = evt.currentTarget.dataset;
-
-    setImageToDelete({ id, displayName, url });
-  }, [allowEdit]);
-
-  const handleImageClick = useCallback((evt) => {
-
-    if (!allowEdit) {
-      return;
-    }
-
-    const { id } = evt.currentTarget.dataset;
-
-    apiLibrary.setAvatar(id).then(getImages);
-  }, [allowEdit, apiLibrary, getImages]);
-
-  const handleUploadFile = useCallback((evt) => {
-
-    apiLibrary.uploadImage(id, evt.result);
-  }, [apiLibrary, id]);
+  const handleUploadFile = useCallback((evt) => onUploadImage(evt), [onUploadImage]);
 
   const handleFileInputChange = useCallback((evt) => {
 
@@ -133,100 +42,26 @@ const ImageManagement = (props) => {
       return;
     }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(evt.currentTarget.files[0]);
-    reader.onloadend = handleUploadFile;
+    // const reader = new FileReader();
+    // reader.readAsDataURL(evt.currentTarget.files[0]);
+    // reader.onloadend = handleUploadFile;
+    handleUploadFile(evt.currentTarget.files[0]);
   }, [handleUploadFile]);
 
-  const handleCloseDeleteImageModal = useCallback(() => setImageToDelete(null), []);
+  const avatarImage = useMemo(() => {
 
-  const handleConfirmDeleteImage = useCallback(() => {
-
-    apiLibrary.deleteImage(imageToDelete.id).then(getImages);
-    handleCloseDeleteImageModal();
-  }, [apiLibrary, getImages, handleCloseDeleteImageModal, imageToDelete]);
-
-  const confirmDeleteModal = useMemo(() => {
-
-    if (!allowEdit) {
-      return null;
-    }
+    let imageClass = 'imageWrapper';
 
     return (
-      <ConfirmDeleteModal
-        body={
-          <Fragment>
-            <Image
-              rounded
-              src={imageToDelete?.url}
-              title={imageToDelete?.displayName}
-              height="150"
-            />
-            <h5 className="mt-3">Really delete this image?</h5>
-          </Fragment>
-        }
-        onClose={handleCloseDeleteImageModal}
-        onConfirm={handleConfirmDeleteImage}
-        show={Boolean(imageToDelete)}
-        title="Confirm Delete Image"
-      />
+      <div className={imageClass}>
+        <Image
+          rounded
+          src={avatarImageUrl}
+          height="250"
+        />
+      </div>
     );
-  }, [allowEdit, handleCloseDeleteImageModal, handleConfirmDeleteImage, imageToDelete]);
-
-  const imageList = useMemo(() => {
-
-    return images.map(({ id, displayName, url, isAvatar }) => {
-
-      let imageClass = 'imageWrapper';
-      let deleteButton = null;
-      let imageOnClick = undefined;
-      let title = displayName;
-
-      if (allowEdit) {
-        if (isAvatar){
-          imageClass += ' avatar';
-          title = 'Current avatar';
-        }
-        else {
-          imageClass += ' clickable';
-          title = 'Click to set as avatar';
-        }
-
-        deleteButton = (
-          <Fragment>
-            <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
-              <XCircleFill
-                className="deleteButton"
-                color="darkRed"
-                size={25}
-                data-id={id}
-                data-display-name={displayName}
-                data-url={url}
-                onClick={handleDeleteImageClick}
-              />
-            </OverlayTrigger>
-            <CircleFill className="deleteButtonBackground" color="white" size={25} />
-          </Fragment>
-        );
-
-        imageOnClick = handleImageClick;
-      }
-
-      return (
-        <div key={id} className={imageClass}>
-          <Image
-            rounded
-            src={url}
-            title={title}
-            height="250"
-            data-id={id}
-            onClick={imageOnClick}
-          />
-          {deleteButton}
-        </div>
-      );
-    });
-  }, [allowEdit, handleDeleteImageClick, handleImageClick, images]);
+  }, [allowEdit, avatarImageUrl]);
 
   const imageUploader = useMemo(() => {
 
@@ -255,11 +90,10 @@ const ImageManagement = (props) => {
     return (
       <div className="d-flex flex-wrap justify-content-center mb-4">
         {imageUploader}
-        {imageList}
-        {confirmDeleteModal}
+        {avatarImage}
       </div>
     );
-  }, [confirmDeleteModal, imageList, imageUploader]);
+  }, [avatarImage, imageUploader]);
 
   return componentOutput;
 }

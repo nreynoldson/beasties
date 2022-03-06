@@ -31,6 +31,7 @@ const PetModifyProfilePage = (props) => {
 
     return {
       animalName: '',
+      avatar: '',
       type: 'other',
       breed: 'other',
       age: 'baby',
@@ -71,10 +72,15 @@ const PetModifyProfilePage = (props) => {
     newInputs.goodWithOtherAnimals = dispositions.includes(goodWithOtherAnimals);
     newInputs.goodWithChildren = dispositions.includes(goodWithChildren);
     newInputs.mustBeLeashed = dispositions.includes(mustBeLeashed);
-    newInputs.shelterName = auth.currentUser.shelterName;
+    newInputs.shelterName = auth.currentUser?.shelterName;
 
     setInputs(newInputs);
   }, [auth.currentUser]);
+
+  const getPetInfo = useCallback(() => {
+  
+    api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
+  }, [afterGetPetInfo, petName, shelterName]);
 
   const afterSubmit = useCallback((response) => {
 
@@ -84,7 +90,7 @@ const PetModifyProfilePage = (props) => {
     }
 
     if (!isNewPet) {
-      api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
+      getPetInfo();
     }
 
     else {
@@ -93,16 +99,16 @@ const PetModifyProfilePage = (props) => {
       setInputs(originalInputs);
       //navigate(`/pet/${response.result.id}`);
     }
-  }, [isNewPet, originalInputs, petName, shelterName]);
+  }, [getPetInfo, isNewPet, originalInputs]);
 
   useEffect(() => {
     if (!isNewPet && auth.currentUser) {
-      api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
+      getPetInfo();
     }
     else{
       setInputs((prevInputs) => ({ ...prevInputs, shelterName: auth.currentUser?.shelterName }));
     }
-  }, [afterGetPetInfo, auth.currentUser, isNewPet, petName, shelterName]);
+  }, [afterGetPetInfo, auth.currentUser, isNewPet, getPetInfo]);
 
   const handleValueChange = useCallback((evt) => {
     const target = evt.currentTarget;
@@ -169,6 +175,16 @@ const PetModifyProfilePage = (props) => {
     setShowConfirmDeleteDialog(false);
     api.Animal.delete(petName, shelterName).then(() => navigate('/browse-pets'));
   }, [navigate, petName, shelterName]);
+
+  const handleUploadAvatar = useCallback((imageFile) => {
+  
+    api.Animal.uploadImage(inputs.animalName_shelterName).then(({ error, result }) => {
+
+      if (!error) {
+        api.Image.uploadImage(result.uploadUrl, imageFile).then(getPetInfo);
+      }
+    });
+  }, [getPetInfo, inputs]);
 
   const breedSelect = useMemo(() => {
 
@@ -243,6 +259,8 @@ const PetModifyProfilePage = (props) => {
       imageManagement = (
         <ImageManagement
           allowEdit={true}
+          avatarImageUrl={inputs.avatar}
+          onUploadImage={handleUploadAvatar}
           petName={petName}
           shelterName={shelterName}
           type="animal"
@@ -389,6 +407,7 @@ const PetModifyProfilePage = (props) => {
     confirmDeleteModal,
     handleShowConfirmDeleteDialog,
     handleSubmit,
+    handleUploadAvatar,
     handleValueChange,
     inputs,
     invalidFields,
