@@ -41,7 +41,7 @@ export default function PetProfile(props) {
             pet.availability = AnimalConsts.availabilityToDisplayNameMap[data.availability];
             pet.name = data.animalName;
             pet.shelter = data.shelterName;
-            pet.avatar = data.avatar;
+            pet.avatar = data.avatar ? data.avatar : '/images/no-image.png';
             pet.bio = data.bio;
             setPetInfo(pet);
         }
@@ -111,14 +111,12 @@ export default function PetProfile(props) {
                 </Col>
 
                 <Col className="right" xs={9}>
-                    <div className="avatar-container">
-                        <Image className="profile-avatar" src={petInfo.avatar}></Image>
-                    </div>
+                    <Image className="profile-avatar" src={petInfo.avatar}></Image>
 
                     <Card className="bio-box">
                         <Card.Header>Bio</Card.Header>
                         <Card.Body>
-                            {petInfo.bio}
+                            {petInfo.bio ? petInfo.bio : "There's no bio for " + petInfo.name + " yet! Check back again soon!"}
                         </Card.Body>
                     </Card>
                 </Col>

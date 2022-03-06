@@ -32,8 +32,3 @@
 .shelter-container .profile-info{
     height: 400px;
 }
-
-.shelter-info img{
-    object-fit: cover;
-    height: 100%
-}
