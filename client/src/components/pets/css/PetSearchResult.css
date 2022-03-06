@@ -65,3 +65,9 @@
 .petSearchResult:hover > .deleteButtonBackground {
   opacity: 1;
 }
+
+.avatar-card{
+  height: 275px;
+  object-fit: cover;
+  object-position: center;
+}

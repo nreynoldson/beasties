@@ -208,7 +208,7 @@ const PetSearchResult = (props) => {
     return (
       <OverlayTrigger placement="auto" overlay={popover} trigger={usePopover ? ['hover', 'focus'] : []}>
         <Link className="d-flex flex-column petSearchResult" to={`/pet/${name}/${shelterName}`}>
-          <Image rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
+          <Image rounded className="avatar-card" src={avatarUrl || '/images/no_image.svg'} />
           <div className="flex-column align-items-center justify-content-between">
             <h3 className="petName">{name}</h3>
             <span>
