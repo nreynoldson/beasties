@@ -1,5 +1,6 @@
 import request from 'superagent';
 import { trackPromise } from 'react-promise-tracker';
+import { getUser } from '../components/account/Account';
 
 const {
   REACT_APP_API_KEY,
@@ -192,7 +193,7 @@ const api = {
         return response;
       } else{
         for(var shelter of response.result){
-          if(shelter.shelterName == shelterName){
+          if(shelter.shelterName === shelterName){
             return response.result = shelter;
           }
         }

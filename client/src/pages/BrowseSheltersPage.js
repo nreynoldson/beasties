@@ -37,13 +37,14 @@ const BrowseSheltersPage = (props) => {
 
   const filterAndSortResults = useCallback((newSearchData) => {
 
+    newSearchData = newSearchData.map((shelterUser) => {
+
+      return { shelterName: shelterUser.shelterName };
+    });
+
     newSearchData = newSearchData.filter((shelter) => {
 
       if (inputs.name?.length && !shelter.shelterName.toLowerCase().includes(inputs.name.toLowerCase())) {
-        return false;
-      }
-
-      if (inputs.availableAnimals !== 'any' && shelter.availableAnimals < parseInt(inputs.availableAnimals)) {
         return false;
       }
 
@@ -54,10 +55,6 @@ const BrowseSheltersPage = (props) => {
       newSearchData.sort(
         (a, b) => a.shelterName.toLowerCase().localeCompare(b.shelterName.toLowerCase())
       );
-    }
-
-    if (inputs.sortOrder === 'availableAnimals') {
-      newSearchData.sort((a, b) => b.availableAnimals - a.availableAnimals);
     }
 
     return newSearchData;
@@ -84,40 +81,7 @@ const BrowseSheltersPage = (props) => {
   const handleSearch = useCallback(() => {
 
     setIsLoading(true);
-    // api.Shelter.search(inputs).then(afterGetSearchResults);
-
-    const dummyResults = [
-        {
-          id: 1,
-          shelterName: 'Bob\'s Pets',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 250
-        },
-        {
-          id: 2,
-          shelterName: 'Critters',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 130
-        },
-        {
-          id: 3,
-          shelterName: 'Paw Pals',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 23
-        },
-        {
-          id: 4,
-          shelterName: 'Doug\'s Dogs',
-          avatarUrl: null,
-          dateCreated: '2022-01-23T18:44:20.051Z',
-          availableAnimals: 5
-        }
-      ];
-
-    api.Dummy.returnThisData(dummyResults).then(afterGetSearchResults);
+    api.Shelter.getAllShelters().then(afterGetSearchResults);
   }, [afterGetSearchResults]);
 
   useEffect(() => {
@@ -125,7 +89,7 @@ const BrowseSheltersPage = (props) => {
     // Run a search whenever the component loads or inputs.sortOrder changes
     handleSearch();
 
-  }, [handleSearch, inputs.sortOrder]);
+  }, [inputs.sortOrder]);
 
   const handleValueChange = useCallback((evt) => {
 
@@ -173,7 +137,7 @@ const BrowseSheltersPage = (props) => {
           />
         </FloatingLabel>
 
-        <FloatingLabel controlId="floatingSelect" label="Minimum available pets">
+        {/* <FloatingLabel controlId="floatingSelect" label="Minimum available pets">
           <Form.Select
             onChange={handleValueChange}
             name="availableAnimals"
@@ -186,7 +150,7 @@ const BrowseSheltersPage = (props) => {
             <option value="75">75</option>
             <option value="100+">100+</option>
           </Form.Select>
-        </FloatingLabel>
+        </FloatingLabel> */}
 
         <Button size="md" variant="primary" onClick={handleSearch}>Search</Button>
       </div>
@@ -202,15 +166,14 @@ const BrowseSheltersPage = (props) => {
       return 'No matching results found';
     }
 
-    const resultComponents = searchData.map((shelter, index) => {
+    const resultComponents = searchData.map((shelter) => {
 
       return (
-        <div key={index}>
+        <div key={shelter.shelterName}>
           <ShelterSearchResult
-            availableAnimals={shelter.availableAnimals}
             avatarUrl={shelter.avatarUrl}
             canDelete={auth.isAdmin}
-            id={shelter.id}
+            id={shelter.shelterName}
             name={shelter.shelterName}
             onDelete={handleShowDeleteShelterDialog}
           />
@@ -227,7 +190,6 @@ const BrowseSheltersPage = (props) => {
           defaultValue={inputs.sortOrder}
           size="sm"
         >
-          <option value="availableAnimals">Available Pets</option>
           <option value="dateCreated">Newest First</option>
           <option value="name">Name</option>
         </Form.Select>

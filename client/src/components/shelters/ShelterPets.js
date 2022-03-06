@@ -59,21 +59,22 @@ export default function ShelterPets(props) {
         );
 
           return (
-            <div key={pet.id}>
+            <div key={pet.animalName_shelterName}>
               <PetSearchResult
-                id={pet.id}
-                name={pet.name}
+                id={pet.animalName_shelterName}
+                name={pet.animalName}
                 age={pet.age}
                 breed={pet.breed}
                 canDate={canDate}
                 canDelete={auth.isAdmin}
                 dateInfo={(auth.currentUser) ? pet.dateInfo : null}
+                shelterName={pet.shelterName}
                 type={pet.type}
                 avatarUrl={pet.avatarUrl}
-                images={pet.images}
+                images={pet.images || []}
                 availability={pet.availability}
                 gender={pet.gender}
-                disposition={pet.disposition}
+                disposition={pet.disposition || []}
                 onDelete={handleShowDeletePetDialog}
                 usePopover ={false}
               />
