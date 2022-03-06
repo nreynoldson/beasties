@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback} from 'react';
-import {Container, Card, ListGroup, Col, Button} from 'react-bootstrap';
+import {Container, Card, ListGroup, Col, Button, Image} from 'react-bootstrap';
 import LoginButton from '../components/account/LoginButton';
 import {RequestButton} from '../components/pets/RequestButtons';
 import AnimalConsts from '../consts/Animal';
 import { useNavigate, useParams } from 'react-router-dom';
-import Slider from 'react-slick';
 import './css/PetProfile.css';
 import api from '../api/api';
 import NotFound from './NotFound';
@@ -42,6 +41,7 @@ export default function PetProfile(props) {
             pet.availability = AnimalConsts.availabilityToDisplayNameMap[data.availability];
             pet.name = data.animalName;
             pet.shelter = data.shelterName;
+            pet.avatar = data.avatar;
             pet.bio = data.bio;
             setPetInfo(pet);
         }
@@ -58,18 +58,6 @@ export default function PetProfile(props) {
 
         navigate(`/pet/${petName}/${shelterName}/edit`);
     };
-
-    var settings = {
-        dots: true,
-        infinite: true,
-        centerMode: true,
-        centerPadding: 0,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        arrows: true
-      };
-
 
     var profileActions = null;
     if(user){
@@ -103,6 +91,7 @@ export default function PetProfile(props) {
         return <NotFound/>
     }
     else{
+        console.log(petInfo);
         return(
             <Container className="profile-container">
                 <Col>
@@ -121,22 +110,9 @@ export default function PetProfile(props) {
                     </Card>
                 </Col>
 
-                <Col className="right">
-                    <div className="carousel-container">
-                        <Slider {...settings}>
-                        <div>
-                            <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
-                        </div>
-                        <div>
-                            <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
-                        </div>
-                        <div>
-                            <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
-                        </div>
-                        <div>
-                            <img src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"></img>
-                        </div>
-                        </Slider>
+                <Col className="right" xs={9}>
+                    <div className="avatar-container">
+                        <Image className="profile-avatar" src={petInfo.avatar}></Image>
                     </div>
 
                     <Card className="bio-box">
