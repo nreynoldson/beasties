@@ -83,13 +83,17 @@ const PetModifyProfilePage = (props) => {
       return;
     }
 
+    if (!isNewPet) {
+      api.Animal.getInfo(petName, shelterName).then(afterGetPetInfo);
+    }
+
     else {
       // Navigate to pet profile page
       setSuccess(true);
       setInputs(originalInputs);
       //navigate(`/pet/${response.result.id}`);
     }
-  }, [originalInputs]);
+  }, [isNewPet, originalInputs, petName, shelterName]);
 
   useEffect(() => {
     if (!isNewPet && auth.currentUser) {
@@ -136,6 +140,12 @@ const PetModifyProfilePage = (props) => {
       api.Animal.create(params).then(afterSubmit);
     }
     else {
+      delete params.animalName;
+      delete params.animalName_shelterName;
+      delete params.shelterName;
+      delete params.breed;
+      delete params.type;
+      delete params.gender;
       api.Animal.edit(petName, shelterName, params).then(afterSubmit);
     }
   }, [
@@ -179,7 +189,7 @@ const PetModifyProfilePage = (props) => {
         <Form.Select
           onChange={handleValueChange}
           name="breed"
-          defaultValue={inputs.breed}
+          value={inputs.breed}
         >
           {options}
         </Form.Select>
@@ -215,7 +225,7 @@ const PetModifyProfilePage = (props) => {
     }
 
     let deleteButton = null;
-    if (auth.isAdmin) {
+    if (!isNewPet && auth.isAdmin) {
       deleteButton = (
         <Button
           className="mt-4 mb-4"
@@ -266,7 +276,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="age"
-              defaultValue={inputs.age}
+              value={inputs.age}
               size="lg"
             >
               <option value="baby">{AnimalConsts.ageToDisplayNameMap.baby}</option>
@@ -280,7 +290,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="gender"
-              defaultValue={inputs.gender}
+              value={inputs.gender}
               size="lg"
             >
               <option value="n/a">{AnimalConsts.genderToDisplayNameMap['n/a']}</option>
@@ -293,7 +303,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="type"
-              defaultValue={inputs.type}
+              value={inputs.type}
               size="lg"
             >
               <option value="dog">{AnimalConsts.typeToDisplayNameMap.dog}</option>
@@ -335,7 +345,7 @@ const PetModifyProfilePage = (props) => {
             <Form.Select
               onChange={handleValueChange}
               name="availability"
-              defaultValue={inputs.availability}
+              value={inputs.availability}
               size="lg"
             >
               <option value="available">{AnimalConsts.availabilityToDisplayNameMap.available}</option>

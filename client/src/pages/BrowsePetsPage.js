@@ -45,7 +45,7 @@ const BrowsePetsPage = (props) => {
 
     newSearchData = newSearchData.filter((pet) => {
 
-      const searchFields = ['age', 'gender', 'type', 'availability'];
+      const searchFields = ['age', 'breed', 'gender', 'type', 'availability'];
       for (const searchField of searchFields) {
         if (inputs[searchField] !== 'any' && pet[searchField] !== inputs[searchField]) {
           return false;
