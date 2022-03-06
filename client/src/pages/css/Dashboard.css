@@ -79,3 +79,10 @@ form.change-password{
 .btn-danger, .btn-success{
     margin: 20px;
 }
+
+.titleText.small{
+    font-size: 48px;
+}
+.dashboard{
+    padding:40px;
+}

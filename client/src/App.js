@@ -70,28 +70,6 @@ export default function App() {
     api.User.getInfo().then(processUser);
   }, [processUser, isAuthenticated]);
 
-  let adminPageLink = null;
-  let userSearchLink = null;
-  if (isAdmin) {
-    adminPageLink = (
-      <Nav.Item>
-        <NavLink className="nav-link" to="/admin">
-          <MdAdminPanelSettings className="nav-bar-icon" />
-          Admin
-        </NavLink>
-      </Nav.Item>
-    );
-
-    userSearchLink = (
-      <Nav.Item>
-        <NavLink className="nav-link" to="/browse-users">
-          <FaUsers className="nav-bar-icon" />
-          Users
-        </NavLink>
-      </Nav.Item>
-    );
-  }
-
   const auth = {
     isAdmin,
     isAuthenticated: isAuthenticated,
@@ -128,8 +106,6 @@ export default function App() {
         <Navbar.Toggle/>
         <Navbar.Collapse id="site-navbar">
           <Nav className="ml-auto navLinks">
-            {adminPageLink}
-            {userSearchLink}
             <Nav.Item>
               <NavLink className="nav-link" to="/browse-pets">
                 <MdPets className="nav-bar-icon" />
@@ -143,9 +119,6 @@ export default function App() {
               </NavLink>
             </Nav.Item>
             <Nav.Item>
-              <NavLink className="nav-link" to="/about" >
-                How It Works
-              </NavLink>
             </Nav.Item>
             <Nav.Item>
               <NavLink className="nav-link" to="/contact">Contact Us</NavLink>
