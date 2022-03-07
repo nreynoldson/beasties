@@ -22,8 +22,10 @@
     margin: 10px 0
 }
 .card.card-horizontal .card-img-left{
-    max-height: 150px;
-    width: 150px;
+    max-height: 250px;
+    width: 175px;
+    object-fit: cover;
+    object-position:center;
 }
 
 .card.card-horizontal span{
@@ -46,4 +48,21 @@
 
 .options-container p{
     margin-bottom: 0;
+}
+
+.card-title{
+    font-weight:bold;
+    color:#F45474;
+}
+
+.animal-details{
+    font-weight: bold;
+}
+
+.card-text{
+    margin-bottom: 5px;
+}
+
+.requestMessage, .responseMessage{
+    font-size: 11px;
 }

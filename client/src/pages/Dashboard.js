@@ -4,19 +4,9 @@ import {ListGroup, Col, Container, Spinner, Tab} from 'react-bootstrap';
 import NotificationCenter from './NotificationCenter';
 import ManagePets from '../components/account/ManagePets';
 import EditAccount from '../components/account/EditAccount'
-import { usePromiseTracker } from 'react-promise-tracker';
 import AdminLandingPage from './AdminLandingPage';
 
 const Dashboard = (props) => {
-  const { promiseInProgress } = usePromiseTracker;
-
-  if(promiseInProgress){
-    return (
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
-    );
-  } else {
     return (
       <div className="dashboard">
         <h1 className="titleText small">HI, {props.auth.currentUser.userName}</h1>
@@ -67,6 +57,6 @@ const Dashboard = (props) => {
 
     );
   }
-}
+
  
 export default Dashboard;

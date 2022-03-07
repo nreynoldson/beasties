@@ -86,3 +86,7 @@ form.change-password{
 .dashboard{
     padding:40px;
 }
+
+.response-btn{
+    margin: 10px;
+}

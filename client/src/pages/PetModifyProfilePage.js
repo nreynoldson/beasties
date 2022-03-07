@@ -21,10 +21,12 @@ const PetModifyProfilePage = (props) => {
   const navigate = useNavigate();
 
   const {
-    auth
+    auth,
+    petName,
+    shelterName
   } = props;
 
-  const { petName, shelterName } = useParams();
+ // const { petName, shelterName } = useParams();
   const isNewPet = !petName;
 
   const originalInputs = useMemo(() => {
@@ -83,7 +85,6 @@ const PetModifyProfilePage = (props) => {
   }, [afterGetPetInfo, petName, shelterName]);
 
   const afterSubmit = useCallback((response) => {
-
     if (response.error) {
       // Handle error
       return;
@@ -142,6 +143,7 @@ const PetModifyProfilePage = (props) => {
       delete params[disposition];
     }
 
+    delete params.avatar;
     if (isNewPet) {
       api.Animal.create(params).then(afterSubmit);
     }

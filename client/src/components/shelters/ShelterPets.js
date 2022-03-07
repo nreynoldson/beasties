@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo} from 'react';
-import {Row, Spinner} from 'react-bootstrap';
+import {Row, Spinner, Button} from 'react-bootstrap';
 import AnimalConsts from '../../consts/Animal';
 import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
 import PetSearchResult from '../pets/PetSearchResult';
@@ -11,7 +11,7 @@ export default function ShelterPets(props) {
     const [loading, setLoading] = useState(true);
 
     const {
-      auth
+      auth, setView
     } = props;
     
 
@@ -67,7 +67,7 @@ export default function ShelterPets(props) {
                 age={pet.age}
                 breed={pet.breed}
                 canDate={canDate}
-                canDelete={auth.isAdmin}
+                canDelete={auth.isAdmin || pet.shelterName === auth.currentUser.shelterName}
                 dateInfo={(auth.currentUser) ? pet.dateInfo : null}
                 shelterName={pet.shelterName}
                 type={pet.type}
@@ -77,6 +77,8 @@ export default function ShelterPets(props) {
                 disposition={pet.disposition || []}
                 onDelete={handleShowDeletePetDialog}
                 usePopover ={false}
+                canEdit = {true}
+                onEdit = {props.onEdit}
               />
             </div>
           );
@@ -84,12 +86,7 @@ export default function ShelterPets(props) {
       return results;
   }, [auth, handleShowDeletePetDialog, pets]);
 
-  
   const confirmDeleteModal = useMemo(() => {
-
-      if (!auth.isAdmin) {
-        return null;
-      }
 
       return (
         <ConfirmDeleteModal
@@ -127,3 +124,5 @@ export default function ShelterPets(props) {
     );
   }
 }
+
+

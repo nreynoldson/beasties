@@ -55,7 +55,10 @@ const UserSearchResult = (props) => {
 
     return (
       <Link className="d-flex flex-column userSearchResult" to={`/user/${id}/`}>
-        <Image rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
+        <Image onError={({ currentTarget }) => {
+          currentTarget.onerror = null; // prevents looping
+          currentTarget.src='/images/no_image.svg';
+        }} rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
         <div className="flex-column align-items-center justify-content-between">
           <h3 className="userName">{name}</h3>
           <a href={`mailto:${email}`}>{email}</a>

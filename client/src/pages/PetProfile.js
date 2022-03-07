@@ -19,7 +19,6 @@ export default function PetProfile(props) {
     const user = props.auth.currentUser;
 
     const processPetInfo = useCallback((response) => {
-        console.log(response);
         if (response.error) {
           setNotFound(true);
         }
@@ -61,10 +60,10 @@ export default function PetProfile(props) {
 
     var profileActions = null;
     if(user){
-        let editButton = null;
+        var editButton = null;
         if (user.isShelterOwner && user.shelterName === shelterName) {
             editButton = (
-                <Button onClick={goToEditPage} variant="secondary">
+                <Button onClick={goToEditPage} variant="secondary" className="edit-pet">
                     Edit
                 </Button>
             );
@@ -75,7 +74,6 @@ export default function PetProfile(props) {
                 <div className="profile-actions"> 
                     <RequestButton auth={props.auth} requestType={'date'} shelterName={shelterName} animalName={petName}/>
                     <RequestButton auth={props.auth} requestType={'adoption'} shelterName={shelterName} animalName={petName}/>
-                    {editButton}
                 </div>
             );
         }
@@ -91,12 +89,11 @@ export default function PetProfile(props) {
         return <NotFound/>
     }
     else{
-        console.log(petInfo);
         return(
             <Container className="profile-container">
-                <Col>
+                <Col xs={4}>
                     <Card className="profile-info">
-                    <Card.Header>{petInfo.name}</Card.Header>
+                    <Card.Header className="pet-name-title">{petInfo.name}</Card.Header>
                     <ListGroup variant="flush">
                         <ListGroup.Item><span className='label'>Type:</span> <span>{petInfo.type}</span></ListGroup.Item>
                         <ListGroup.Item><span className='label'>Breed:</span> <span>{petInfo.breed}</span></ListGroup.Item>
@@ -107,10 +104,11 @@ export default function PetProfile(props) {
                     </ListGroup>
 
                     {profileActions}
+                    {editButton}
                     </Card>
                 </Col>
 
-                <Col className="right" xs={9}>
+                <Col className="right" xs={7}>
                     <Image className="profile-avatar" src={petInfo.avatar}></Image>
 
                     <Card className="bio-box">

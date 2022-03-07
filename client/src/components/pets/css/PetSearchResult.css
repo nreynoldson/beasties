@@ -37,7 +37,7 @@
   font-size: 0.75rem;
 }
 
-.petSearchResult {
+.petSearchResult, .userSearchResult{
   background-color: whitesmoke;
   border: 2px solid black;
   border-radius: 10px;

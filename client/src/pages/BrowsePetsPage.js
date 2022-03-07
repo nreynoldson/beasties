@@ -331,7 +331,7 @@ const BrowsePetsPage = (props) => {
             age={pet.age}
             breed={pet.breed}
             canDate={canDate}
-            canDelete={auth.isAdmin}
+            canDelete={auth.isAdmin || auth.currentUser.shelterName === pet.shelterName}
             dateInfo={(auth.currentUser) ? pet.dateInfo : null}
             shelterName={pet.shelterName}
             type={pet.type}

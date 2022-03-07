@@ -18,6 +18,7 @@ function RequestButton(props){
             requestType: type,
             requestStatus: "pending",
             startDate: (new Date()).toISOString().split('T')[0],
+            endDate:new Date(Date.now() + 604800000),
             userName: props.auth.currentUser.userName,
             animalName: props.animalName,
             shelterName: props.shelterName,
@@ -32,8 +33,8 @@ function RequestButton(props){
           return;
         }
         else {
-            //TODO: add some prompt upon success/change button appearance
             setSuccess(true);
+            handleClose();
         }
     }, []);
 
@@ -50,7 +51,7 @@ function RequestButton(props){
     
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-            <Modal.Title>Request to Adopt {props.animalName}</Modal.Title>
+            <Modal.Title>Request to {typeDisplay} {props.animalName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
             {alertBanner}
@@ -67,11 +68,11 @@ function RequestButton(props){
 
             </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-                Close
-            </Button>
-            <Button variant="primary pink-btn" onClick={handleRequest}>
+            <Button variant="primary" className="requestButtons" onClick={handleRequest}>
                 Send
+            </Button>
+            <Button variant="secondary" className="requestButtons" onClick={handleClose}>
+                Close
             </Button>
             </Modal.Footer>
         </Modal>

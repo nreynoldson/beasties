@@ -11,7 +11,7 @@ export default function NotificationCenter(props) {
     const [isShelter, setShelter] = useState(false);
     const [view, setView] = useState('default');
     const [selectedRequest, setSelectedRequest] = useState({});
-    const { promiseInProgress } = usePromiseTracker();
+    const [loading, setLoading] = useState(true);
 
     const processRequests = useCallback((response) => {
         if (response.error) {
@@ -21,6 +21,7 @@ export default function NotificationCenter(props) {
         else {
             setRequests(response.result)
         }
+        setLoading(false);
     }, []);
 
     useEffect(() => {
@@ -45,7 +46,7 @@ export default function NotificationCenter(props) {
     });
 
     var content;
-    if(promiseInProgress){
+    if(loading){
         content = (
         <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>

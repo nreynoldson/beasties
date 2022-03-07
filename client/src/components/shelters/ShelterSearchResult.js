@@ -11,7 +11,6 @@ import { XCircleFill } from 'react-bootstrap-icons';
 import './css/ShelterSearchResult.css';
 
 const ShelterSearchResult = (props) => {
-
   const {
     avatarUrl,
     canDelete,
@@ -49,7 +48,7 @@ const ShelterSearchResult = (props) => {
 
     return (
       <Link className="d-flex flex-column shelterSearchResult" to={`/shelter/${id}/`}>
-        <Image rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
+        <Image className="shelter-card-avatar" rounded src={avatarUrl || '/images/no_image.svg'} />
         <div className="flex-column align-items-center justify-content-between">
           <h3 className="shelterName">{name}</h3>
           {/* <span>{availableAnimals} pets available</span> */}

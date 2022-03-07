@@ -21,7 +21,6 @@ export default function ShelterProfile(props) {
       // Request the necessary data from the back end
       // Grab images from S3
       api.Shelter.getInfo(shelterName).then((response) => {
-        console.log(response);
         if(response.error){
           setNotFound(true);
         }
@@ -38,7 +37,7 @@ export default function ShelterProfile(props) {
     return(
         <Container className="shelter-container">
             <Row className="shelter-info" xs={1}>
-                <Col xs={8}><Image className="profile-avatar" src={shelter.avatar ? shelter.avatar : '/images/no-image.png'}></Image> </Col>
+                <Col><Image className="profile-avatar" src={shelter.avatar ? shelter.avatar : '/images/no-image.png'}></Image> </Col>
                 <Col>                
                     <Card className="profile-info">
                     <Card.Header>      </Card.Header>
