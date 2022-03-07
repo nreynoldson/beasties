@@ -34,8 +34,5 @@
         "userName",
         "email",
         "zipcode"
-    ],
-    "dependencies": {
-        "isShelterOwner": { "required": ["shelterName"]}
-    }  
+    ]  
 }
