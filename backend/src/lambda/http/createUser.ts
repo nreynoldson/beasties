@@ -14,7 +14,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   // TODO: Implement creating a new user
   logger.info(`Processing CreateUser event - ${JSON.stringify(event.body)}`)
   
-  const newPost: CreateUserAPIRequest = JSON.parse(event.body)
+  const newPost: CreateUserAPIRequest  = JSON.parse(event.body)
 
   if(!newPost.userName) {
     logger.error('User name cannot be empty')

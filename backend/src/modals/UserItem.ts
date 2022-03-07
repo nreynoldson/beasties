@@ -6,4 +6,5 @@ export interface UserItem {
     isShelterOwner: boolean
     shelterName: string
     avatar: string
+    displayName?: string
 }
