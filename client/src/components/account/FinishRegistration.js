@@ -5,7 +5,6 @@ import api from '../../api/api';
 
 export default function RegistrationForm(props){
     const [name, setName]  = useState('');
-    const [dob, setDob] = useState('');
     const [location, setLocation] = useState('');
     const [isShelter, setShelter] = useState(false);
     const [shelterName, setShelterName] = useState('');
@@ -16,8 +15,6 @@ export default function RegistrationForm(props){
         var errors = {};
         if(name === "")
             errors['name'] = "Name cannot be blank.";
-        if(dob === "")
-            errors['dob'] = "Date of birth cannot be blank.";
         if(location === "")
             errors['location'] = "Please set a password";
         if(isShelter && shelterName === "")
@@ -73,18 +70,6 @@ export default function RegistrationForm(props){
                         />
                         <Form.Control.Feedback type='invalid'>
                             {formErrors.name}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Date of Birth</Form.Label>
-                        <Form.Control 
-                            type="date" 
-                            name="dob" 
-                            value={dob} 
-                            onChange= {(e) => {setDob(e.target.value)}}
-                        />
-                        <Form.Control.Feedback type='invalid'>
-                            {formErrors.dob}
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3">

@@ -60,12 +60,9 @@ export default function EditProfile(props){
     }
 
     const handleUploadAvatar = (imageFile) => {
-
         api.User.uploadImage(user.userName).then(({ error, result }) => {
-
             if (!error) {
-              api.Image.uploadImage(result.uploadUrl, imageFile).then(() => {
-      
+              api.Image.uploadImage(result.uploadUrl, imageFile).then((response) => {
                 // Put a random number after the avatar url to force the image to reload
                 user.avatar = `${user.avatar}?${Math.random()}`;
               });

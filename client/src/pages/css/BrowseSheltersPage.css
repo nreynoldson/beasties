@@ -15,3 +15,31 @@
   width: 200px;
   align-self: end;
 }
+
+.shelterSearchResult {
+  background-color: whitesmoke;
+  border: 2px solid black;
+  border-radius: 10px;
+  box-shadow: 3px 3px 4px grey;
+  color: black;
+  margin: 1rem;
+  max-width: 300px;
+  min-width: 300px;
+  padding: 0.5rem;
+  position: relative;
+  text-decoration: none;
+}
+
+.shelter-card-avatar{
+  height: 275px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.container-fluid{
+  margin-top: 30px;
+}
+
+.sortOrderSelect{
+  margin-bottom:15px;
+}

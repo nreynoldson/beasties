@@ -344,7 +344,7 @@ const api = {
     },
     
     uploadImage: async (imageKey) => {
-
+      console.log('in upload image')
       const req = request
         .post(makeBackendUrl(`/images/user/${imageKey}`));
 

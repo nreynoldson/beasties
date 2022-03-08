@@ -4,55 +4,50 @@ import {ListGroup, Col, Container, Spinner, Tab} from 'react-bootstrap';
 import NotificationCenter from './NotificationCenter';
 import ManagePets from '../components/account/ManagePets';
 import EditAccount from '../components/account/EditAccount'
-import { usePromiseTracker } from 'react-promise-tracker';
+import AdminLandingPage from './AdminLandingPage';
 
 const Dashboard = (props) => {
-  const { promiseInProgress } = usePromiseTracker;
-
-  if(promiseInProgress){
     return (
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
-    );
-  } else {
-    return (
-      <div>
-        <h1 className="display-1 titleText"><b>HI, {props.auth.currentUser.userName}</b></h1>
+      <div className="dashboard">
+        <h1 className="titleText small">HI, {props.auth.currentUser.userName}</h1>
         <Container className='dashboard-container'>
           <Col sm={1}/>
-          <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
+          <Tab.Container id="list-group-tabs-example" defaultActiveKey="#requests">
             <Col sm={3} className="menu">
               <ListGroup>
-                <ListGroup.Item action href="#link1">
+                <ListGroup.Item action href="#requests">
                   Requests
                 </ListGroup.Item>
-                <ListGroup.Item action href="#link2">
+                <ListGroup.Item action href="#account-settings">
                   Account Settings
                 </ListGroup.Item>
                 {props.auth.currentUser.isShelterOwner ?
-                  <ListGroup.Item action href="#link3">
+                  <ListGroup.Item action href="#manage-pets">
                     Manage Animals
                   </ListGroup.Item> : '' }
-                <ListGroup.Item action href="#link4">
+                {props.auth.isAdmin ? 
+                <ListGroup.Item action href="#admin">
                   Admin
-                </ListGroup.Item>
+                </ListGroup.Item> : '' }
               </ListGroup>
             </Col>
             <Col sm={7} className="view-content">
               <Tab.Content>
-                <Tab.Pane eventKey="#link1">
+                <Tab.Pane eventKey="#requests">
                   <NotificationCenter auth={props.auth}/>
                 </Tab.Pane>
-                <Tab.Pane eventKey="#link2">
+                <Tab.Pane eventKey="#account-settings">
                   <EditAccount auth={props.auth}></EditAccount>
                 </Tab.Pane>
                 {props.auth.currentUser.isShelterOwner ?
-                  <Tab.Pane eventKey="#link3">
+                  <Tab.Pane eventKey="#manage-pets">
                     <ManagePets auth={props.auth}></ManagePets>
                   </Tab.Pane> : ''}
-                <Tab.Pane eventKey="#link4">
-                </Tab.Pane>
+                {props.auth.isAdmin ? 
+                  <Tab.Pane eventKey="#admin">
+                    <AdminLandingPage auth={props.auth} />
+                  </Tab.Pane> : ''
+                }
               </Tab.Content>
             </Col>
         </Tab.Container>
@@ -62,6 +57,6 @@ const Dashboard = (props) => {
 
     );
   }
-}
+
  
 export default Dashboard;

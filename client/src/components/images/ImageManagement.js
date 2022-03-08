@@ -35,15 +35,13 @@ const ImageManagement = (props) => {
   const handleUploadFile = useCallback((evt) => onUploadImage(evt), [onUploadImage]);
 
   const handleFileInputChange = useCallback((evt) => {
-
-    if (!evt.currentTarget.value) {
+    if (!evt.target.value) {
       return;
     }
-
     // const reader = new FileReader();
     // reader.readAsDataURL(evt.currentTarget.files[0]);
     // reader.onloadend = handleUploadFile;
-    handleUploadFile(evt.currentTarget.files[0]);
+    handleUploadFile(evt.target.files[0]);
   }, [handleUploadFile]);
 
   const avatarImage = useMemo(() => {
@@ -62,7 +60,6 @@ const ImageManagement = (props) => {
   }, [allowEdit, avatarImageUrl]);
 
   const imageUploader = useMemo(() => {
-
     if (!allowEdit) {
       return null;
     }

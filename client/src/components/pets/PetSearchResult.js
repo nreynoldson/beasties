@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,  useNavigate } from 'react-router-dom';
 
 import AnimalConsts from '../../consts/Animal';
 
@@ -17,6 +17,7 @@ import { XCircleFill } from 'react-bootstrap-icons';
 import './css/PetSearchResult.css';
 
 const PetSearchResult = (props) => {
+  const navigate = useNavigate();
 
   const {
     age,
@@ -25,6 +26,8 @@ const PetSearchResult = (props) => {
     breed,
     canDate,
     canDelete,
+    canEdit,
+    onEdit,
     dateInfo,
     disposition = [],
     gender,
@@ -187,6 +190,15 @@ const PetSearchResult = (props) => {
       );
     }
 
+    let editButton = null;
+    if (canEdit && onEdit) {
+      editButton = (
+          <Button className="mt-2 edit-pet" size="sm" variant="secondary" onClick={(e)=> {e.stopPropagation(); onEdit(name)}}>
+            Edit
+          </Button>
+      );
+    }
+
     let dateInfoElement = null;
     if (dateInfo) {
       const dateDisplayOptions = ['en-us', { weekday:"short", year:"numeric", month:"short", day:"numeric"}];
@@ -207,8 +219,8 @@ const PetSearchResult = (props) => {
 
     return (
       <OverlayTrigger placement="auto" overlay={popover} trigger={usePopover ? ['hover', 'focus'] : []}>
-        <Link className="d-flex flex-column petSearchResult" to={`/pet/${name}/${shelterName}`}>
-          <Image rounded src={avatarUrl || '/images/no_image.svg'} height="250" />
+        <div  className="d-flex flex-column petSearchResult" onClick={() => navigate(`/pet/${name}/${shelterName}`)}>
+          <Image rounded className="avatar-card" src={avatarUrl || '/images/no_image.svg'} />
           <div className="flex-column align-items-center justify-content-between">
             <h3 className="petName">{name}</h3>
             <span>
@@ -216,9 +228,10 @@ const PetSearchResult = (props) => {
             </span>
           </div>
           {deleteButton}
+          {editButton}
           {dateButton}
           {dateInfoElement}
-        </Link>
+        </div>
       </OverlayTrigger>
     );
   }, [
@@ -227,6 +240,8 @@ const PetSearchResult = (props) => {
     breedDisplay,
     canDate,
     canDelete,
+    canEdit,
+    onEdit,
     dateInfo,
     handleDeleteClick,
     id,

@@ -17,7 +17,6 @@ function ResponseView(props){
     }
 
     const processResponse = useCallback((response) => {
-        console.log(response);
         if (response.error) {
           // Handle error
           return;
@@ -48,8 +47,8 @@ function ResponseView(props){
                 </Form.Group>
             </Form>
 
-            <Button className="pink-btn" id="accepted" onClick={handleRequest}>Accept</Button>
-            <Button className="pink-btn" id="declined" onClick={handleRequest}>Decline</Button>
+            <Button className="response-btn" variant="primary" id="accepted" onClick={handleRequest}>Accept</Button>
+            <Button className="response-btn" id="declined" variant="secondary" onClick={handleRequest}>Decline</Button>
         </div>
     );
 }

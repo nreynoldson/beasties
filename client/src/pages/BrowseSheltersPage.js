@@ -36,10 +36,9 @@ const BrowseSheltersPage = (props) => {
   const [shelterToDelete, setShelterToDelete] = useState(null);
 
   const filterAndSortResults = useCallback((newSearchData) => {
-
     newSearchData = newSearchData.map((shelterUser) => {
 
-      return { shelterName: shelterUser.shelterName };
+      return { shelterName: shelterUser.shelterName, avatarUrl: shelterUser.avatar};
     });
 
     newSearchData = newSearchData.filter((shelter) => {
@@ -61,7 +60,6 @@ const BrowseSheltersPage = (props) => {
   }, [inputs]);
 
   const afterGetSearchResults = useCallback((response) => {
-
     setIsLoading(false);
     const { error, result } = response;
 
@@ -167,7 +165,6 @@ const BrowseSheltersPage = (props) => {
     }
 
     const resultComponents = searchData.map((shelter) => {
-
       return (
         <div key={shelter.shelterName}>
           <ShelterSearchResult

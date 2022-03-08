@@ -44,7 +44,7 @@ export default function Login(props){
         <div className="login-container">
             <Form className='login'>
                 <Form.Group className="mb-3" controlId="formGroupEmail">
-                    <Form.Label>Email address</Form.Label>
+                    <Form.Label>Username</Form.Label>
                     <Form.Control 
                         type="email"
                         name="email"

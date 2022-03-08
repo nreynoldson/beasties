@@ -21,7 +21,6 @@ export default function ShelterProfile(props) {
       // Request the necessary data from the back end
       // Grab images from S3
       api.Shelter.getInfo(shelterName).then((response) => {
-        console.log(response);
         if(response.error){
           setNotFound(true);
         }
@@ -38,7 +37,7 @@ export default function ShelterProfile(props) {
     return(
         <Container className="shelter-container">
             <Row className="shelter-info" xs={1}>
-                <Col><Image src="https://885786.smushcdn.com/2409451/wp-content/uploads/2018/08/SEA-Shelter-Nataworry-2018-0064-810x541.jpg?lossy=1&strip=0&webp=1" fluid></Image> </Col>
+                <Col><Image className="profile-avatar" src={shelter.avatar ? shelter.avatar : '/images/no-image.png'}></Image> </Col>
                 <Col>                
                     <Card className="profile-info">
                     <Card.Header>      </Card.Header>

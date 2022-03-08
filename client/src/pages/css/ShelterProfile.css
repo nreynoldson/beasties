@@ -1,4 +1,4 @@
-.shelter.pets-container{
+.shelter-container .shelter.pets-container{
     border: lightgrey 1px solid;
     justify-content: center;
     border-radius: 5px;
@@ -31,9 +31,4 @@
 
 .shelter-container .profile-info{
     height: 400px;
-}
-
-.shelter-info img{
-    object-fit: cover;
-    height: 100%
 }
